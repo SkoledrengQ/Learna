@@ -1,0 +1,20 @@
+<mat-toolbar color="primary">
+  <span>{{ title() }}</span>
+  <span class="spacer"></span>
+
+  <ng-container *ngIf="isAuthenticated()">
+    <span class="user-info">{{ currentUser()?.email }}</span>
+
+    <button mat-button routerLink="/students">
+      <mat-icon>school</mat-icon>
+      Students
+    </button>
+
+    <button mat-button (click)="onLogout()">
+      <mat-icon>logout</mat-icon>
+      Logout
+    </button>
+  </ng-container>
+</mat-toolbar>
+
+<router-outlet />

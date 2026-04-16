@@ -1,0 +1,29 @@
+namespace Learna.Api.DTOs;
+
+public record LoginRequestDto(
+    string Email,
+    string Password
+);
+
+public record LoginResponseDto(
+    string AccessToken,
+    string RefreshToken,
+    DateTime ExpiresAt,
+    UserDto User
+);
+
+public record UserDto(
+    int Id,
+    string Email,
+    List<string> Roles,
+    int? StudentId
+);
+
+public record RefreshTokenRequestDto(
+    string RefreshToken
+);
+
+public record ChangePasswordRequestDto(
+    string CurrentPassword,
+    string NewPassword
+);

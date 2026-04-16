@@ -1,0 +1,73 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Students</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="table-header">
+      <button mat-raised-button color="primary" (click)="onAddStudent()">
+        <mat-icon>add</mat-icon>
+        Add New Student
+      </button>
+    </div>
+
+    <div class="table-container" *ngIf="!isLoading">
+      <table mat-table [dataSource]="students" class="mat-elevation-z2">
+        <ng-container matColumnDef="studentId">
+          <th mat-header-cell *matHeaderCellDef>Student ID</th>
+          <td mat-cell *matCellDef="let student">{{ student.studentId }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="firstName">
+          <th mat-header-cell *matHeaderCellDef>First Name</th>
+          <td mat-cell *matCellDef="let student">{{ student.firstName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="lastName">
+          <th mat-header-cell *matHeaderCellDef>Last Name</th>
+          <td mat-cell *matCellDef="let student">{{ student.lastName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let student">{{ student.email }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="gradeLevel">
+          <th mat-header-cell *matHeaderCellDef>Grade</th>
+          <td mat-cell *matCellDef="let student">{{ student.gradeLevel }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="enrollmentDate">
+          <th mat-header-cell *matHeaderCellDef>Enrollment Date</th>
+          <td mat-cell *matCellDef="let student">{{ formatDate(student.enrollmentDate) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let student">
+            <button mat-icon-button color="primary" (click)="onEditStudent(student.id)" matTooltip="Edit">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="onDeleteStudent(student)" matTooltip="Delete">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+            No students found. Click "Add New Student" to create one.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="loading-container" *ngIf="isLoading">
+      <p>Loading students...</p>
+    </div>
+  </mat-card-content>
+</mat-card>
