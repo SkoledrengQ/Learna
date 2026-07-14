@@ -1,0 +1,112 @@
+<div class="schedule-view">
+  <div class="week-nav">
+    <button mat-icon-button (click)="onPrevWeek()" [attr.aria-label]="'schedule.nav.previous' | transloco">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <button mat-stroked-button (click)="onToday()">{{ 'schedule.nav.today' | transloco }}</button>
+    <button mat-icon-button (click)="onNextWeek()" [attr.aria-label]="'schedule.nav.next' | transloco">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+
+    <span class="week-range">
+      {{ currentWeekStart() | localizedDate:languageService.activeLang():'d MMM' }}
+      &ndash;
+      {{ weekEnd() | localizedDate:languageService.activeLang():'d MMM y' }}
+    </span>
+
+    <span class="spacer"></span>
+
+    <button mat-icon-button (click)="jumpPicker.open()" [attr.aria-label]="'schedule.nav.jumpToDate' | transloco">
+      <mat-icon>event</mat-icon>
+    </button>
+    <input
+      class="jump-input"
+      [matDatepicker]="jumpPicker"
+      (dateChange)="onDateJump($event.value)"
+      tabindex="-1"
+      aria-hidden="true">
+    <mat-datepicker #jumpPicker></mat-datepicker>
+  </div>
+
+  <div class="loading-state" *ngIf="loading()">{{ 'schedule.loading' | transloco }}</div>
+
+  <ng-container *ngIf="!loading()">
+    <div class="empty-state" *ngIf="!hasLessons()">
+      {{ 'schedule.empty' | transloco }}
+    </div>
+
+    <ng-container *ngIf="hasLessons()">
+      <div class="desktop-grid">
+        <div class="time-axis">
+          <div class="axis-header-spacer"></div>
+          <div class="axis-marks" [style.height.px]="gridHeightPx()">
+            <div class="axis-mark" *ngFor="let mark of axisMarks()" [style.top.px]="mark.offsetPx">{{ mark.label }}</div>
+          </div>
+        </div>
+
+        <div class="day-column" *ngFor="let col of desktopDayColumns()">
+          <div class="day-header">
+            <span class="day-name">{{ ('schedule.days.' + dayKey(col.day)) | transloco }}</span>
+            <span class="day-date">{{ col.day | localizedDate:languageService.activeLang():'d MMM' }}</span>
+          </div>
+          <div class="day-body" [style.height.px]="gridHeightPx()">
+            <div class="hour-line" *ngFor="let mark of axisMarks()" [style.top.px]="mark.offsetPx"></div>
+
+            <div
+              class="lesson-block"
+              *ngFor="let item of col.items"
+              [class.cancelled]="item.lesson.status === 'Cancelled'"
+              [class.modified]="item.lesson.isModified && item.lesson.status !== 'Cancelled'"
+              [style.top.px]="item.top"
+              [style.height.px]="item.height"
+              [style.left.%]="item.leftPercent"
+              [style.width.%]="item.widthPercent"
+              (click)="onLessonClick(item.lesson)">
+              <span class="lesson-time">{{ item.lesson.startTime.slice(0, 5) }}&ndash;{{ item.lesson.endTime.slice(0, 5) }}</span>
+              <span class="lesson-subject">{{ item.lesson.subjectGroupName }}</span>
+              <span class="lesson-room" *ngIf="item.lesson.roomName">{{ item.lesson.roomName }}</span>
+              <span class="lesson-teacher" *ngIf="item.lesson.teacherName">{{ item.lesson.teacherName }}</span>
+              <span class="cancelled-label" *ngIf="item.lesson.status === 'Cancelled'">{{ 'admin.lessons.statusCancelled' | transloco }}</span>
+              <span class="modified-dot" *ngIf="item.lesson.isModified && item.lesson.status !== 'Cancelled'"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mobile-list">
+        <div class="day-section" *ngFor="let group of mobileDayGroups()">
+          <h3 class="day-section-header">
+            {{ ('schedule.days.' + dayKey(group.day)) | transloco }}
+            &middot;
+            {{ group.day | localizedDate:languageService.activeLang():'d MMM' }}
+          </h3>
+
+          <div class="day-lessons" *ngIf="group.lessons.length; else noDayLessons">
+            <div
+              class="lesson-card"
+              *ngFor="let lesson of group.lessons"
+              [class.cancelled]="lesson.status === 'Cancelled'"
+              [class.modified]="lesson.isModified && lesson.status !== 'Cancelled'"
+              (click)="onLessonClick(lesson)">
+              <div class="lesson-card-time">{{ lesson.startTime.slice(0, 5) }}&ndash;{{ lesson.endTime.slice(0, 5) }}</div>
+              <div class="lesson-card-body">
+                <div class="lesson-card-subject">{{ lesson.subjectGroupName }}</div>
+                <div class="lesson-card-meta">
+                  <span *ngIf="lesson.roomName">{{ lesson.roomName }}</span>
+                  <span *ngIf="lesson.teacherName">{{ lesson.teacherName }}</span>
+                </div>
+                <span class="cancelled-label" *ngIf="lesson.status === 'Cancelled'">{{ 'admin.lessons.statusCancelled' | transloco }}</span>
+                <span class="modified-chip" *ngIf="lesson.isModified && lesson.status !== 'Cancelled'">
+                  <mat-icon>edit_note</mat-icon>{{ 'admin.lessons.modified' | transloco }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <ng-template #noDayLessons>
+            <div class="no-lessons">{{ 'schedule.noLessonsThisDay' | transloco }}</div>
+          </ng-template>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

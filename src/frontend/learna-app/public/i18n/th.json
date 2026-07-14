@@ -19,6 +19,7 @@
   },
   "nav": {
     "students": "นักเรียน",
+    "schedule": "ตารางเรียน",
     "admin": "ผู้ดูแลระบบ",
     "teachers": "ครู",
     "subjects": "วิชา",
@@ -27,6 +28,7 @@
     "subjectGroups": "กลุ่มวิชา",
     "rooms": "ห้องเรียน (สถานที่)",
     "lessons": "คาบเรียน",
+    "adminSchedule": "ดูตารางเรียน",
     "logout": "ออกจากระบบ"
   },
   "schedule": {
@@ -48,6 +50,28 @@
         "Student": "นักเรียนซ้อนทับกัน"
       },
       "saveAnyway": "บันทึกต่อไป"
+    },
+    "myScheduleTitle": "ตารางเรียนของฉัน",
+    "noPersonalSchedule": "บัญชีนี้ไม่ได้เชื่อมโยงกับตารางเรียนส่วนตัว",
+    "goToAdminSchedule": "ไปที่หน้าดูตารางเรียน",
+    "loadFailed": "ไม่สามารถโหลดตารางเรียนได้",
+    "loading": "กำลังโหลดตารางเรียน...",
+    "empty": "ไม่มีคาบเรียนในสัปดาห์นี้",
+    "noLessonsThisDay": "ไม่มีคาบเรียน",
+    "nav": {
+      "previous": "สัปดาห์ก่อนหน้า",
+      "next": "สัปดาห์ถัดไป",
+      "today": "วันนี้",
+      "jumpToDate": "ไปยังวันที่"
+    },
+    "detail": {
+      "subjectGroup": "กลุ่มวิชา",
+      "date": "วันที่",
+      "time": "เวลา",
+      "teacher": "ครูผู้สอน",
+      "room": "ห้องเรียน",
+      "note": "หมายเหตุ",
+      "none": "ไม่มี"
     }
   },
   "auth": {
@@ -440,6 +464,15 @@
       "cancelTooltip": "ยกเลิกคาบเรียน",
       "cancelSuccess": "ยกเลิกคาบเรียนแล้ว",
       "cancelFailed": "ไม่สามารถยกเลิกคาบเรียนได้"
+    },
+    "schedule": {
+      "title": "ดูตารางเรียน",
+      "byStudent": "นักเรียน",
+      "byTeacher": "ครู",
+      "byRoom": "ห้องเรียน",
+      "searchLabel": "ค้นหา",
+      "searchPlaceholder": "ค้นหาด้วยชื่อ",
+      "pickHint": "ค้นหาและเลือกด้านบนเพื่อดูตารางเรียน"
     }
   }
 }

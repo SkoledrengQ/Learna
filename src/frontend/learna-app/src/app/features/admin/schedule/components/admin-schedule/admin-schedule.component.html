@@ -1,0 +1,36 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ 'admin.schedule.title' | transloco }}</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="picker-row">
+      <mat-button-toggle-group [value]="viewType()" (change)="onViewTypeChange($event.value)">
+        <mat-button-toggle value="student">{{ 'admin.schedule.byStudent' | transloco }}</mat-button-toggle>
+        <mat-button-toggle value="teacher">{{ 'admin.schedule.byTeacher' | transloco }}</mat-button-toggle>
+        <mat-button-toggle value="room">{{ 'admin.schedule.byRoom' | transloco }}</mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <mat-form-field appearance="outline" class="entity-search">
+        <mat-label>{{ 'admin.schedule.searchLabel' | transloco }}</mat-label>
+        <input
+          matInput
+          [value]="filterText()"
+          (input)="onFilterInput($any($event.target).value)"
+          [matAutocomplete]="auto"
+          [placeholder]="'admin.schedule.searchPlaceholder' | transloco">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event.option.value)">
+          <mat-option *ngFor="let option of options()" [value]="option">{{ option.label }}</mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+    <p class="hint" *ngIf="selectedEntityId() === null">{{ 'admin.schedule.pickHint' | transloco }}</p>
+
+    <app-schedule-view
+      [lessons]="lessons()"
+      [loading]="isLoading()"
+      (weekRangeChange)="onWeekRangeChange($event)">
+    </app-schedule-view>
+  </mat-card-content>
+</mat-card>

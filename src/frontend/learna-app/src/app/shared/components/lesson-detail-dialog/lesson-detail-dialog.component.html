@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>{{ subjectName() }}</h2>
+
+<mat-dialog-content>
+  <div class="status-row">
+    <span class="status-chip" [class.cancelled]="lesson.status === 'Cancelled'">
+      {{ (lesson.status === 'Cancelled' ? 'admin.lessons.statusCancelled' : 'admin.lessons.statusScheduled') | transloco }}
+    </span>
+    <span class="modified-chip" *ngIf="lesson.isModified && lesson.status !== 'Cancelled'">
+      <mat-icon>edit_note</mat-icon>
+      {{ 'admin.lessons.modified' | transloco }}
+    </span>
+  </div>
+
+  <dl class="detail-list">
+    <dt>{{ 'schedule.detail.subjectGroup' | transloco }}</dt>
+    <dd>{{ lesson.subjectGroupName }}</dd>
+
+    <dt>{{ 'schedule.detail.date' | transloco }}</dt>
+    <dd>{{ lesson.date | localizedDate:languageService.activeLang():'fullDate' }}</dd>
+
+    <dt>{{ 'schedule.detail.time' | transloco }}</dt>
+    <dd>{{ lesson.startTime.slice(0, 5) }}&ndash;{{ lesson.endTime.slice(0, 5) }}</dd>
+
+    <dt>{{ 'schedule.detail.teacher' | transloco }}</dt>
+    <dd>{{ lesson.teacherName || ('schedule.detail.none' | transloco) }}</dd>
+
+    <dt>{{ 'schedule.detail.room' | transloco }}</dt>
+    <dd>{{ lesson.roomName || ('schedule.detail.none' | transloco) }}</dd>
+
+    <ng-container *ngIf="lesson.note">
+      <dt>{{ 'schedule.detail.note' | transloco }}</dt>
+      <dd>{{ lesson.note }}</dd>
+    </ng-container>
+  </dl>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="primary" (click)="onClose()">{{ 'common.close' | transloco }}</button>
+</mat-dialog-actions>

@@ -19,6 +19,7 @@
   },
   "nav": {
     "students": "Students",
+    "schedule": "Schedule",
     "admin": "Admin",
     "teachers": "Teachers",
     "subjects": "Subjects",
@@ -27,6 +28,7 @@
     "subjectGroups": "Subject Groups",
     "rooms": "Rooms",
     "lessons": "Lessons",
+    "adminSchedule": "Schedule Viewer",
     "logout": "Logout"
   },
   "schedule": {
@@ -48,6 +50,28 @@
         "Student": "Student conflict"
       },
       "saveAnyway": "Save anyway"
+    },
+    "myScheduleTitle": "My Schedule",
+    "noPersonalSchedule": "No personal schedule is linked to this account.",
+    "goToAdminSchedule": "Go to the Schedule Viewer",
+    "loadFailed": "Failed to load schedule",
+    "loading": "Loading schedule...",
+    "empty": "No lessons scheduled this week.",
+    "noLessonsThisDay": "No lessons.",
+    "nav": {
+      "previous": "Previous week",
+      "next": "Next week",
+      "today": "Today",
+      "jumpToDate": "Jump to date"
+    },
+    "detail": {
+      "subjectGroup": "Subject Group",
+      "date": "Date",
+      "time": "Time",
+      "teacher": "Teacher",
+      "room": "Room",
+      "note": "Note",
+      "none": "None"
     }
   },
   "auth": {
@@ -440,6 +464,15 @@
       "cancelTooltip": "Cancel lesson",
       "cancelSuccess": "Lesson cancelled",
       "cancelFailed": "Failed to cancel lesson"
+    },
+    "schedule": {
+      "title": "Schedule Viewer",
+      "byStudent": "Student",
+      "byTeacher": "Teacher",
+      "byRoom": "Room",
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search by name",
+      "pickHint": "Search and select above to view a schedule."
     }
   }
 }

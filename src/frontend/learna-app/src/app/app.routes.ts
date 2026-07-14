@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
-import { StudentListComponent } from './features/students/components/student-list/student-list.component';
-import { StudentFormComponent } from './features/students/components/student-form/student-form.component';
 
 export const routes: Routes = [
   {
@@ -20,17 +18,22 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: StudentListComponent
+        loadComponent: () => import('./features/students/components/student-list/student-list.component').then(m => m.StudentListComponent)
       },
       {
         path: 'new',
-        component: StudentFormComponent
+        loadComponent: () => import('./features/students/components/student-form/student-form.component').then(m => m.StudentFormComponent)
       },
       {
         path: ':id',
-        component: StudentFormComponent
+        loadComponent: () => import('./features/students/components/student-form/student-form.component').then(m => m.StudentFormComponent)
       }
     ]
+  },
+  {
+    path: 'schedule',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/schedule/components/my-schedule/my-schedule.component').then(m => m.MyScheduleComponent)
   },
   {
     path: 'admin',

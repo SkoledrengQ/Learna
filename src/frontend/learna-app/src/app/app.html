@@ -10,6 +10,11 @@
       {{ 'nav.students' | transloco }}
     </button>
 
+    <button mat-button routerLink="/schedule">
+      <mat-icon>calendar_month</mat-icon>
+      {{ 'nav.schedule' | transloco }}
+    </button>
+
     <ng-container *ngIf="isAdmin()">
       <button mat-button [matMenuTriggerFor]="adminMenu">
         <mat-icon>admin_panel_settings</mat-icon>
@@ -43,6 +48,10 @@
         <button mat-menu-item routerLink="/admin/lessons">
           <mat-icon>event</mat-icon>
           {{ 'nav.lessons' | transloco }}
+        </button>
+        <button mat-menu-item routerLink="/admin/schedule">
+          <mat-icon>calendar_month</mat-icon>
+          {{ 'nav.adminSchedule' | transloco }}
         </button>
       </mat-menu>
     </ng-container>

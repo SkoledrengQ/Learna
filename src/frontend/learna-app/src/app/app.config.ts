@@ -4,12 +4,14 @@ import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalE
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideTransloco } from '@jsverse/transloco';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { TranslocoHttpLoader } from './core/transloco-loader';
 import { LanguageService } from './core/services/language.service';
+import { DateLocaleSyncService } from './core/services/date-locale-sync.service';
 import { environment } from '../environments/environment';
 
 registerLocaleData(localeTh);
@@ -22,6 +24,7 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([authInterceptor])
     ),
     provideAnimations(),
+    provideNativeDateAdapter(),
     provideTransloco({
       config: {
         availableLangs: ['en', 'th'],
@@ -31,6 +34,9 @@ export const appConfig: ApplicationConfig = {
       },
       loader: TranslocoHttpLoader
     }),
-    provideAppInitializer(() => inject(LanguageService).init())
+    provideAppInitializer(() => {
+      inject(DateLocaleSyncService);
+      inject(LanguageService).init();
+    })
   ]
 };

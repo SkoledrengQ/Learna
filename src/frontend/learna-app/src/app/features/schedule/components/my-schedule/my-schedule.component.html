@@ -1,0 +1,21 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ 'schedule.myScheduleTitle' | transloco }}</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="not-found" *ngIf="notFound()">
+      <p>{{ 'schedule.noPersonalSchedule' | transloco }}</p>
+      <button mat-raised-button color="primary" routerLink="/admin/schedule" *ngIf="isAdmin()">
+        {{ 'schedule.goToAdminSchedule' | transloco }}
+      </button>
+    </div>
+
+    <app-schedule-view
+      *ngIf="!notFound()"
+      [lessons]="lessons()"
+      [loading]="isLoading()"
+      (weekRangeChange)="onWeekRangeChange($event)">
+    </app-schedule-view>
+  </mat-card-content>
+</mat-card>

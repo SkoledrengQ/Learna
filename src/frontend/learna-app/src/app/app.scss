@@ -2,20 +2,25 @@ mat-toolbar {
   display: flex;
   align-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
 
   .spacer {
     flex: 1 1 auto;
+    min-width: 8px;
   }
 
   .user-info {
     margin-right: 16px;
     font-size: 14px;
     opacity: 0.9;
+    white-space: nowrap;
   }
 
   button {
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
 }

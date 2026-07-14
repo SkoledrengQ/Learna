@@ -1,0 +1,22 @@
+mat-card {
+  margin: 20px;
+}
+
+.picker-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 8px 0 4px;
+}
+
+.entity-search {
+  min-width: 260px;
+  flex: 1 1 260px;
+}
+
+.hint {
+  color: #666;
+  font-style: italic;
+  margin: 0 0 16px;
+}
