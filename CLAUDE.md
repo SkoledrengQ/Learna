@@ -65,5 +65,10 @@ dotnet ef database update --startup-project ../Learna.Api --project .
 ## Verification practice
 
 "It compiles" is not done. Before reporting a change complete, drive the actual running app
-(API via Swagger/HTTP, frontend via browser) through the relevant flow. Playwright is
-available under the frontend's `node_modules` for browser-driven verification.
+(API via Swagger/HTTP, frontend via browser) through the relevant flow. Playwright is a
+devDependency of `src/frontend/learna-app` for this purpose (`npm install` from that folder
+pulls it in). For a quick one-off check, a throwaway script driven by `node` against the
+installed `playwright` package works fine — launch Chromium, navigate to
+`http://localhost:4200`, log in, and drive the flow under test; no Playwright test runner or
+config is set up in this repo, so there's no `npx playwright test` suite to run. Make sure
+`ng serve` and the API are both running first.
