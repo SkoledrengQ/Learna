@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { TeacherService } from '../../../services/teacher.service';
 import { CreateTeacherDto, UpdateTeacherDto } from '../../../../../shared/models/teacher.model';
 
@@ -20,7 +21,8 @@ import { CreateTeacherDto, UpdateTeacherDto } from '../../../../../shared/models
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    TranslocoModule
   ],
   templateUrl: './teacher-form.component.html',
   styleUrl: './teacher-form.component.scss'
@@ -31,6 +33,7 @@ export class TeacherFormComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
+  private transloco = inject(TranslocoService);
 
   teacherForm!: FormGroup;
   isEditMode = false;
@@ -84,7 +87,7 @@ export class TeacherFormComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading teacher:', error);
-        this.snackBar.open('Failed to load teacher', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.teachers.loadFailedSingle'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoading.set(false);
         this.router.navigate(['/admin/teachers']);
       }
@@ -128,13 +131,13 @@ export class TeacherFormComponent implements OnInit {
 
     this.teacherService.createTeacher(dto).subscribe({
       next: () => {
-        this.snackBar.open('Teacher created successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.teachers.createSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
         this.router.navigate(['/admin/teachers']);
       },
       error: (error) => {
         console.error('Error creating teacher:', error);
-        const message = error.error?.includes?.('already exists') ? error.error : 'Failed to create teacher';
-        this.snackBar.open(message, 'Close', { duration: 5000 });
+        const message = error.error?.includes?.('already exists') ? error.error : this.transloco.translate('admin.teachers.createFailed');
+        this.snackBar.open(message, this.transloco.translate('common.close'), { duration: 5000 });
         this.isLoading.set(false);
       }
     });
@@ -150,12 +153,12 @@ export class TeacherFormComponent implements OnInit {
 
     this.teacherService.updateTeacher(this.teacherId!, dto).subscribe({
       next: () => {
-        this.snackBar.open('Teacher updated successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.teachers.updateSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
         this.router.navigate(['/admin/teachers']);
       },
       error: (error) => {
         console.error('Error updating teacher:', error);
-        this.snackBar.open('Failed to update teacher', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.teachers.updateFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoading.set(false);
       }
     });
@@ -168,13 +171,13 @@ export class TeacherFormComponent implements OnInit {
   getErrorMessage(fieldName: string): string {
     const field = this.teacherForm.get(fieldName);
     if (field?.hasError('required')) {
-      return 'This field is required';
+      return this.transloco.translate('validation.required');
     }
     if (field?.hasError('email')) {
-      return 'Please enter a valid email';
+      return this.transloco.translate('validation.email');
     }
     if (field?.hasError('maxlength')) {
-      return 'Maximum length exceeded';
+      return this.transloco.translate('validation.maxLength');
     }
     return '';
   }

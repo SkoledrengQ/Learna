@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { TranslocoModule } from '@jsverse/transloco';
 import { Term } from '../../../../../shared/models/school-year.model';
 
 export interface TermFormDialogData {
@@ -24,7 +25,8 @@ export interface TermFormDialogData {
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    TranslocoModule
   ],
   templateUrl: './term-form-dialog.component.html',
   styleUrl: './term-form-dialog.component.scss'

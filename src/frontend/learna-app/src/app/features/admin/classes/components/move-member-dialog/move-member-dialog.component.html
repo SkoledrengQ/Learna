@@ -1,9 +1,9 @@
-<h2 mat-dialog-title>Move Student to Another Class</h2>
+<h2 mat-dialog-title>{{ 'admin.classes.moveMemberDialogTitle' | transloco }}</h2>
 
 <mat-dialog-content>
   <div class="form-row">
     <mat-form-field appearance="outline">
-      <mat-label>Target Class</mat-label>
+      <mat-label>{{ 'admin.classes.targetClassLabel' | transloco }}</mat-label>
       <mat-select [(ngModel)]="toClassId">
         <mat-option *ngFor="let schoolClass of data.otherClasses" [value]="schoolClass.id">
           {{ schoolClass.name }}
@@ -14,7 +14,7 @@
 
   <div class="form-row">
     <mat-form-field appearance="outline">
-      <mat-label>Move Date</mat-label>
+      <mat-label>{{ 'admin.classes.moveDateLabel' | transloco }}</mat-label>
       <input matInput [matDatepicker]="movePicker" [(ngModel)]="moveDate">
       <mat-datepicker-toggle matIconSuffix [for]="movePicker"></mat-datepicker-toggle>
       <mat-datepicker #movePicker></mat-datepicker>
@@ -23,6 +23,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-raised-button color="primary" [disabled]="!toClassId" (click)="onMove()">Move</button>
+  <button mat-button (click)="onCancel()">{{ 'common.cancel' | transloco }}</button>
+  <button mat-raised-button color="primary" [disabled]="!toClassId" (click)="onMove()">{{ 'admin.classes.moveButton' | transloco }}</button>
 </mat-dialog-actions>

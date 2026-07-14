@@ -1,31 +1,31 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>{{ isEditMode ? 'Edit Class' : 'Add New Class' }}</mat-card-title>
+    <mat-card-title>{{ (isEditMode ? 'admin.classes.editTitle' : 'admin.classes.addTitle') | transloco }}</mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
     <form [formGroup]="classForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading()">
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>School Year</mat-label>
+          <mat-label>{{ 'admin.classes.schoolYearLabel' | transloco }}</mat-label>
           <mat-select formControlName="schoolYearId">
             <mat-option *ngFor="let year of schoolYears()" [value]="year.id">{{ year.name }}</mat-option>
           </mat-select>
-          <mat-error *ngIf="classForm.get('schoolYearId')?.invalid">This field is required</mat-error>
+          <mat-error *ngIf="classForm.get('schoolYearId')?.invalid">{{ 'validation.required' | transloco }}</mat-error>
         </mat-form-field>
       </div>
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Name</mat-label>
-          <input matInput formControlName="name" placeholder="e.g. ม.1/1, 1A">
+          <mat-label>{{ 'admin.classes.nameLabel' | transloco }}</mat-label>
+          <input matInput formControlName="name" [placeholder]="'admin.classes.placeholderName' | transloco">
           <mat-error *ngIf="classForm.get('name')?.invalid">{{ getErrorMessage('name') }}</mat-error>
         </mat-form-field>
       </div>
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Description</mat-label>
+          <mat-label>{{ 'admin.classes.descriptionLabel' | transloco }}</mat-label>
           <input matInput formControlName="description">
           <mat-error *ngIf="classForm.get('description')?.invalid">{{ getErrorMessage('description') }}</mat-error>
         </mat-form-field>
@@ -33,30 +33,30 @@
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Homeroom Teacher</mat-label>
+          <mat-label>{{ 'admin.classes.homeroomTeacherLabel' | transloco }}</mat-label>
           <mat-select formControlName="homeroomTeacherId">
-            <mat-option [value]="null">None</mat-option>
+            <mat-option [value]="null">{{ 'common.none' | transloco }}</mat-option>
             <mat-option *ngFor="let teacher of teachers()" [value]="teacher.id">{{ getDisplayName(teacher.name) }}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
 
       <div class="form-actions">
-        <button mat-button type="button" (click)="onCancel()">Cancel</button>
+        <button mat-button type="button" (click)="onCancel()">{{ 'common.cancel' | transloco }}</button>
         <button mat-raised-button color="primary" type="submit" [disabled]="isLoading()">
-          {{ isEditMode ? 'Update' : 'Create' }} Class
+          {{ (isEditMode ? 'admin.classes.updateClass' : 'admin.classes.createClass') | transloco }}
         </button>
       </div>
     </form>
 
     <div class="loading-container" *ngIf="isLoading()">
-      <p>{{ isEditMode ? 'Loading class data...' : 'Saving...' }}</p>
+      <p>{{ (isEditMode ? 'admin.classes.loadingClassData' : 'common.saving') | transloco }}</p>
     </div>
 
     <div class="members-section" *ngIf="isEditMode && !isLoading()">
       <div class="section-header">
-        <h3 class="section-title">Members</h3>
-        <mat-checkbox [checked]="showHistorical()" (change)="onToggleHistorical()">Show historical</mat-checkbox>
+        <h3 class="section-title">{{ 'admin.classes.membersSection' | transloco }}</h3>
+        <mat-checkbox [checked]="showHistorical()" (change)="onToggleHistorical()">{{ 'common.showHistorical' | transloco }}</mat-checkbox>
       </div>
 
       <div class="member-list" *ngIf="!isLoadingMembers()">
@@ -65,30 +65,30 @@
             <span class="member-name">{{ getDisplayName(membership.student.name) }}</span>
             <span class="member-code">{{ membership.student.studentId }}</span>
             <div class="member-meta">
-              Joined {{ formatDate(membership.joinedDate) }}
-              <ng-container *ngIf="membership.leftDate">&ndash; Left {{ formatDate(membership.leftDate) }}</ng-container>
+              {{ 'admin.classes.joinedOn' | transloco: { date: (membership.joinedDate | localizedDate:languageService.activeLang()) } }}
+              <ng-container *ngIf="membership.leftDate">&ndash; {{ 'admin.classes.leftOn' | transloco: { date: (membership.leftDate | localizedDate:languageService.activeLang()) } }}</ng-container>
             </div>
           </div>
           <div class="member-actions" *ngIf="!membership.leftDate">
-            <button mat-icon-button (click)="onMoveMember(membership)" matTooltip="Move to another class">
+            <button mat-icon-button (click)="onMoveMember(membership)" [matTooltip]="'admin.classes.moveTooltip' | transloco">
               <mat-icon>swap_horiz</mat-icon>
             </button>
-            <button mat-icon-button color="warn" (click)="onRemoveMember(membership)" matTooltip="Remove from class">
+            <button mat-icon-button color="warn" (click)="onRemoveMember(membership)" [matTooltip]="'admin.classes.removeMemberTooltip' | transloco">
               <mat-icon>person_remove</mat-icon>
             </button>
           </div>
         </div>
 
-        <p class="hint" *ngIf="members().length === 0">No members yet.</p>
+        <p class="hint" *ngIf="members().length === 0">{{ 'admin.classes.noMembersYet' | transloco }}</p>
       </div>
 
       <div class="loading-container" *ngIf="isLoadingMembers()">
-        <p>Loading members...</p>
+        <p>{{ 'admin.classes.loadingMembers' | transloco }}</p>
       </div>
 
       <button mat-stroked-button type="button" (click)="onAddMember()">
         <mat-icon>person_add</mat-icon>
-        Add Student
+        {{ 'admin.classes.addStudent' | transloco }}
       </button>
     </div>
   </mat-card-content>

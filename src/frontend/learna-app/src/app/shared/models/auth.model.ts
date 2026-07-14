@@ -16,7 +16,11 @@ export interface User {
   roles: string[];
   studentId?: number;
   isActive: boolean;
+  preferredLanguage?: string | null;
 }
+
+/** localStorage key for the persisted current user; shared by AuthService and LanguageService. */
+export const AUTH_USER_STORAGE_KEY = 'current_user';
 
 export interface RefreshTokenRequest {
   refreshToken: string;

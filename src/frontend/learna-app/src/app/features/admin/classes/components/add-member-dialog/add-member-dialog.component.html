@@ -1,15 +1,15 @@
-<h2 mat-dialog-title>Add Student to Class</h2>
+<h2 mat-dialog-title>{{ 'admin.classes.addMemberDialogTitle' | transloco }}</h2>
 
 <mat-dialog-content>
   <div class="form-row">
     <mat-form-field appearance="outline">
-      <mat-label>Student</mat-label>
+      <mat-label>{{ 'admin.classes.studentLabel' | transloco }}</mat-label>
       <input
         matInput
         [value]="filterText()"
         (input)="onFilterInput($any($event.target).value)"
         [matAutocomplete]="auto"
-        placeholder="Search by name or student ID">
+        [placeholder]="'admin.classes.studentSearchPlaceholder' | transloco">
       <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onStudentSelected($event.option.value)">
         <mat-option *ngFor="let student of filteredStudents()" [value]="student">
           {{ getDisplayName(student.name) }} ({{ student.studentId }})
@@ -20,7 +20,7 @@
 
   <div class="form-row">
     <mat-form-field appearance="outline">
-      <mat-label>Joined Date</mat-label>
+      <mat-label>{{ 'admin.classes.joinedDateLabel' | transloco }}</mat-label>
       <input matInput [matDatepicker]="joinedPicker" [(ngModel)]="joinedDate">
       <mat-datepicker-toggle matIconSuffix [for]="joinedPicker"></mat-datepicker-toggle>
       <mat-datepicker #joinedPicker></mat-datepicker>
@@ -29,6 +29,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-raised-button color="primary" [disabled]="!selectedStudent()" (click)="onAdd()">Add</button>
+  <button mat-button (click)="onCancel()">{{ 'common.cancel' | transloco }}</button>
+  <button mat-raised-button color="primary" [disabled]="!selectedStudent()" (click)="onAdd()">{{ 'common.add' | transloco }}</button>
 </mat-dialog-actions>

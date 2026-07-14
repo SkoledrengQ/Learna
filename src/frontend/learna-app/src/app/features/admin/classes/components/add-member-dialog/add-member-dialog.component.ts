@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { TranslocoModule } from '@jsverse/transloco';
 import { StudentService } from '../../../../students/services/student.service';
 import { Student, getDisplayName } from '../../../../../shared/models/student.model';
 
@@ -27,7 +28,8 @@ export interface AddMemberDialogData {
     MatInputModule,
     MatAutocompleteModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    TranslocoModule
   ],
   templateUrl: './add-member-dialog.component.html',
   styleUrl: './add-member-dialog.component.scss'

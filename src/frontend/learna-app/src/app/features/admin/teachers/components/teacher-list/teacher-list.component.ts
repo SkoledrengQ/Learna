@@ -8,6 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { TeacherService } from '../../../services/teacher.service';
 import { Teacher } from '../../../../../shared/models/teacher.model';
 import { ConfirmDialogComponent } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -23,7 +24,8 @@ import { ConfirmDialogComponent } from '../../../../../shared/components/confirm
     MatCardModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslocoModule
   ],
   templateUrl: './teacher-list.component.html',
   styleUrl: './teacher-list.component.scss'
@@ -33,6 +35,7 @@ export class TeacherListComponent implements OnInit {
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private transloco = inject(TranslocoService);
 
   teachers = signal<Teacher[]>([]);
   displayedColumns: string[] = ['employeeId', 'name', 'email', 'phoneNumber', 'actions'];
@@ -51,7 +54,7 @@ export class TeacherListComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading teachers:', error);
-        this.snackBar.open('Failed to load teachers', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.teachers.loadFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoading.set(false);
       }
     });
@@ -73,8 +76,8 @@ export class TeacherListComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: 'Delete Teacher',
-        message: `Are you sure you want to delete ${this.getDisplayName(teacher)}?`
+        title: this.transloco.translate('admin.teachers.deleteTitle'),
+        message: this.transloco.translate('admin.teachers.deleteMessage', { name: this.getDisplayName(teacher) })
       }
     });
 
@@ -82,12 +85,12 @@ export class TeacherListComponent implements OnInit {
       if (result) {
         this.teacherService.deleteTeacher(teacher.id).subscribe({
           next: () => {
-            this.snackBar.open('Teacher deleted successfully', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.teachers.deleteSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
             this.loadTeachers();
           },
           error: (error) => {
             console.error('Error deleting teacher:', error);
-            this.snackBar.open('Failed to delete teacher', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.teachers.deleteFailed'), this.transloco.translate('common.close'), { duration: 3000 });
           }
         });
       }

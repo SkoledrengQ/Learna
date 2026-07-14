@@ -12,6 +12,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { SubjectGroupService } from '../../../services/subject-group.service';
 import { SchoolYearService } from '../../../services/school-year.service';
 import { SubjectService } from '../../../services/subject.service';
@@ -24,6 +25,8 @@ import { getDisplayName } from '../../../../../shared/models/student.model';
 import { ConfirmDialogComponent } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { EnrollClassDialogComponent } from '../enroll-class-dialog/enroll-class-dialog.component';
 import { EnrollStudentsDialogComponent } from '../enroll-students-dialog/enroll-students-dialog.component';
+import { LanguageService } from '../../../../../core/services/language.service';
+import { LocalizedDatePipe } from '../../../../../shared/pipes/localized-date.pipe';
 
 @Component({
   selector: 'app-subject-group-form',
@@ -41,7 +44,9 @@ import { EnrollStudentsDialogComponent } from '../enroll-students-dialog/enroll-
     MatCheckboxModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslocoModule,
+    LocalizedDatePipe
   ],
   templateUrl: './subject-group-form.component.html',
   styleUrl: './subject-group-form.component.scss'
@@ -56,6 +61,8 @@ export class SubjectGroupFormComponent implements OnInit {
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private transloco = inject(TranslocoService);
+  protected languageService = inject(LanguageService);
 
   readonly getDisplayName = getDisplayName;
 
@@ -131,7 +138,7 @@ export class SubjectGroupFormComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading subject group:', error);
-        this.snackBar.open('Failed to load subject group', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.subjectGroups.loadFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoading.set(false);
         this.router.navigate(['/admin/subject-groups']);
       }
@@ -147,7 +154,7 @@ export class SubjectGroupFormComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading enrollments:', error);
-        this.snackBar.open('Failed to load enrollments', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.subjectGroups.loadFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoadingEnrollments.set(false);
       }
     });
@@ -185,12 +192,12 @@ export class SubjectGroupFormComponent implements OnInit {
 
     this.subjectGroupService.createSubjectGroup(dto).subscribe({
       next: (group) => {
-        this.snackBar.open('Subject group created successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.subjectGroups.createSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
         this.router.navigate(['/admin/subject-groups', group.id]);
       },
       error: (error) => {
         console.error('Error creating subject group:', error);
-        this.snackBar.open(error.error || 'Failed to create subject group', 'Close', { duration: 5000 });
+        this.snackBar.open(error.error || this.transloco.translate('admin.subjectGroups.createFailed'), this.transloco.translate('common.close'), { duration: 5000 });
         this.isLoading.set(false);
       }
     });
@@ -204,12 +211,12 @@ export class SubjectGroupFormComponent implements OnInit {
 
     this.subjectGroupService.updateSubjectGroup(this.groupId!, dto).subscribe({
       next: () => {
-        this.snackBar.open('Subject group updated successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.subjectGroups.updateSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
         this.router.navigate(['/admin/subject-groups']);
       },
       error: (error) => {
         console.error('Error updating subject group:', error);
-        this.snackBar.open(error.error || 'Failed to update subject group', 'Close', { duration: 3000 });
+        this.snackBar.open(error.error || this.transloco.translate('admin.subjectGroups.updateFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoading.set(false);
       }
     });
@@ -222,16 +229,12 @@ export class SubjectGroupFormComponent implements OnInit {
   getErrorMessage(fieldName: string): string {
     const field = this.groupForm.get(fieldName);
     if (field?.hasError('required')) {
-      return 'This field is required';
+      return this.transloco.translate('validation.required');
     }
     if (field?.hasError('maxlength')) {
-      return 'Maximum length exceeded';
+      return this.transloco.translate('validation.maxLength');
     }
     return '';
-  }
-
-  formatDate(date: Date): string {
-    return new Date(date).toLocaleDateString();
   }
 
   onEnrollClass(): void {
@@ -243,12 +246,16 @@ export class SubjectGroupFormComponent implements OnInit {
       if (result) {
         this.subjectGroupService.enrollClass(this.groupId!, result.classId).subscribe({
           next: (summary) => {
-            this.snackBar.open(`Enrolled ${summary.enrolled} student(s), skipped ${summary.skipped} already enrolled`, 'Close', { duration: 4000 });
+            this.snackBar.open(
+              this.transloco.translate('admin.subjectGroups.enrolledSummary', { enrolled: summary.enrolled, skipped: summary.skipped }),
+              this.transloco.translate('common.close'),
+              { duration: 4000 }
+            );
             this.loadEnrollments(this.groupId!);
           },
           error: (error) => {
             console.error('Error enrolling class:', error);
-            this.snackBar.open(error.error || 'Failed to enroll class', 'Close', { duration: 5000 });
+            this.snackBar.open(error.error || this.transloco.translate('admin.subjectGroups.enrollClassFailed'), this.transloco.translate('common.close'), { duration: 5000 });
           }
         });
       }
@@ -272,7 +279,7 @@ export class SubjectGroupFormComponent implements OnInit {
             next: () => {
               remaining--;
               if (remaining === 0) {
-                this.snackBar.open('Students enrolled', 'Close', { duration: 3000 });
+                this.snackBar.open(this.transloco.translate('admin.subjectGroups.studentsEnrolled'), this.transloco.translate('common.close'), { duration: 3000 });
                 this.loadEnrollments(this.groupId!);
               }
             },
@@ -295,8 +302,8 @@ export class SubjectGroupFormComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: 'Unenroll Student',
-        message: `Unenroll ${this.getDisplayName(enrollment.student.name)} from this subject group? Enrollment history will be kept.`
+        title: this.transloco.translate('admin.subjectGroups.unenrollTitle'),
+        message: this.transloco.translate('admin.subjectGroups.unenrollMessage', { name: this.getDisplayName(enrollment.student.name) })
       }
     });
 
@@ -304,12 +311,12 @@ export class SubjectGroupFormComponent implements OnInit {
       if (result) {
         this.subjectGroupService.removeEnrollment(this.groupId!, enrollment.student.id).subscribe({
           next: () => {
-            this.snackBar.open('Student unenrolled', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.subjectGroups.unenrolledSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
             this.loadEnrollments(this.groupId!);
           },
           error: (error) => {
             console.error('Error unenrolling student:', error);
-            this.snackBar.open('Failed to unenroll student', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.subjectGroups.unenrollFailed'), this.transloco.translate('common.close'), { duration: 3000 });
           }
         });
       }

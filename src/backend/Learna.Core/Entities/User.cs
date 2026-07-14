@@ -10,6 +10,9 @@ public class User
     public DateTime? LastLoginAt { get; set; }
     public bool IsActive { get; set; } = true;
 
+    /// Nullable; "en"/"th" for now. Null means no preference set yet (frontend falls back to localStorage/default).
+    public string? PreferredLanguage { get; set; }
+
     // Navigation properties
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 

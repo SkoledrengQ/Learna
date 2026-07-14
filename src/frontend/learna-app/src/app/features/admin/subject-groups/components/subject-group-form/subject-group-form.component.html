@@ -1,13 +1,13 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>{{ isEditMode ? 'Edit Subject Group' : 'Add New Subject Group' }}</mat-card-title>
+    <mat-card-title>{{ (isEditMode ? 'admin.subjectGroups.editTitle' : 'admin.subjectGroups.addTitle') | transloco }}</mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
     <form [formGroup]="groupForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading()">
       <div class="form-row" *ngIf="!isEditMode">
         <mat-form-field appearance="outline">
-          <mat-label>School Year</mat-label>
+          <mat-label>{{ 'admin.subjectGroups.schoolYearLabel' | transloco }}</mat-label>
           <mat-select [(ngModel)]="selectedSchoolYearId" [ngModelOptions]="{standalone: true}" (selectionChange)="onSchoolYearChange($event.value)">
             <mat-option *ngFor="let year of schoolYears()" [value]="year.id">{{ year.name }}</mat-option>
           </mat-select>
@@ -16,56 +16,56 @@
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Term</mat-label>
+          <mat-label>{{ 'admin.subjectGroups.termLabel' | transloco }}</mat-label>
           <mat-select formControlName="termId">
             <mat-option *ngFor="let term of terms()" [value]="term.id">{{ term.name }}</mat-option>
           </mat-select>
-          <mat-error *ngIf="groupForm.get('termId')?.invalid">This field is required</mat-error>
+          <mat-error *ngIf="groupForm.get('termId')?.invalid">{{ 'validation.required' | transloco }}</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Subject</mat-label>
+          <mat-label>{{ 'admin.subjectGroups.subject' | transloco }}</mat-label>
           <mat-select formControlName="subjectId">
             <mat-option *ngFor="let subject of subjects()" [value]="subject.id">{{ subject.nameEnglish }}</mat-option>
           </mat-select>
-          <mat-error *ngIf="groupForm.get('subjectId')?.invalid">This field is required</mat-error>
+          <mat-error *ngIf="groupForm.get('subjectId')?.invalid">{{ 'validation.required' | transloco }}</mat-error>
         </mat-form-field>
       </div>
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Name</mat-label>
-          <input matInput formControlName="name" placeholder="e.g. 1A - Mathematics, Spanish Beginner Group">
+          <mat-label>{{ 'admin.subjectGroups.nameLabel' | transloco }}</mat-label>
+          <input matInput formControlName="name" [placeholder]="'admin.subjectGroups.placeholderName' | transloco">
           <mat-error *ngIf="groupForm.get('name')?.invalid">{{ getErrorMessage('name') }}</mat-error>
         </mat-form-field>
       </div>
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Teacher</mat-label>
+          <mat-label>{{ 'admin.subjectGroups.teacherLabel' | transloco }}</mat-label>
           <mat-select formControlName="teacherId">
-            <mat-option [value]="null">None</mat-option>
+            <mat-option [value]="null">{{ 'common.none' | transloco }}</mat-option>
             <mat-option *ngFor="let teacher of teachers()" [value]="teacher.id">{{ getDisplayName(teacher.name) }}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
 
       <div class="form-actions">
-        <button mat-button type="button" (click)="onCancel()">Cancel</button>
+        <button mat-button type="button" (click)="onCancel()">{{ 'common.cancel' | transloco }}</button>
         <button mat-raised-button color="primary" type="submit" [disabled]="isLoading()">
-          {{ isEditMode ? 'Update' : 'Create' }} Subject Group
+          {{ (isEditMode ? 'admin.subjectGroups.updateGroup' : 'admin.subjectGroups.createGroup') | transloco }}
         </button>
       </div>
     </form>
 
     <div class="loading-container" *ngIf="isLoading()">
-      <p>{{ isEditMode ? 'Loading subject group data...' : 'Saving...' }}</p>
+      <p>{{ (isEditMode ? 'admin.subjectGroups.loadingGroupData' : 'common.saving') | transloco }}</p>
     </div>
 
     <div class="roster-section" *ngIf="isEditMode && !isLoading()">
       <div class="section-header">
-        <h3 class="section-title">Roster</h3>
-        <mat-checkbox [checked]="showHistorical()" (change)="onToggleHistorical()">Show historical</mat-checkbox>
+        <h3 class="section-title">{{ 'admin.subjectGroups.rosterSection' | transloco }}</h3>
+        <mat-checkbox [checked]="showHistorical()" (change)="onToggleHistorical()">{{ 'common.showHistorical' | transloco }}</mat-checkbox>
       </div>
 
       <div class="roster-list" *ngIf="!isLoadingEnrollments()">
@@ -74,32 +74,32 @@
             <span class="roster-name">{{ getDisplayName(enrollment.student.name) }}</span>
             <span class="roster-code">{{ enrollment.student.studentId }}</span>
             <div class="roster-meta">
-              Enrolled {{ formatDate(enrollment.enrolledDate) }}
-              <ng-container *ngIf="enrollment.unenrolledDate">&ndash; Unenrolled {{ formatDate(enrollment.unenrolledDate) }}</ng-container>
+              {{ 'admin.subjectGroups.enrolledOn' | transloco: { date: (enrollment.enrolledDate | localizedDate:languageService.activeLang()) } }}
+              <ng-container *ngIf="enrollment.unenrolledDate">&ndash; {{ 'admin.subjectGroups.unenrolledOn' | transloco: { date: (enrollment.unenrolledDate | localizedDate:languageService.activeLang()) } }}</ng-container>
             </div>
           </div>
           <div class="roster-actions" *ngIf="!enrollment.unenrolledDate">
-            <button mat-icon-button color="warn" (click)="onUnenroll(enrollment)" matTooltip="Unenroll">
+            <button mat-icon-button color="warn" (click)="onUnenroll(enrollment)" [matTooltip]="'admin.subjectGroups.unenrollTooltip' | transloco">
               <mat-icon>person_remove</mat-icon>
             </button>
           </div>
         </div>
 
-        <p class="hint" *ngIf="enrollments().length === 0">No students enrolled yet.</p>
+        <p class="hint" *ngIf="enrollments().length === 0">{{ 'admin.subjectGroups.noStudentsEnrolled' | transloco }}</p>
       </div>
 
       <div class="loading-container" *ngIf="isLoadingEnrollments()">
-        <p>Loading roster...</p>
+        <p>{{ 'admin.subjectGroups.loadingRoster' | transloco }}</p>
       </div>
 
       <div class="roster-buttons">
         <button mat-stroked-button type="button" (click)="onEnrollClass()">
           <mat-icon>groups</mat-icon>
-          Enroll Entire Class
+          {{ 'admin.subjectGroups.enrollEntireClass' | transloco }}
         </button>
         <button mat-stroked-button type="button" (click)="onEnrollStudents()">
           <mat-icon>person_add</mat-icon>
-          Enroll Students
+          {{ 'admin.subjectGroups.enrollStudents' | transloco }}
         </button>
       </div>
     </div>

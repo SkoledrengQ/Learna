@@ -6,6 +6,7 @@ public interface IAuthService
     Task<AuthResult> RefreshTokenAsync(string refreshToken);
     Task<bool> RevokeTokenAsync(string refreshToken);
     Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword);
+    Task<UserInfo?> UpdateLanguagePreferenceAsync(int userId, string language);
 }
 
 public class AuthResult
@@ -24,4 +25,5 @@ public class UserInfo
     public string Email { get; set; } = string.Empty;
     public List<string> Roles { get; set; } = new();
     public int? StudentId { get; set; }
+    public string? PreferredLanguage { get; set; }
 }

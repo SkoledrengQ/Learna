@@ -5,7 +5,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
+import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from './core/services/auth.service';
+import { LanguageService, SupportedLanguage } from './core/services/language.service';
 
 @Component({
   selector: 'app-root',
@@ -16,13 +18,15 @@ import { AuthService } from './core/services/auth.service';
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
+    TranslocoModule
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App {
   private authService = inject(AuthService);
+  protected readonly languageService = inject(LanguageService);
 
   protected readonly title = signal('Learna');
   protected readonly isAuthenticated = this.authService.isAuthenticated;
@@ -31,5 +35,9 @@ export class App {
 
   onLogout(): void {
     this.authService.logout();
+  }
+
+  onSelectLanguage(lang: SupportedLanguage): void {
+    this.languageService.setLanguage(lang, this.isAuthenticated());
   }
 }

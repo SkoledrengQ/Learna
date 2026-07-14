@@ -213,6 +213,7 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Email).IsRequired().HasMaxLength(255);
             entity.Property(e => e.PasswordHash).IsRequired().HasMaxLength(255);
             entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.PreferredLanguage).HasMaxLength(10);
 
             // One-to-one relationship with Student (optional)
             entity.HasOne(e => e.Student)

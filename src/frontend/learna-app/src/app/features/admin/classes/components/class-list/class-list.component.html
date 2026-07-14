@@ -1,45 +1,45 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>Classes</mat-card-title>
+    <mat-card-title>{{ 'admin.classes.title' | transloco }}</mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
     <div class="table-header">
       <mat-form-field appearance="outline" class="year-filter">
-        <mat-label>School Year</mat-label>
+        <mat-label>{{ 'admin.classes.schoolYearFilterLabel' | transloco }}</mat-label>
         <mat-select
           [value]="selectedSchoolYearId()"
           (selectionChange)="onSchoolYearFilterChange($event.value)">
-          <mat-option [value]="null">All school years</mat-option>
+          <mat-option [value]="null">{{ 'admin.classes.allSchoolYears' | transloco }}</mat-option>
           <mat-option *ngFor="let year of schoolYears()" [value]="year.id">{{ year.name }}</mat-option>
         </mat-select>
       </mat-form-field>
 
       <button mat-raised-button color="primary" (click)="onAddClass()">
         <mat-icon>add</mat-icon>
-        Add New Class
+        {{ 'admin.classes.addNew' | transloco }}
       </button>
     </div>
 
     <div class="table-container" *ngIf="!isLoading()">
       <table mat-table [dataSource]="classes()" class="mat-elevation-z2">
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.classes.name' | transloco }}</th>
           <td mat-cell *matCellDef="let schoolClass">{{ schoolClass.name }}</td>
         </ng-container>
 
         <ng-container matColumnDef="description">
-          <th mat-header-cell *matHeaderCellDef>Description</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.classes.description' | transloco }}</th>
           <td mat-cell *matCellDef="let schoolClass">{{ schoolClass.description }}</td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'common.actions' | transloco }}</th>
           <td mat-cell *matCellDef="let schoolClass">
-            <button mat-icon-button color="primary" (click)="onEditClass(schoolClass.id)" matTooltip="Edit / manage members">
+            <button mat-icon-button color="primary" (click)="onEditClass(schoolClass.id)" [matTooltip]="'common.edit' | transloco">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button color="warn" (click)="onDeleteClass(schoolClass)" matTooltip="Delete">
+            <button mat-icon-button color="warn" (click)="onDeleteClass(schoolClass)" [matTooltip]="'common.delete' | transloco">
               <mat-icon>delete</mat-icon>
             </button>
           </td>
@@ -50,14 +50,14 @@
 
         <tr class="mat-row" *matNoDataRow>
           <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-            No classes found. Click "Add New Class" to create one.
+            {{ 'admin.classes.noClassesFound' | transloco }}
           </td>
         </tr>
       </table>
     </div>
 
     <div class="loading-container" *ngIf="isLoading()">
-      <p>Loading classes...</p>
+      <p>{{ 'admin.classes.loadingClasses' | transloco }}</p>
     </div>
   </mat-card-content>
 </mat-card>

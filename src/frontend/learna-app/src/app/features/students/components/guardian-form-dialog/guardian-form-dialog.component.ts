@@ -6,6 +6,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { TranslocoModule } from '@jsverse/transloco';
 import { StudentGuardian } from '../../../../shared/models/guardian.model';
 
 export interface GuardianFormDialogData {
@@ -22,7 +23,8 @@ export interface GuardianFormDialogData {
     MatCheckboxModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    TranslocoModule
   ],
   templateUrl: './guardian-form-dialog.component.html',
   styleUrl: './guardian-form-dialog.component.scss'

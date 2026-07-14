@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ClassService } from '../../../services/class.service';
 import { SchoolYearService } from '../../../services/school-year.service';
 import { SchoolClass } from '../../../../../shared/models/school-class.model';
@@ -29,7 +30,8 @@ import { ConfirmDialogComponent } from '../../../../../shared/components/confirm
     MatFormFieldModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslocoModule
   ],
   templateUrl: './class-list.component.html',
   styleUrl: './class-list.component.scss'
@@ -40,6 +42,7 @@ export class ClassListComponent implements OnInit {
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private transloco = inject(TranslocoService);
 
   classes = signal<SchoolClass[]>([]);
   schoolYears = signal<SchoolYear[]>([]);
@@ -77,7 +80,7 @@ export class ClassListComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading classes:', error);
-        this.snackBar.open('Failed to load classes', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.classes.loadFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoading.set(false);
       }
     });
@@ -95,8 +98,8 @@ export class ClassListComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: 'Delete Class',
-        message: `Are you sure you want to delete ${schoolClass.name}? This will also remove its membership history.`
+        title: this.transloco.translate('admin.classes.deleteTitle'),
+        message: this.transloco.translate('admin.classes.deleteMessage', { name: schoolClass.name })
       }
     });
 
@@ -104,12 +107,12 @@ export class ClassListComponent implements OnInit {
       if (result) {
         this.classService.deleteClass(schoolClass.id).subscribe({
           next: () => {
-            this.snackBar.open('Class deleted successfully', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.classes.deleteSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
             this.loadClasses();
           },
           error: (error) => {
             console.error('Error deleting class:', error);
-            this.snackBar.open('Failed to delete class', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.classes.deleteFailed'), this.transloco.translate('common.close'), { duration: 3000 });
           }
         });
       }

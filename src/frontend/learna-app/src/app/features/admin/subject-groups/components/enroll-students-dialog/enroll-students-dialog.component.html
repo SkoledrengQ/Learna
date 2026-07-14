@@ -1,12 +1,12 @@
-<h2 mat-dialog-title>Enroll Students</h2>
+<h2 mat-dialog-title>{{ 'admin.subjectGroups.enrollStudentsDialogTitle' | transloco }}</h2>
 
 <mat-dialog-content>
   <mat-form-field appearance="outline" class="search-field">
-    <mat-label>Search by name or student ID</mat-label>
+    <mat-label>{{ 'admin.subjectGroups.searchLabel' | transloco }}</mat-label>
     <input matInput [value]="filterText()" (input)="onFilterInput($any($event.target).value)">
   </mat-form-field>
 
-  <p class="hint">Students may be from any class.</p>
+  <p class="hint">{{ 'admin.subjectGroups.anyClassHint' | transloco }}</p>
 
   <div class="student-list">
     <div class="student-row" *ngFor="let student of filteredStudents()">
@@ -15,13 +15,13 @@
       </mat-checkbox>
     </div>
 
-    <p class="hint" *ngIf="filteredStudents().length === 0">No matching students.</p>
+    <p class="hint" *ngIf="filteredStudents().length === 0">{{ 'admin.subjectGroups.noMatchingStudents' | transloco }}</p>
   </div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="onCancel()">{{ 'common.cancel' | transloco }}</button>
   <button mat-raised-button color="primary" [disabled]="selectedStudentIds().size === 0" (click)="onEnroll()">
-    Enroll {{ selectedStudentIds().size || '' }} Student{{ selectedStudentIds().size === 1 ? '' : 's' }}
+    {{ 'admin.subjectGroups.enrollButton' | transloco: { count: (selectedStudentIds().size || ''), plural: selectedStudentIds().size === 1 ? '' : 's' } }}
   </button>
 </mat-dialog-actions>

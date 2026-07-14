@@ -1,28 +1,28 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>{{ isEditMode ? 'Edit Teacher' : 'Add New Teacher' }}</mat-card-title>
+    <mat-card-title>{{ (isEditMode ? 'admin.teachers.editTitle' : 'admin.teachers.addTitle') | transloco }}</mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
     <form [formGroup]="teacherForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading()">
-      <h3 class="section-title">Name</h3>
+      <h3 class="section-title">{{ 'admin.teachers.sectionName' | transloco }}</h3>
       <div class="form-row">
         <mat-form-field appearance="outline" class="title-field">
-          <mat-label>Title</mat-label>
-          <input matInput formControlName="title" placeholder="e.g. ครู, Mr.">
+          <mat-label>{{ 'students.titleField' | transloco }}</mat-label>
+          <input matInput formControlName="title" [placeholder]="'admin.teachers.placeholderTitle' | transloco">
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>First Name</mat-label>
-          <input matInput formControlName="firstName" placeholder="Legal first name">
+          <mat-label>{{ 'students.firstName' | transloco }}</mat-label>
+          <input matInput formControlName="firstName" [placeholder]="'students.placeholderFirstName' | transloco">
           <mat-error *ngIf="teacherForm.get('firstName')?.invalid">
             {{ getErrorMessage('firstName') }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Last Name</mat-label>
-          <input matInput formControlName="lastName" placeholder="Legal last name">
+          <mat-label>{{ 'students.lastName' | transloco }}</mat-label>
+          <input matInput formControlName="lastName" [placeholder]="'students.placeholderLastName' | transloco">
           <mat-error *ngIf="teacherForm.get('lastName')?.invalid">
             {{ getErrorMessage('lastName') }}
           </mat-error>
@@ -31,56 +31,56 @@
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>First Name (English)</mat-label>
-          <input matInput formControlName="firstNameEnglish" placeholder="Romanized, if legal name is Thai">
+          <mat-label>{{ 'students.firstNameEnglish' | transloco }}</mat-label>
+          <input matInput formControlName="firstNameEnglish" [placeholder]="'students.placeholderEnglishName' | transloco">
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Last Name (English)</mat-label>
-          <input matInput formControlName="lastNameEnglish" placeholder="Romanized, if legal name is Thai">
+          <mat-label>{{ 'students.lastNameEnglish' | transloco }}</mat-label>
+          <input matInput formControlName="lastNameEnglish" [placeholder]="'students.placeholderEnglishName' | transloco">
         </mat-form-field>
       </div>
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Nickname</mat-label>
+          <mat-label>{{ 'students.nickname' | transloco }}</mat-label>
           <input matInput formControlName="nickname">
         </mat-form-field>
       </div>
 
-      <h3 class="section-title">Details</h3>
+      <h3 class="section-title">{{ 'admin.teachers.sectionDetails' | transloco }}</h3>
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" formControlName="email" placeholder="Enter email">
+          <mat-label>{{ 'students.email' | transloco }}</mat-label>
+          <input matInput type="email" formControlName="email" [placeholder]="'students.placeholderEmail' | transloco">
           <mat-error *ngIf="teacherForm.get('email')?.invalid">
             {{ getErrorMessage('email') }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Employee ID</mat-label>
-          <input matInput formControlName="employeeId" placeholder="Optional">
+          <mat-label>{{ 'admin.teachers.employeeIdLabel' | transloco }}</mat-label>
+          <input matInput formControlName="employeeId" [placeholder]="'admin.teachers.placeholderEmployeeId' | transloco">
         </mat-form-field>
       </div>
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Phone Number</mat-label>
-          <input matInput type="tel" formControlName="phoneNumber" placeholder="Optional">
+          <mat-label>{{ 'admin.teachers.phoneNumberLabel' | transloco }}</mat-label>
+          <input matInput type="tel" formControlName="phoneNumber" [placeholder]="'admin.teachers.placeholderPhone' | transloco">
         </mat-form-field>
       </div>
 
       <div class="form-actions">
-        <button mat-button type="button" (click)="onCancel()">Cancel</button>
+        <button mat-button type="button" (click)="onCancel()">{{ 'common.cancel' | transloco }}</button>
         <button mat-raised-button color="primary" type="submit" [disabled]="isLoading()">
-          {{ isEditMode ? 'Update' : 'Create' }} Teacher
+          {{ (isEditMode ? 'admin.teachers.updateTeacher' : 'admin.teachers.createTeacher') | transloco }}
         </button>
       </div>
     </form>
 
     <div class="loading-container" *ngIf="isLoading()">
-      <p>{{ isEditMode ? 'Loading teacher data...' : 'Saving...' }}</p>
+      <p>{{ (isEditMode ? 'admin.teachers.loadingTeacherData' : 'common.saving') | transloco }}</p>
     </div>
   </mat-card-content>
 </mat-card>

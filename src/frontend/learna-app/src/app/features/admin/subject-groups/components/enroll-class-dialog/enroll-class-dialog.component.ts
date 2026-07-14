@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { TranslocoModule } from '@jsverse/transloco';
 import { ClassService } from '../../../services/class.service';
 import { SchoolYearService } from '../../../services/school-year.service';
 import { SchoolClass } from '../../../../../shared/models/school-class.model';
@@ -19,7 +20,8 @@ import { SchoolYear } from '../../../../../shared/models/school-year.model';
     MatButtonModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatSelectModule,
+    TranslocoModule
   ],
   templateUrl: './enroll-class-dialog.component.html',
   styleUrl: './enroll-class-dialog.component.scss'

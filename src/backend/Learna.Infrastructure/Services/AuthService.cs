@@ -77,7 +77,8 @@ public class AuthService : IAuthService
                 Id = user.Id,
                 Email = user.Email,
                 Roles = roles.ToList(),
-                StudentId = user.StudentId
+                StudentId = user.StudentId,
+                PreferredLanguage = user.PreferredLanguage
             }
         };
     }
@@ -132,7 +133,8 @@ public class AuthService : IAuthService
                 Id = user.Id,
                 Email = user.Email,
                 Roles = roles.ToList(),
-                StudentId = user.StudentId
+                StudentId = user.StudentId,
+                PreferredLanguage = user.PreferredLanguage
             }
         };
     }
@@ -157,5 +159,25 @@ public class AuthService : IAuthService
         await _userRepository.UpdateAsync(user);
 
         return true;
+    }
+
+    public async Task<UserInfo?> UpdateLanguagePreferenceAsync(int userId, string language)
+    {
+        var user = await _userRepository.GetByIdAsync(userId);
+        if (user == null) return null;
+
+        user.PreferredLanguage = language;
+        await _userRepository.UpdateAsync(user);
+
+        var roles = await _userRepository.GetUserRolesAsync(user.Id);
+
+        return new UserInfo
+        {
+            Id = user.Id,
+            Email = user.Email,
+            Roles = roles.ToList(),
+            StudentId = user.StudentId,
+            PreferredLanguage = user.PreferredLanguage
+        };
     }
 }

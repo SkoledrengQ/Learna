@@ -3,8 +3,9 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, catchError, throwError } from 'rxjs';
-import { LoginRequest, LoginResponse, User } from '../../shared/models/auth.model';
+import { LoginRequest, LoginResponse, User, AUTH_USER_STORAGE_KEY } from '../../shared/models/auth.model';
 import { environment } from '../../../environments/environment';
+import { LanguageService } from './language.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +13,11 @@ import { environment } from '../../../environments/environment';
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
+  private languageService = inject(LanguageService);
 
   private readonly API_URL = 'http://localhost:5157/api/auth';
   private readonly TOKEN_KEY = 'access_token';
-  private readonly USER_KEY = 'current_user';
+  private readonly USER_KEY = AUTH_USER_STORAGE_KEY;
 
   // Signal-based authentication state (this app runs zoneless - state driving
   // templates must be signals; an RxJS BehaviorSubject's .value is not tracked
@@ -116,6 +118,9 @@ export class AuthService {
 
     // Update current user signal
     this.currentUserSignal.set(response.user);
+
+    // A logged-in user's preferred language wins over whatever was active pre-login
+    this.languageService.applyUserPreference(response.user.preferredLanguage);
   }
 
   private clearSession(): void {

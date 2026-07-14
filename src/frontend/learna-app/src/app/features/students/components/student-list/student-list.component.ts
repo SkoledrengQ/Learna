@@ -8,9 +8,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { StudentService } from '../../services/student.service';
 import { Student, getDisplayName } from '../../../../shared/models/student.model';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { LanguageService } from '../../../../core/services/language.service';
+import { LocalizedDatePipe } from '../../../../shared/pipes/localized-date.pipe';
 
 @Component({
   selector: 'app-student-list',
@@ -23,7 +26,9 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
     MatCardModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslocoModule,
+    LocalizedDatePipe
   ],
   templateUrl: './student-list.component.html',
   styleUrl: './student-list.component.scss'
@@ -33,6 +38,8 @@ export class StudentListComponent implements OnInit {
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private transloco = inject(TranslocoService);
+  protected languageService = inject(LanguageService);
 
   students = signal<Student[]>([]);
   displayedColumns: string[] = ['studentId', 'displayName', 'nickname', 'email', 'enrollmentDate', 'actions'];
@@ -53,7 +60,7 @@ export class StudentListComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading students:', error);
-        this.snackBar.open('Failed to load students', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('students.loadFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoading.set(false);
       }
     });
@@ -71,8 +78,8 @@ export class StudentListComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: 'Delete Student',
-        message: `Are you sure you want to delete ${getDisplayName(student.name)}?`
+        title: this.transloco.translate('students.deleteTitle'),
+        message: this.transloco.translate('students.deleteMessage', { name: getDisplayName(student.name) })
       }
     });
 
@@ -80,19 +87,15 @@ export class StudentListComponent implements OnInit {
       if (result) {
         this.studentService.deleteStudent(student.id).subscribe({
           next: () => {
-            this.snackBar.open('Student deleted successfully', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('students.deleteSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
             this.loadStudents();
           },
           error: (error) => {
             console.error('Error deleting student:', error);
-            this.snackBar.open('Failed to delete student', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('students.deleteFailed'), this.transloco.translate('common.close'), { duration: 3000 });
           }
         });
       }
     });
-  }
-
-  formatDate(date: Date): string {
-    return new Date(date).toLocaleDateString();
   }
 }

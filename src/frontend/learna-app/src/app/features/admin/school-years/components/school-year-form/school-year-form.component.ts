@@ -13,10 +13,13 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { SchoolYearService } from '../../../services/school-year.service';
 import { CreateSchoolYearDto, UpdateSchoolYearDto, Term } from '../../../../../shared/models/school-year.model';
 import { ConfirmDialogComponent } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { TermFormDialogComponent } from '../term-form-dialog/term-form-dialog.component';
+import { LanguageService } from '../../../../../core/services/language.service';
+import { LocalizedDatePipe } from '../../../../../shared/pipes/localized-date.pipe';
 
 @Component({
   selector: 'app-school-year-form',
@@ -34,7 +37,9 @@ import { TermFormDialogComponent } from '../term-form-dialog/term-form-dialog.co
     MatNativeDateModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslocoModule,
+    LocalizedDatePipe
   ],
   templateUrl: './school-year-form.component.html',
   styleUrl: './school-year-form.component.scss'
@@ -46,6 +51,8 @@ export class SchoolYearFormComponent implements OnInit {
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private transloco = inject(TranslocoService);
+  protected languageService = inject(LanguageService);
 
   schoolYearForm!: FormGroup;
   isEditMode = false;
@@ -93,7 +100,7 @@ export class SchoolYearFormComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading school year:', error);
-        this.snackBar.open('Failed to load school year', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.schoolYears.loadFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoading.set(false);
         this.router.navigate(['/admin/school-years']);
       }
@@ -109,7 +116,7 @@ export class SchoolYearFormComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading terms:', error);
-        this.snackBar.open('Failed to load terms', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.schoolYears.loadFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoadingTerms.set(false);
       }
     });
@@ -139,12 +146,12 @@ export class SchoolYearFormComponent implements OnInit {
 
     this.schoolYearService.createSchoolYear(dto).subscribe({
       next: (schoolYear) => {
-        this.snackBar.open('School year created successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.schoolYears.createSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
         this.router.navigate(['/admin/school-years', schoolYear.id]);
       },
       error: (error) => {
         console.error('Error creating school year:', error);
-        this.snackBar.open(error.error || 'Failed to create school year', 'Close', { duration: 5000 });
+        this.snackBar.open(error.error || this.transloco.translate('admin.schoolYears.createFailed'), this.transloco.translate('common.close'), { duration: 5000 });
         this.isLoading.set(false);
       }
     });
@@ -160,12 +167,12 @@ export class SchoolYearFormComponent implements OnInit {
 
     this.schoolYearService.updateSchoolYear(this.schoolYearId!, dto).subscribe({
       next: () => {
-        this.snackBar.open('School year updated successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.schoolYears.updateSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
         this.router.navigate(['/admin/school-years']);
       },
       error: (error) => {
         console.error('Error updating school year:', error);
-        this.snackBar.open(error.error || 'Failed to update school year', 'Close', { duration: 5000 });
+        this.snackBar.open(error.error || this.transloco.translate('admin.schoolYears.updateFailed'), this.transloco.translate('common.close'), { duration: 5000 });
         this.isLoading.set(false);
       }
     });
@@ -178,16 +185,12 @@ export class SchoolYearFormComponent implements OnInit {
   getErrorMessage(fieldName: string): string {
     const field = this.schoolYearForm.get(fieldName);
     if (field?.hasError('required')) {
-      return 'This field is required';
+      return this.transloco.translate('validation.required');
     }
     if (field?.hasError('maxlength')) {
-      return 'Maximum length exceeded';
+      return this.transloco.translate('validation.maxLength');
     }
     return '';
-  }
-
-  formatDate(date: Date): string {
-    return new Date(date).toLocaleDateString();
   }
 
   onAddTerm(): void {
@@ -202,12 +205,12 @@ export class SchoolYearFormComponent implements OnInit {
       if (result) {
         this.schoolYearService.addTerm(this.schoolYearId!, result).subscribe({
           next: () => {
-            this.snackBar.open('Term added', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.schoolYears.termAdded'), this.transloco.translate('common.close'), { duration: 3000 });
             this.loadTerms(this.schoolYearId!);
           },
           error: (error) => {
             console.error('Error adding term:', error);
-            this.snackBar.open(error.error || 'Failed to add term', 'Close', { duration: 5000 });
+            this.snackBar.open(error.error || this.transloco.translate('admin.schoolYears.termAddFailed'), this.transloco.translate('common.close'), { duration: 5000 });
           }
         });
       }
@@ -226,12 +229,12 @@ export class SchoolYearFormComponent implements OnInit {
       if (result) {
         this.schoolYearService.updateTerm(this.schoolYearId!, term.id, result).subscribe({
           next: () => {
-            this.snackBar.open('Term updated', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.schoolYears.termUpdated'), this.transloco.translate('common.close'), { duration: 3000 });
             this.loadTerms(this.schoolYearId!);
           },
           error: (error) => {
             console.error('Error updating term:', error);
-            this.snackBar.open(error.error || 'Failed to update term', 'Close', { duration: 5000 });
+            this.snackBar.open(error.error || this.transloco.translate('admin.schoolYears.termUpdateFailed'), this.transloco.translate('common.close'), { duration: 5000 });
           }
         });
       }
@@ -244,8 +247,8 @@ export class SchoolYearFormComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: 'Remove Term',
-        message: `Remove ${term.name} from this school year?`
+        title: this.transloco.translate('admin.schoolYears.removeTermTitle'),
+        message: this.transloco.translate('admin.schoolYears.removeTermMessage', { name: term.name })
       }
     });
 
@@ -253,12 +256,12 @@ export class SchoolYearFormComponent implements OnInit {
       if (result) {
         this.schoolYearService.removeTerm(this.schoolYearId!, term.id).subscribe({
           next: () => {
-            this.snackBar.open('Term removed', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.schoolYears.termRemoved'), this.transloco.translate('common.close'), { duration: 3000 });
             this.loadTerms(this.schoolYearId!);
           },
           error: (error) => {
             console.error('Error removing term:', error);
-            this.snackBar.open('Failed to remove term', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.schoolYears.termRemoveFailed'), this.transloco.translate('common.close'), { duration: 3000 });
           }
         });
       }

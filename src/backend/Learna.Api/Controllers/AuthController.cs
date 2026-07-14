@@ -48,7 +48,8 @@ public class AuthController : ControllerBase
                 result.User!.Id,
                 result.User.Email,
                 result.User.Roles,
-                result.User.StudentId
+                result.User.StudentId,
+                result.User.PreferredLanguage
             )
         );
 
@@ -90,7 +91,8 @@ public class AuthController : ControllerBase
                 result.User!.Id,
                 result.User.Email,
                 result.User.Roles,
-                result.User.StudentId
+                result.User.StudentId,
+                result.User.PreferredLanguage
             )
         );
 
@@ -135,6 +137,27 @@ public class AuthController : ControllerBase
         var studentIdClaim = User.FindFirstValue("StudentId");
         var studentId = studentIdClaim != null ? int.Parse(studentIdClaim) : (int?)null;
 
-        return Ok(new UserDto(userId, email, roles, studentId));
+        return Ok(new UserDto(userId, email, roles, studentId, null));
+    }
+
+    /// Self-service: any authenticated role may update their own language preference.
+    [HttpPut("language")]
+    [Authorize]
+    public async Task<ActionResult<UserDto>> UpdateLanguagePreference([FromBody] UpdateLanguagePreferenceRequestDto request)
+    {
+        if (request.Language != "en" && request.Language != "th")
+        {
+            return BadRequest(new { message = "Language must be 'en' or 'th'" });
+        }
+
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var updatedUser = await _authService.UpdateLanguagePreferenceAsync(userId, request.Language);
+
+        if (updatedUser == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(new UserDto(updatedUser.Id, updatedUser.Email, updatedUser.Roles, updatedUser.StudentId, updatedUser.PreferredLanguage));
     }
 }

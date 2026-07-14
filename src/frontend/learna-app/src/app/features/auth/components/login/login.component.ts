@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
@@ -23,7 +24,8 @@ import { AuthService } from '../../../../core/services/auth.service';
     MatButtonModule,
     MatProgressSpinnerModule,
     MatIconModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    TranslocoModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -34,6 +36,7 @@ export class LoginComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private snackBar = inject(MatSnackBar);
+  private transloco = inject(TranslocoService);
 
   loginForm!: FormGroup;
   isLoading = signal(false);
@@ -71,9 +74,11 @@ export class LoginComponent implements OnInit {
     this.authService.login(credentials).subscribe({
       next: (response) => {
         this.isLoading.set(false);
-        this.snackBar.open(`Welcome back, ${response.user.email}!`, 'Close', {
-          duration: 3000
-        });
+        this.snackBar.open(
+          this.transloco.translate('auth.welcomeBack', { email: response.user.email }),
+          this.transloco.translate('common.close'),
+          { duration: 3000 }
+        );
         // Small delay to ensure auth state propagates
         setTimeout(() => {
           this.router.navigate([this.returnUrl]);
@@ -81,8 +86,8 @@ export class LoginComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading.set(false);
-        const errorMessage = error.error?.message || 'Invalid email or password';
-        this.snackBar.open(errorMessage, 'Close', {
+        const errorMessage = error.error?.message || this.transloco.translate('auth.invalidCredentials');
+        this.snackBar.open(errorMessage, this.transloco.translate('common.close'), {
           duration: 5000
         });
       }
@@ -96,10 +101,10 @@ export class LoginComponent implements OnInit {
   getEmailErrorMessage(): string {
     const emailControl = this.loginForm.get('email');
     if (emailControl?.hasError('required')) {
-      return 'Email is required';
+      return this.transloco.translate('auth.emailRequired');
     }
     if (emailControl?.hasError('email')) {
-      return 'Please enter a valid email';
+      return this.transloco.translate('auth.emailInvalid');
     }
     return '';
   }
@@ -107,10 +112,10 @@ export class LoginComponent implements OnInit {
   getPasswordErrorMessage(): string {
     const passwordControl = this.loginForm.get('password');
     if (passwordControl?.hasError('required')) {
-      return 'Password is required';
+      return this.transloco.translate('auth.passwordRequired');
     }
     if (passwordControl?.hasError('minlength')) {
-      return 'Password must be at least 8 characters';
+      return this.transloco.translate('auth.passwordMinLength');
     }
     return '';
   }

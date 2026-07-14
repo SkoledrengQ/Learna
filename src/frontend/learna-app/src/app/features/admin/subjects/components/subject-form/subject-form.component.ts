@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { SubjectService } from '../../../services/subject.service';
 import { CreateSubjectDto, UpdateSubjectDto } from '../../../../../shared/models/subject.model';
 
@@ -20,7 +21,8 @@ import { CreateSubjectDto, UpdateSubjectDto } from '../../../../../shared/models
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    TranslocoModule
   ],
   templateUrl: './subject-form.component.html',
   styleUrl: './subject-form.component.scss'
@@ -31,6 +33,7 @@ export class SubjectFormComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
+  private transloco = inject(TranslocoService);
 
   subjectForm!: FormGroup;
   isEditMode = false;
@@ -74,7 +77,7 @@ export class SubjectFormComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading subject:', error);
-        this.snackBar.open('Failed to load subject', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.subjects.loadFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoading.set(false);
         this.router.navigate(['/admin/subjects']);
       }
@@ -106,13 +109,13 @@ export class SubjectFormComponent implements OnInit {
 
     this.subjectService.createSubject(dto).subscribe({
       next: () => {
-        this.snackBar.open('Subject created successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.subjects.createSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
         this.router.navigate(['/admin/subjects']);
       },
       error: (error) => {
         console.error('Error creating subject:', error);
-        const message = error.error?.includes?.('already exists') ? error.error : 'Failed to create subject';
-        this.snackBar.open(message, 'Close', { duration: 5000 });
+        const message = error.error?.includes?.('already exists') ? error.error : this.transloco.translate('admin.subjects.createFailed');
+        this.snackBar.open(message, this.transloco.translate('common.close'), { duration: 5000 });
         this.isLoading.set(false);
       }
     });
@@ -128,13 +131,13 @@ export class SubjectFormComponent implements OnInit {
 
     this.subjectService.updateSubject(this.subjectId!, dto).subscribe({
       next: () => {
-        this.snackBar.open('Subject updated successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.subjects.updateSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
         this.router.navigate(['/admin/subjects']);
       },
       error: (error) => {
         console.error('Error updating subject:', error);
-        const message = error.error?.includes?.('already exists') ? error.error : 'Failed to update subject';
-        this.snackBar.open(message, 'Close', { duration: 5000 });
+        const message = error.error?.includes?.('already exists') ? error.error : this.transloco.translate('admin.subjects.updateFailed');
+        this.snackBar.open(message, this.transloco.translate('common.close'), { duration: 5000 });
         this.isLoading.set(false);
       }
     });
@@ -147,10 +150,10 @@ export class SubjectFormComponent implements OnInit {
   getErrorMessage(fieldName: string): string {
     const field = this.subjectForm.get(fieldName);
     if (field?.hasError('required')) {
-      return 'This field is required';
+      return this.transloco.translate('validation.required');
     }
     if (field?.hasError('maxlength')) {
-      return 'Maximum length exceeded';
+      return this.transloco.translate('validation.maxLength');
     }
     return '';
   }

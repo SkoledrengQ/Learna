@@ -8,6 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { SubjectService } from '../../../services/subject.service';
 import { Subject as SubjectModel } from '../../../../../shared/models/subject.model';
 import { ConfirmDialogComponent } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -23,7 +24,8 @@ import { ConfirmDialogComponent } from '../../../../../shared/components/confirm
     MatCardModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslocoModule
   ],
   templateUrl: './subject-list.component.html',
   styleUrl: './subject-list.component.scss'
@@ -33,6 +35,7 @@ export class SubjectListComponent implements OnInit {
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private transloco = inject(TranslocoService);
 
   subjects = signal<SubjectModel[]>([]);
   displayedColumns: string[] = ['code', 'nameEnglish', 'nameThai', 'actions'];
@@ -51,7 +54,7 @@ export class SubjectListComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading subjects:', error);
-        this.snackBar.open('Failed to load subjects', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.subjects.loadFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoading.set(false);
       }
     });
@@ -69,8 +72,8 @@ export class SubjectListComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: 'Delete Subject',
-        message: `Are you sure you want to delete ${subject.nameEnglish}?`
+        title: this.transloco.translate('admin.subjects.deleteTitle'),
+        message: this.transloco.translate('admin.subjects.deleteMessage', { name: subject.nameEnglish })
       }
     });
 
@@ -78,12 +81,12 @@ export class SubjectListComponent implements OnInit {
       if (result) {
         this.subjectService.deleteSubject(subject.id).subscribe({
           next: () => {
-            this.snackBar.open('Subject deleted successfully', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.subjects.deleteSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
             this.loadSubjects();
           },
           error: (error) => {
             console.error('Error deleting subject:', error);
-            this.snackBar.open('Failed to delete subject', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.subjects.deleteFailed'), this.transloco.translate('common.close'), { duration: 3000 });
           }
         });
       }

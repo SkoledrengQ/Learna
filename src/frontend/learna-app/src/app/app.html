@@ -7,43 +7,52 @@
 
     <button mat-button routerLink="/students">
       <mat-icon>school</mat-icon>
-      Students
+      {{ 'nav.students' | transloco }}
     </button>
 
     <ng-container *ngIf="isAdmin()">
       <button mat-button [matMenuTriggerFor]="adminMenu">
         <mat-icon>admin_panel_settings</mat-icon>
-        Admin
+        {{ 'nav.admin' | transloco }}
       </button>
       <mat-menu #adminMenu="matMenu">
         <button mat-menu-item routerLink="/admin/teachers">
           <mat-icon>person</mat-icon>
-          Teachers
+          {{ 'nav.teachers' | transloco }}
         </button>
         <button mat-menu-item routerLink="/admin/subjects">
           <mat-icon>book</mat-icon>
-          Subjects
+          {{ 'nav.subjects' | transloco }}
         </button>
         <button mat-menu-item routerLink="/admin/school-years">
           <mat-icon>calendar_today</mat-icon>
-          School Years
+          {{ 'nav.schoolYears' | transloco }}
         </button>
         <button mat-menu-item routerLink="/admin/classes">
           <mat-icon>meeting_room</mat-icon>
-          Classes
+          {{ 'nav.classes' | transloco }}
         </button>
         <button mat-menu-item routerLink="/admin/subject-groups">
           <mat-icon>groups</mat-icon>
-          Subject Groups
+          {{ 'nav.subjectGroups' | transloco }}
         </button>
       </mat-menu>
     </ng-container>
 
     <button mat-button (click)="onLogout()">
       <mat-icon>logout</mat-icon>
-      Logout
+      {{ 'nav.logout' | transloco }}
     </button>
   </ng-container>
+
+  <button mat-button [matMenuTriggerFor]="languageMenu" [attr.aria-label]="'common.language' | transloco">
+    <mat-icon>language</mat-icon>
+    {{ languageService.activeLang() === 'th' ? 'ไทย' : 'EN' }}
+  </button>
+  <mat-menu #languageMenu="matMenu">
+    <button mat-menu-item (click)="onSelectLanguage('en')">English</button>
+    <button mat-menu-item (click)="onSelectLanguage('th')">ไทย</button>
+  </mat-menu>
 </mat-toolbar>
 
 <router-outlet />

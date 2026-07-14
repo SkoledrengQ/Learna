@@ -13,6 +13,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { StudentService } from '../../services/student.service';
 import { CreateStudentDto, UpdateStudentDto, getDisplayName } from '../../../../shared/models/student.model';
 import { StudentGuardian } from '../../../../shared/models/guardian.model';
@@ -35,7 +36,8 @@ import { GuardianFormDialogComponent } from '../guardian-form-dialog/guardian-fo
     MatNativeDateModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslocoModule
   ],
   templateUrl: './student-form.component.html',
   styleUrl: './student-form.component.scss'
@@ -47,6 +49,7 @@ export class StudentFormComponent implements OnInit {
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private transloco = inject(TranslocoService);
 
   studentForm!: FormGroup;
   isEditMode = false;
@@ -118,7 +121,7 @@ export class StudentFormComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading student:', error);
-        this.snackBar.open('Failed to load student', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('students.loadFailedSingle'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoading.set(false);
         this.router.navigate(['/students']);
       }
@@ -134,7 +137,7 @@ export class StudentFormComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading guardians:', error);
-        this.snackBar.open('Failed to load guardians', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('guardians.loadFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoadingGuardians.set(false);
       }
     });
@@ -182,12 +185,12 @@ export class StudentFormComponent implements OnInit {
 
     this.studentService.createStudent(dto).subscribe({
       next: (student) => {
-        this.snackBar.open('Student created successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('students.createSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
         this.router.navigate(['/students', student.id]);
       },
       error: (error) => {
         console.error('Error creating student:', error);
-        this.snackBar.open('Failed to create student', 'Close', { duration: 5000 });
+        this.snackBar.open(this.transloco.translate('students.createFailed'), this.transloco.translate('common.close'), { duration: 5000 });
         this.isLoading.set(false);
       }
     });
@@ -207,12 +210,12 @@ export class StudentFormComponent implements OnInit {
 
     this.studentService.updateStudent(this.studentId!, dto).subscribe({
       next: () => {
-        this.snackBar.open('Student updated successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('students.updateSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
         this.router.navigate(['/students']);
       },
       error: (error) => {
         console.error('Error updating student:', error);
-        this.snackBar.open('Failed to update student', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('students.updateFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoading.set(false);
       }
     });
@@ -225,16 +228,16 @@ export class StudentFormComponent implements OnInit {
   getErrorMessage(fieldName: string): string {
     const field = this.studentForm.get(fieldName);
     if (field?.hasError('required')) {
-      return 'This field is required';
+      return this.transloco.translate('validation.required');
     }
     if (field?.hasError('email')) {
-      return 'Please enter a valid email';
+      return this.transloco.translate('validation.email');
     }
     if (field?.hasError('maxlength')) {
-      return 'Maximum length exceeded';
+      return this.transloco.translate('validation.maxLength');
     }
     if (field?.hasError('min') || field?.hasError('max')) {
-      return 'Please enter a realistic value';
+      return this.transloco.translate('validation.range');
     }
     return '';
   }
@@ -251,12 +254,12 @@ export class StudentFormComponent implements OnInit {
       if (result) {
         this.studentService.addGuardian(this.studentId!, result).subscribe({
           next: () => {
-            this.snackBar.open('Guardian added', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('guardians.added'), this.transloco.translate('common.close'), { duration: 3000 });
             this.loadGuardians(this.studentId!);
           },
           error: (error) => {
             console.error('Error adding guardian:', error);
-            this.snackBar.open('Failed to add guardian', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('guardians.addFailed'), this.transloco.translate('common.close'), { duration: 3000 });
           }
         });
       }
@@ -275,12 +278,12 @@ export class StudentFormComponent implements OnInit {
       if (result) {
         this.studentService.updateGuardian(this.studentId!, guardian.guardianId, result).subscribe({
           next: () => {
-            this.snackBar.open('Guardian updated', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('guardians.updated'), this.transloco.translate('common.close'), { duration: 3000 });
             this.loadGuardians(this.studentId!);
           },
           error: (error) => {
             console.error('Error updating guardian:', error);
-            this.snackBar.open('Failed to update guardian', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('guardians.updateFailed'), this.transloco.translate('common.close'), { duration: 3000 });
           }
         });
       }
@@ -293,8 +296,8 @@ export class StudentFormComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: 'Remove Guardian',
-        message: `Remove ${getDisplayName(guardian.name)} as a guardian for this student?`
+        title: this.transloco.translate('guardians.removeTitle'),
+        message: this.transloco.translate('guardians.removeMessage', { name: getDisplayName(guardian.name) })
       }
     });
 
@@ -302,12 +305,12 @@ export class StudentFormComponent implements OnInit {
       if (result) {
         this.studentService.removeGuardian(this.studentId!, guardian.guardianId).subscribe({
           next: () => {
-            this.snackBar.open('Guardian removed', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('guardians.removed'), this.transloco.translate('common.close'), { duration: 3000 });
             this.loadGuardians(this.studentId!);
           },
           error: (error) => {
             console.error('Error removing guardian:', error);
-            this.snackBar.open('Failed to remove guardian', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('guardians.removeFailed'), this.transloco.translate('common.close'), { duration: 3000 });
           }
         });
       }

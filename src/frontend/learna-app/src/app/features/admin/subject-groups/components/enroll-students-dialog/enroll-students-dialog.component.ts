@@ -6,6 +6,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { TranslocoModule } from '@jsverse/transloco';
 import { StudentService } from '../../../../students/services/student.service';
 import { Student, getDisplayName } from '../../../../../shared/models/student.model';
 
@@ -23,7 +24,8 @@ export interface EnrollStudentsDialogData {
     MatCheckboxModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    TranslocoModule
   ],
   templateUrl: './enroll-students-dialog.component.html',
   styleUrl: './enroll-students-dialog.component.scss'

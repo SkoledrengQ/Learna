@@ -1,28 +1,28 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>{{ isEditMode ? 'Edit Student' : 'Add New Student' }}</mat-card-title>
+    <mat-card-title>{{ (isEditMode ? 'students.editTitle' : 'students.addTitle') | transloco }}</mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
     <form [formGroup]="studentForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading()">
-      <h3 class="section-title">Name</h3>
+      <h3 class="section-title">{{ 'students.sectionName' | transloco }}</h3>
       <div class="form-row">
         <mat-form-field appearance="outline" class="title-field">
-          <mat-label>Title</mat-label>
-          <input matInput formControlName="title" placeholder="e.g. เด็กชาย, Mr.">
+          <mat-label>{{ 'students.titleField' | transloco }}</mat-label>
+          <input matInput formControlName="title" [placeholder]="'students.placeholderTitle' | transloco">
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>First Name</mat-label>
-          <input matInput formControlName="firstName" placeholder="Legal first name">
+          <mat-label>{{ 'students.firstName' | transloco }}</mat-label>
+          <input matInput formControlName="firstName" [placeholder]="'students.placeholderFirstName' | transloco">
           <mat-error *ngIf="studentForm.get('firstName')?.invalid">
             {{ getErrorMessage('firstName') }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Last Name</mat-label>
-          <input matInput formControlName="lastName" placeholder="Legal last name">
+          <mat-label>{{ 'students.lastName' | transloco }}</mat-label>
+          <input matInput formControlName="lastName" [placeholder]="'students.placeholderLastName' | transloco">
           <mat-error *ngIf="studentForm.get('lastName')?.invalid">
             {{ getErrorMessage('lastName') }}
           </mat-error>
@@ -31,36 +31,36 @@
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>First Name (English)</mat-label>
-          <input matInput formControlName="firstNameEnglish" placeholder="Romanized, if legal name is Thai">
+          <mat-label>{{ 'students.firstNameEnglish' | transloco }}</mat-label>
+          <input matInput formControlName="firstNameEnglish" [placeholder]="'students.placeholderEnglishName' | transloco">
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Last Name (English)</mat-label>
-          <input matInput formControlName="lastNameEnglish" placeholder="Romanized, if legal name is Thai">
+          <mat-label>{{ 'students.lastNameEnglish' | transloco }}</mat-label>
+          <input matInput formControlName="lastNameEnglish" [placeholder]="'students.placeholderEnglishName' | transloco">
         </mat-form-field>
       </div>
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Nickname</mat-label>
+          <mat-label>{{ 'students.nickname' | transloco }}</mat-label>
           <input matInput formControlName="nickname">
         </mat-form-field>
       </div>
 
-      <h3 class="section-title">Details</h3>
+      <h3 class="section-title">{{ 'students.sectionDetails' | transloco }}</h3>
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" formControlName="email" placeholder="Enter email">
+          <mat-label>{{ 'students.email' | transloco }}</mat-label>
+          <input matInput type="email" formControlName="email" [placeholder]="'students.placeholderEmail' | transloco">
           <mat-error *ngIf="studentForm.get('email')?.invalid">
             {{ getErrorMessage('email') }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>ID Card Number</mat-label>
-          <input matInput formControlName="idCardNumber" placeholder="Enter ID card number">
+          <mat-label>{{ 'students.idCardNumber' | transloco }}</mat-label>
+          <input matInput formControlName="idCardNumber" [placeholder]="'students.placeholderIdCard' | transloco">
           <mat-error *ngIf="studentForm.get('idCardNumber')?.invalid">
             {{ getErrorMessage('idCardNumber') }}
           </mat-error>
@@ -69,16 +69,16 @@
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Phone Number</mat-label>
-          <input matInput type="tel" formControlName="phoneNumber" placeholder="Enter phone number">
+          <mat-label>{{ 'students.phoneNumber' | transloco }}</mat-label>
+          <input matInput type="tel" formControlName="phoneNumber" [placeholder]="'students.placeholderPhone' | transloco">
           <mat-error *ngIf="studentForm.get('phoneNumber')?.invalid">
             {{ getErrorMessage('phoneNumber') }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Address</mat-label>
-          <textarea matInput formControlName="address" placeholder="Enter home address" rows="1"></textarea>
+          <mat-label>{{ 'students.address' | transloco }}</mat-label>
+          <textarea matInput formControlName="address" [placeholder]="'students.placeholderAddress' | transloco" rows="1"></textarea>
           <mat-error *ngIf="studentForm.get('address')?.invalid">
             {{ getErrorMessage('address') }}
           </mat-error>
@@ -87,7 +87,7 @@
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Date of Birth</mat-label>
+          <mat-label>{{ 'students.dateOfBirth' | transloco }}</mat-label>
           <input matInput [matDatepicker]="dobPicker" formControlName="dateOfBirth">
           <mat-datepicker-toggle matIconSuffix [for]="dobPicker"></mat-datepicker-toggle>
           <mat-datepicker #dobPicker></mat-datepicker>
@@ -97,11 +97,11 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Enrollment Date</mat-label>
+          <mat-label>{{ 'students.enrollmentDate' | transloco }}</mat-label>
           <input matInput [matDatepicker]="enrollPicker" formControlName="enrollmentDate">
           <mat-datepicker-toggle matIconSuffix [for]="enrollPicker"></mat-datepicker-toggle>
           <mat-datepicker #enrollPicker></mat-datepicker>
-          <mat-hint *ngIf="isEditMode">Enrollment date cannot be changed</mat-hint>
+          <mat-hint *ngIf="isEditMode">{{ 'students.enrollmentCannotChange' | transloco }}</mat-hint>
           <mat-error *ngIf="studentForm.get('enrollmentDate')?.invalid">
             {{ getErrorMessage('enrollmentDate') }}
           </mat-error>
@@ -110,16 +110,16 @@
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Height (cm)</mat-label>
-          <input matInput type="number" formControlName="height" placeholder="Optional">
+          <mat-label>{{ 'students.height' | transloco }}</mat-label>
+          <input matInput type="number" formControlName="height" [placeholder]="'common.optional' | transloco">
           <mat-error *ngIf="studentForm.get('height')?.invalid">
             {{ getErrorMessage('height') }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Weight (kg)</mat-label>
-          <input matInput type="number" formControlName="weight" placeholder="Optional">
+          <mat-label>{{ 'students.weight' | transloco }}</mat-label>
+          <input matInput type="number" formControlName="weight" [placeholder]="'common.optional' | transloco">
           <mat-error *ngIf="studentForm.get('weight')?.invalid">
             {{ getErrorMessage('weight') }}
           </mat-error>
@@ -127,22 +127,22 @@
       </div>
 
       <div class="form-actions">
-        <button mat-button type="button" (click)="onCancel()">Cancel</button>
+        <button mat-button type="button" (click)="onCancel()">{{ 'common.cancel' | transloco }}</button>
         <button mat-raised-button color="primary" type="submit" [disabled]="isLoading()">
-          {{ isEditMode ? 'Update' : 'Create' }} Student
+          {{ (isEditMode ? 'students.updateStudent' : 'students.createStudent') | transloco }}
         </button>
       </div>
     </form>
 
     <div class="loading-container" *ngIf="isLoading()">
-      <p>{{ isEditMode ? 'Loading student data...' : 'Saving...' }}</p>
+      <p>{{ (isEditMode ? 'students.loadingStudentData' : 'common.saving') | transloco }}</p>
     </div>
 
     <div class="guardians-section" *ngIf="!isLoading()">
-      <h3 class="section-title">Guardians</h3>
+      <h3 class="section-title">{{ 'guardians.section' | transloco }}</h3>
 
       <p class="hint" *ngIf="!isEditMode">
-        Save the student first, then guardians can be added.
+        {{ 'guardians.saveStudentFirst' | transloco }}
       </p>
 
       <ng-container *ngIf="isEditMode">
@@ -151,7 +151,7 @@
             <div class="guardian-info">
               <span class="guardian-name">{{ getDisplayName(guardian.name) }}</span>
               <span class="guardian-nickname" *ngIf="guardian.name.nickname">({{ guardian.name.nickname }})</span>
-              <span class="guardian-primary" *ngIf="guardian.isPrimaryContact">Primary</span>
+              <span class="guardian-primary" *ngIf="guardian.isPrimaryContact">{{ 'guardians.primary' | transloco }}</span>
               <div class="guardian-meta">
                 <span>{{ guardian.relationship }}</span>
                 <span *ngIf="guardian.phoneNumber"> · {{ guardian.phoneNumber }}</span>
@@ -159,25 +159,25 @@
               </div>
             </div>
             <div class="guardian-actions">
-              <button mat-icon-button (click)="onEditGuardian(guardian)" matTooltip="Edit guardian">
+              <button mat-icon-button (click)="onEditGuardian(guardian)" [matTooltip]="'guardians.editTooltip' | transloco">
                 <mat-icon>edit</mat-icon>
               </button>
-              <button mat-icon-button color="warn" (click)="onRemoveGuardian(guardian)" matTooltip="Remove guardian">
+              <button mat-icon-button color="warn" (click)="onRemoveGuardian(guardian)" [matTooltip]="'guardians.removeTooltip' | transloco">
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
           </div>
 
-          <p class="hint" *ngIf="guardians().length === 0">No guardians added yet.</p>
+          <p class="hint" *ngIf="guardians().length === 0">{{ 'guardians.noneYet' | transloco }}</p>
         </div>
 
         <div class="loading-container" *ngIf="isLoadingGuardians()">
-          <p>Loading guardians...</p>
+          <p>{{ 'guardians.loading' | transloco }}</p>
         </div>
 
         <button mat-stroked-button type="button" (click)="onAddGuardian()">
           <mat-icon>add</mat-icon>
-          Add Guardian
+          {{ 'guardians.addGuardian' | transloco }}
         </button>
       </ng-container>
     </div>

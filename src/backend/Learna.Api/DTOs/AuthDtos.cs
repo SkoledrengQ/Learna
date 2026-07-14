@@ -16,7 +16,8 @@ public record UserDto(
     int Id,
     string Email,
     List<string> Roles,
-    int? StudentId
+    int? StudentId,
+    string? PreferredLanguage
 );
 
 public record RefreshTokenRequestDto(
@@ -26,4 +27,8 @@ public record RefreshTokenRequestDto(
 public record ChangePasswordRequestDto(
     string CurrentPassword,
     string NewPassword
+);
+
+public record UpdateLanguagePreferenceRequestDto(
+    string Language
 );

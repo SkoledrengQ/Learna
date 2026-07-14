@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { SubjectGroupService } from '../../../services/subject-group.service';
 import { SchoolYearService } from '../../../services/school-year.service';
 import { SubjectService } from '../../../services/subject.service';
@@ -31,7 +32,8 @@ import { ConfirmDialogComponent } from '../../../../../shared/components/confirm
     MatFormFieldModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslocoModule
   ],
   templateUrl: './subject-group-list.component.html',
   styleUrl: './subject-group-list.component.scss'
@@ -43,6 +45,7 @@ export class SubjectGroupListComponent implements OnInit {
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private transloco = inject(TranslocoService);
 
   groups = signal<SubjectGroup[]>([]);
   schoolYears = signal<SchoolYear[]>([]);
@@ -100,7 +103,7 @@ export class SubjectGroupListComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading subject groups:', error);
-        this.snackBar.open('Failed to load subject groups', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.subjectGroups.loadFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoading.set(false);
       }
     });
@@ -123,8 +126,8 @@ export class SubjectGroupListComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: 'Delete Subject Group',
-        message: `Are you sure you want to delete ${group.name}? This will also remove its enrollment history.`
+        title: this.transloco.translate('admin.subjectGroups.deleteTitle'),
+        message: this.transloco.translate('admin.subjectGroups.deleteMessage', { name: group.name })
       }
     });
 
@@ -132,12 +135,12 @@ export class SubjectGroupListComponent implements OnInit {
       if (result) {
         this.subjectGroupService.deleteSubjectGroup(group.id).subscribe({
           next: () => {
-            this.snackBar.open('Subject group deleted successfully', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.subjectGroups.deleteSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
             if (this.selectedTermId()) this.loadGroups(this.selectedTermId()!);
           },
           error: (error) => {
             console.error('Error deleting subject group:', error);
-            this.snackBar.open('Failed to delete subject group', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.subjectGroups.deleteFailed'), this.transloco.translate('common.close'), { duration: 3000 });
           }
         });
       }

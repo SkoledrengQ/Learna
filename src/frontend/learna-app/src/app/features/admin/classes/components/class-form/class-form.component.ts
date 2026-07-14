@@ -12,6 +12,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ClassService } from '../../../services/class.service';
 import { SchoolYearService } from '../../../services/school-year.service';
 import { TeacherService } from '../../../services/teacher.service';
@@ -22,6 +23,8 @@ import { getDisplayName } from '../../../../../shared/models/student.model';
 import { ConfirmDialogComponent } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { AddMemberDialogComponent } from '../add-member-dialog/add-member-dialog.component';
 import { MoveMemberDialogComponent } from '../move-member-dialog/move-member-dialog.component';
+import { LanguageService } from '../../../../../core/services/language.service';
+import { LocalizedDatePipe } from '../../../../../shared/pipes/localized-date.pipe';
 
 @Component({
   selector: 'app-class-form',
@@ -38,7 +41,9 @@ import { MoveMemberDialogComponent } from '../move-member-dialog/move-member-dia
     MatCheckboxModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslocoModule,
+    LocalizedDatePipe
   ],
   templateUrl: './class-form.component.html',
   styleUrl: './class-form.component.scss'
@@ -52,6 +57,8 @@ export class ClassFormComponent implements OnInit {
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private transloco = inject(TranslocoService);
+  protected languageService = inject(LanguageService);
 
   readonly getDisplayName = getDisplayName;
 
@@ -114,7 +121,7 @@ export class ClassFormComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading class:', error);
-        this.snackBar.open('Failed to load class', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.classes.loadFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoading.set(false);
         this.router.navigate(['/admin/classes']);
       }
@@ -130,7 +137,7 @@ export class ClassFormComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading members:', error);
-        this.snackBar.open('Failed to load class members', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.classes.loadFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoadingMembers.set(false);
       }
     });
@@ -168,12 +175,12 @@ export class ClassFormComponent implements OnInit {
 
     this.classService.createClass(dto).subscribe({
       next: (schoolClass) => {
-        this.snackBar.open('Class created successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.classes.createSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
         this.router.navigate(['/admin/classes', schoolClass.id]);
       },
       error: (error) => {
         console.error('Error creating class:', error);
-        this.snackBar.open(error.error || 'Failed to create class', 'Close', { duration: 5000 });
+        this.snackBar.open(error.error || this.transloco.translate('admin.classes.createFailed'), this.transloco.translate('common.close'), { duration: 5000 });
         this.isLoading.set(false);
       }
     });
@@ -188,12 +195,12 @@ export class ClassFormComponent implements OnInit {
 
     this.classService.updateClass(this.classId!, dto).subscribe({
       next: () => {
-        this.snackBar.open('Class updated successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.classes.updateSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
         this.router.navigate(['/admin/classes']);
       },
       error: (error) => {
         console.error('Error updating class:', error);
-        this.snackBar.open(error.error || 'Failed to update class', 'Close', { duration: 3000 });
+        this.snackBar.open(error.error || this.transloco.translate('admin.classes.updateFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoading.set(false);
       }
     });
@@ -206,16 +213,12 @@ export class ClassFormComponent implements OnInit {
   getErrorMessage(fieldName: string): string {
     const field = this.classForm.get(fieldName);
     if (field?.hasError('required')) {
-      return 'This field is required';
+      return this.transloco.translate('validation.required');
     }
     if (field?.hasError('maxlength')) {
-      return 'Maximum length exceeded';
+      return this.transloco.translate('validation.maxLength');
     }
     return '';
-  }
-
-  formatDate(date: Date): string {
-    return new Date(date).toLocaleDateString();
   }
 
   onAddMember(): void {
@@ -230,12 +233,12 @@ export class ClassFormComponent implements OnInit {
       if (result) {
         this.classService.addMember(this.classId!, result).subscribe({
           next: () => {
-            this.snackBar.open('Student added to class', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.classes.addedToClass'), this.transloco.translate('common.close'), { duration: 3000 });
             this.loadMembers(this.classId!);
           },
           error: (error) => {
             console.error('Error adding member:', error);
-            this.snackBar.open(error.error || 'Failed to add student', 'Close', { duration: 5000 });
+            this.snackBar.open(error.error || this.transloco.translate('admin.classes.addMemberFailed'), this.transloco.translate('common.close'), { duration: 5000 });
           }
         });
       }
@@ -254,12 +257,12 @@ export class ClassFormComponent implements OnInit {
       if (result) {
         this.classService.moveMember(this.classId!, membership.student.id, result).subscribe({
           next: () => {
-            this.snackBar.open('Student moved', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.classes.movedSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
             this.loadMembers(this.classId!);
           },
           error: (error) => {
             console.error('Error moving student:', error);
-            this.snackBar.open(error.error || 'Failed to move student', 'Close', { duration: 5000 });
+            this.snackBar.open(error.error || this.transloco.translate('admin.classes.moveFailed'), this.transloco.translate('common.close'), { duration: 5000 });
           }
         });
       }
@@ -272,8 +275,8 @@ export class ClassFormComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: 'Remove Student',
-        message: `Remove ${this.getDisplayName(membership.student.name)} from this class? Membership history will be kept.`
+        title: this.transloco.translate('admin.classes.removeMemberTitle'),
+        message: this.transloco.translate('admin.classes.removeMemberMessage', { name: this.getDisplayName(membership.student.name) })
       }
     });
 
@@ -281,12 +284,12 @@ export class ClassFormComponent implements OnInit {
       if (result) {
         this.classService.removeMember(this.classId!, membership.student.id).subscribe({
           next: () => {
-            this.snackBar.open('Student removed from class', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.classes.removedFromClass'), this.transloco.translate('common.close'), { duration: 3000 });
             this.loadMembers(this.classId!);
           },
           error: (error) => {
             console.error('Error removing member:', error);
-            this.snackBar.open('Failed to remove student', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.classes.removeMemberFailed'), this.transloco.translate('common.close'), { duration: 3000 });
           }
         });
       }

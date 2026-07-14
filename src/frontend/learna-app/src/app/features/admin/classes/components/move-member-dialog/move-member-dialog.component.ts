@@ -8,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { TranslocoModule } from '@jsverse/transloco';
 import { SchoolClass } from '../../../../../shared/models/school-class.model';
 
 export interface MoveMemberDialogData {
@@ -27,7 +28,8 @@ export interface MoveMemberDialogData {
     MatSelectModule,
     MatInputModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    TranslocoModule
   ],
   templateUrl: './move-member-dialog.component.html',
   styleUrl: './move-member-dialog.component.scss'

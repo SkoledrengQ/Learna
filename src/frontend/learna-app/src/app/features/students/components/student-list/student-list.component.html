@@ -1,50 +1,50 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>Students</mat-card-title>
+    <mat-card-title>{{ 'students.title' | transloco }}</mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
     <div class="table-header">
       <button mat-raised-button color="primary" (click)="onAddStudent()">
         <mat-icon>add</mat-icon>
-        Add New Student
+        {{ 'students.addNew' | transloco }}
       </button>
     </div>
 
     <div class="table-container" *ngIf="!isLoading()">
       <table mat-table [dataSource]="students()" class="mat-elevation-z2">
         <ng-container matColumnDef="studentId">
-          <th mat-header-cell *matHeaderCellDef>Student ID</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'students.studentId' | transloco }}</th>
           <td mat-cell *matCellDef="let student">{{ student.studentId }}</td>
         </ng-container>
 
         <ng-container matColumnDef="displayName">
-          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'students.name' | transloco }}</th>
           <td mat-cell *matCellDef="let student">{{ getDisplayName(student.name) }}</td>
         </ng-container>
 
         <ng-container matColumnDef="nickname">
-          <th mat-header-cell *matHeaderCellDef>Nickname</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'students.nickname' | transloco }}</th>
           <td mat-cell *matCellDef="let student">{{ student.name.nickname }}</td>
         </ng-container>
 
         <ng-container matColumnDef="email">
-          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'students.email' | transloco }}</th>
           <td mat-cell *matCellDef="let student">{{ student.email }}</td>
         </ng-container>
 
         <ng-container matColumnDef="enrollmentDate">
-          <th mat-header-cell *matHeaderCellDef>Enrollment Date</th>
-          <td mat-cell *matCellDef="let student">{{ formatDate(student.enrollmentDate) }}</td>
+          <th mat-header-cell *matHeaderCellDef>{{ 'students.enrollmentDate' | transloco }}</th>
+          <td mat-cell *matCellDef="let student">{{ student.enrollmentDate | localizedDate:languageService.activeLang() }}</td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'common.actions' | transloco }}</th>
           <td mat-cell *matCellDef="let student">
-            <button mat-icon-button color="primary" (click)="onEditStudent(student.id)" matTooltip="Edit">
+            <button mat-icon-button color="primary" (click)="onEditStudent(student.id)" [matTooltip]="'common.edit' | transloco">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button color="warn" (click)="onDeleteStudent(student)" matTooltip="Delete">
+            <button mat-icon-button color="warn" (click)="onDeleteStudent(student)" [matTooltip]="'common.delete' | transloco">
               <mat-icon>delete</mat-icon>
             </button>
           </td>
@@ -55,14 +55,14 @@
 
         <tr class="mat-row" *matNoDataRow>
           <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-            No students found. Click "Add New Student" to create one.
+            {{ 'students.noStudentsFound' | transloco }}
           </td>
         </tr>
       </table>
     </div>
 
     <div class="loading-container" *ngIf="isLoading()">
-      <p>Loading students...</p>
+      <p>{{ 'students.loadingStudents' | transloco }}</p>
     </div>
   </mat-card-content>
 </mat-card>

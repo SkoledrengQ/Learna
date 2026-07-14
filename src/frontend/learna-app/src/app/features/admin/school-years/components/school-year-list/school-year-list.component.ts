@@ -9,9 +9,12 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { SchoolYearService } from '../../../services/school-year.service';
 import { SchoolYear } from '../../../../../shared/models/school-year.model';
 import { ConfirmDialogComponent } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { LanguageService } from '../../../../../core/services/language.service';
+import { LocalizedDatePipe } from '../../../../../shared/pipes/localized-date.pipe';
 
 @Component({
   selector: 'app-school-year-list',
@@ -25,7 +28,9 @@ import { ConfirmDialogComponent } from '../../../../../shared/components/confirm
     MatChipsModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslocoModule,
+    LocalizedDatePipe
   ],
   templateUrl: './school-year-list.component.html',
   styleUrl: './school-year-list.component.scss'
@@ -35,6 +40,8 @@ export class SchoolYearListComponent implements OnInit {
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private transloco = inject(TranslocoService);
+  protected languageService = inject(LanguageService);
 
   schoolYears = signal<SchoolYear[]>([]);
   displayedColumns: string[] = ['name', 'startDate', 'endDate', 'isArchived', 'actions'];
@@ -53,14 +60,10 @@ export class SchoolYearListComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading school years:', error);
-        this.snackBar.open('Failed to load school years', 'Close', { duration: 3000 });
+        this.snackBar.open(this.transloco.translate('admin.schoolYears.loadFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoading.set(false);
       }
     });
-  }
-
-  formatDate(date: Date): string {
-    return new Date(date).toLocaleDateString();
   }
 
   onAddSchoolYear(): void {
@@ -75,8 +78,8 @@ export class SchoolYearListComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: 'Delete School Year',
-        message: `Are you sure you want to delete ${schoolYear.name}? This will also delete its terms.`
+        title: this.transloco.translate('admin.schoolYears.deleteTitle'),
+        message: this.transloco.translate('admin.schoolYears.deleteMessage', { name: schoolYear.name })
       }
     });
 
@@ -84,12 +87,12 @@ export class SchoolYearListComponent implements OnInit {
       if (result) {
         this.schoolYearService.deleteSchoolYear(schoolYear.id).subscribe({
           next: () => {
-            this.snackBar.open('School year deleted successfully', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.schoolYears.deleteSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
             this.loadSchoolYears();
           },
           error: (error) => {
             console.error('Error deleting school year:', error);
-            this.snackBar.open('Failed to delete school year', 'Close', { duration: 3000 });
+            this.snackBar.open(this.transloco.translate('admin.schoolYears.deleteFailed'), this.transloco.translate('common.close'), { duration: 3000 });
           }
         });
       }
