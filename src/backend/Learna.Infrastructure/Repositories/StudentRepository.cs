@@ -24,6 +24,14 @@ public class StudentRepository : IStudentRepository
         return await _context.Students.FindAsync(id);
     }
 
+    public async Task<Student?> GetByIdWithGuardiansAsync(int id)
+    {
+        return await _context.Students
+            .Include(s => s.StudentGuardians)
+                .ThenInclude(sg => sg.Guardian)
+            .FirstOrDefaultAsync(s => s.Id == id);
+    }
+
     public async Task<Student> CreateAsync(Student student)
     {
         student.CreatedAt = DateTime.UtcNow;

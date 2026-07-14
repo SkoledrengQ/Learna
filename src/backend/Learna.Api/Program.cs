@@ -26,13 +26,16 @@ builder.Services.AddCors(options =>
 });
 
 // Configure Database
+// A fixed ServerVersion (rather than ServerVersion.AutoDetect) avoids requiring a live
+// DB connection just to start the app or run `dotnet ef` design-time tooling.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))));
+        new MySqlServerVersion(new Version(8, 0, 21))));
 
 // Register repositories
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IGuardianRepository, GuardianRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 

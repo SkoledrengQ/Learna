@@ -1,10 +1,27 @@
 mat-card {
   margin: 20px;
-  max-width: 800px;
+  max-width: 900px;
 }
 
 form {
   padding: 20px 0;
+}
+
+.section-title {
+  margin: 24px 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.title-field {
+  max-width: 160px;
 }
 
 .form-row {
@@ -14,6 +31,7 @@ form {
 
   mat-form-field {
     flex: 1;
+    min-width: 0;
   }
 
   @media (max-width: 768px) {
@@ -35,4 +53,69 @@ form {
   text-align: center;
   padding: 40px;
   color: #666;
+}
+
+.guardians-section {
+  border-top: 1px solid #e0e0e0;
+  padding-top: 16px;
+  margin-top: 8px;
+}
+
+.hint {
+  color: #666;
+  font-style: italic;
+}
+
+.guardian-list {
+  margin-bottom: 16px;
+}
+
+.guardian-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.guardian-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.guardian-name {
+  font-weight: 600;
+}
+
+.guardian-nickname {
+  color: #666;
+  margin-left: 4px;
+}
+
+.guardian-primary {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background-color: #e8f0fe;
+  color: #1a56db;
+  font-size: 11px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+.guardian-meta {
+  color: #666;
+  font-size: 13px;
+}
+
+.guardian-actions {
+  display: flex;
+  flex-shrink: 0;
 }

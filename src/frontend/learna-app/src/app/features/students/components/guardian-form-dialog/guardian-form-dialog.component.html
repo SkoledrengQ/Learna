@@ -1,0 +1,71 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit Guardian' : 'Add Guardian' }}</h2>
+
+<form [formGroup]="guardianForm" (ngSubmit)="onSave()">
+  <mat-dialog-content>
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" placeholder="e.g. นาง, Mr.">
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="firstName">
+        <mat-error *ngIf="guardianForm.get('firstName')?.invalid">First name is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="lastName">
+        <mat-error *ngIf="guardianForm.get('lastName')?.invalid">Last name is required</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>First Name (English)</mat-label>
+        <input matInput formControlName="firstNameEnglish">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name (English)</mat-label>
+        <input matInput formControlName="lastNameEnglish">
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Nickname</mat-label>
+        <input matInput formControlName="nickname">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Relationship</mat-label>
+        <input matInput formControlName="relationship" placeholder="e.g. mother, father">
+        <mat-error *ngIf="guardianForm.get('relationship')?.invalid">Relationship is required</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Phone Number</mat-label>
+        <input matInput type="tel" formControlName="phoneNumber">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email">
+        <mat-error *ngIf="guardianForm.get('email')?.invalid">Please enter a valid email</mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-checkbox formControlName="isPrimaryContact">Primary contact</mat-checkbox>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" type="submit">{{ isEditMode ? 'Save' : 'Add' }}</button>
+  </mat-dialog-actions>
+</form>

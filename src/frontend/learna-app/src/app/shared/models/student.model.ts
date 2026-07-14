@@ -1,33 +1,49 @@
-export interface Student {
-  id: number;
+export interface PersonName {
+  title?: string | null;
   firstName: string;
   lastName: string;
+  firstNameEnglish?: string | null;
+  lastNameEnglish?: string | null;
+  nickname?: string | null;
+}
+
+export function getDisplayName(name: PersonName): string {
+  return `${name.firstName} ${name.lastName}`;
+}
+
+export interface Student {
+  id: number;
+  name: PersonName;
   email: string;
   studentId: string;
   idCardNumber: string;
   dateOfBirth: Date;
-  parentPhoneNumber: string;
   enrollmentDate: Date;
-  gradeLevel: number;
+  phoneNumber: string;
+  address: string;
+  height?: number | null;
+  weight?: number | null;
 }
 
 export interface CreateStudentDto {
-  firstName: string;
-  lastName: string;
+  name: PersonName;
   email: string;
   idCardNumber: string;
   dateOfBirth: Date;
-  parentPhoneNumber: string;
   enrollmentDate: Date;
-  gradeLevel: number;
+  phoneNumber: string;
+  address: string;
+  height?: number | null;
+  weight?: number | null;
 }
 
 export interface UpdateStudentDto {
-  firstName: string;
-  lastName: string;
+  name: PersonName;
   email: string;
   idCardNumber: string;
   dateOfBirth: Date;
-  parentPhoneNumber: string;
-  gradeLevel: number;
+  phoneNumber: string;
+  address: string;
+  height?: number | null;
+  weight?: number | null;
 }

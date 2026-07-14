@@ -4,11 +4,17 @@
   </mat-card-header>
 
   <mat-card-content>
-    <form [formGroup]="studentForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+    <form [formGroup]="studentForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading()">
+      <h3 class="section-title">Name</h3>
       <div class="form-row">
+        <mat-form-field appearance="outline" class="title-field">
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title" placeholder="e.g. เด็กชาย, Mr.">
+        </mat-form-field>
+
         <mat-form-field appearance="outline">
           <mat-label>First Name</mat-label>
-          <input matInput formControlName="firstName" placeholder="Enter first name">
+          <input matInput formControlName="firstName" placeholder="Legal first name">
           <mat-error *ngIf="studentForm.get('firstName')?.invalid">
             {{ getErrorMessage('firstName') }}
           </mat-error>
@@ -16,13 +22,33 @@
 
         <mat-form-field appearance="outline">
           <mat-label>Last Name</mat-label>
-          <input matInput formControlName="lastName" placeholder="Enter last name">
+          <input matInput formControlName="lastName" placeholder="Legal last name">
           <mat-error *ngIf="studentForm.get('lastName')?.invalid">
             {{ getErrorMessage('lastName') }}
           </mat-error>
         </mat-form-field>
       </div>
 
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>First Name (English)</mat-label>
+          <input matInput formControlName="firstNameEnglish" placeholder="Romanized, if legal name is Thai">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Last Name (English)</mat-label>
+          <input matInput formControlName="lastNameEnglish" placeholder="Romanized, if legal name is Thai">
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Nickname</mat-label>
+          <input matInput formControlName="nickname">
+        </mat-form-field>
+      </div>
+
+      <h3 class="section-title">Details</h3>
       <div class="form-row">
         <mat-form-field appearance="outline">
           <mat-label>Email</mat-label>
@@ -43,6 +69,24 @@
 
       <div class="form-row">
         <mat-form-field appearance="outline">
+          <mat-label>Phone Number</mat-label>
+          <input matInput type="tel" formControlName="phoneNumber" placeholder="Enter phone number">
+          <mat-error *ngIf="studentForm.get('phoneNumber')?.invalid">
+            {{ getErrorMessage('phoneNumber') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Address</mat-label>
+          <textarea matInput formControlName="address" placeholder="Enter home address" rows="1"></textarea>
+          <mat-error *ngIf="studentForm.get('address')?.invalid">
+            {{ getErrorMessage('address') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
           <mat-label>Date of Birth</mat-label>
           <input matInput [matDatepicker]="dobPicker" formControlName="dateOfBirth">
           <mat-datepicker-toggle matIconSuffix [for]="dobPicker"></mat-datepicker-toggle>
@@ -53,16 +97,6 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Parent Phone Number</mat-label>
-          <input matInput type="tel" formControlName="parentPhoneNumber" placeholder="Enter parent's phone">
-          <mat-error *ngIf="studentForm.get('parentPhoneNumber')?.invalid">
-            {{ getErrorMessage('parentPhoneNumber') }}
-          </mat-error>
-        </mat-form-field>
-      </div>
-
-      <div class="form-row">
-        <mat-form-field appearance="outline">
           <mat-label>Enrollment Date</mat-label>
           <input matInput [matDatepicker]="enrollPicker" formControlName="enrollmentDate">
           <mat-datepicker-toggle matIconSuffix [for]="enrollPicker"></mat-datepicker-toggle>
@@ -72,26 +106,80 @@
             {{ getErrorMessage('enrollmentDate') }}
           </mat-error>
         </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Height (cm)</mat-label>
+          <input matInput type="number" formControlName="height" placeholder="Optional">
+          <mat-error *ngIf="studentForm.get('height')?.invalid">
+            {{ getErrorMessage('height') }}
+          </mat-error>
+        </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Grade Level</mat-label>
-          <input matInput type="number" formControlName="gradeLevel" placeholder="1-12" min="1" max="12">
-          <mat-error *ngIf="studentForm.get('gradeLevel')?.invalid">
-            {{ getErrorMessage('gradeLevel') }}
+          <mat-label>Weight (kg)</mat-label>
+          <input matInput type="number" formControlName="weight" placeholder="Optional">
+          <mat-error *ngIf="studentForm.get('weight')?.invalid">
+            {{ getErrorMessage('weight') }}
           </mat-error>
         </mat-form-field>
       </div>
 
       <div class="form-actions">
         <button mat-button type="button" (click)="onCancel()">Cancel</button>
-        <button mat-raised-button color="primary" type="submit" [disabled]="isLoading">
+        <button mat-raised-button color="primary" type="submit" [disabled]="isLoading()">
           {{ isEditMode ? 'Update' : 'Create' }} Student
         </button>
       </div>
     </form>
 
-    <div class="loading-container" *ngIf="isLoading">
+    <div class="loading-container" *ngIf="isLoading()">
       <p>{{ isEditMode ? 'Loading student data...' : 'Saving...' }}</p>
+    </div>
+
+    <div class="guardians-section" *ngIf="!isLoading()">
+      <h3 class="section-title">Guardians</h3>
+
+      <p class="hint" *ngIf="!isEditMode">
+        Save the student first, then guardians can be added.
+      </p>
+
+      <ng-container *ngIf="isEditMode">
+        <div class="guardian-list" *ngIf="!isLoadingGuardians()">
+          <div class="guardian-row" *ngFor="let guardian of guardians()">
+            <div class="guardian-info">
+              <span class="guardian-name">{{ getDisplayName(guardian.name) }}</span>
+              <span class="guardian-nickname" *ngIf="guardian.name.nickname">({{ guardian.name.nickname }})</span>
+              <span class="guardian-primary" *ngIf="guardian.isPrimaryContact">Primary</span>
+              <div class="guardian-meta">
+                <span>{{ guardian.relationship }}</span>
+                <span *ngIf="guardian.phoneNumber"> · {{ guardian.phoneNumber }}</span>
+                <span *ngIf="guardian.email"> · {{ guardian.email }}</span>
+              </div>
+            </div>
+            <div class="guardian-actions">
+              <button mat-icon-button (click)="onEditGuardian(guardian)" matTooltip="Edit guardian">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="onRemoveGuardian(guardian)" matTooltip="Remove guardian">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <p class="hint" *ngIf="guardians().length === 0">No guardians added yet.</p>
+        </div>
+
+        <div class="loading-container" *ngIf="isLoadingGuardians()">
+          <p>Loading guardians...</p>
+        </div>
+
+        <button mat-stroked-button type="button" (click)="onAddGuardian()">
+          <mat-icon>add</mat-icon>
+          Add Guardian
+        </button>
+      </ng-container>
     </div>
   </mat-card-content>
 </mat-card>

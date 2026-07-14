@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Learna.Core.Entities;
 
 namespace Learna.Infrastructure.Data;
@@ -11,10 +12,23 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<Student> Students { get; set; }
+    public DbSet<Guardian> Guardians { get; set; }
+    public DbSet<StudentGuardian> StudentGuardians { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+    private static void ConfigurePersonName<TEntity>(OwnedNavigationBuilder<TEntity, PersonName> name)
+        where TEntity : class
+    {
+        name.Property(n => n.Title).HasMaxLength(50);
+        name.Property(n => n.FirstName).IsRequired().HasMaxLength(100);
+        name.Property(n => n.LastName).IsRequired().HasMaxLength(100);
+        name.Property(n => n.FirstNameEnglish).HasMaxLength(100);
+        name.Property(n => n.LastNameEnglish).HasMaxLength(100);
+        name.Property(n => n.Nickname).HasMaxLength(100);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,12 +40,42 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(e => e.StudentId).IsUnique();
             entity.HasIndex(e => e.Email).IsUnique();
             entity.HasIndex(e => e.IdCardNumber).IsUnique();
-            entity.Property(e => e.FirstName).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.LastName).IsRequired().HasMaxLength(100);
             entity.Property(e => e.Email).IsRequired().HasMaxLength(255);
             entity.Property(e => e.StudentId).IsRequired().HasMaxLength(50);
             entity.Property(e => e.IdCardNumber).IsRequired().HasMaxLength(50);
-            entity.Property(e => e.ParentPhoneNumber).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.PhoneNumber).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.Address).IsRequired().HasMaxLength(500);
+            entity.Property(e => e.Height).HasPrecision(5, 2);
+            entity.Property(e => e.Weight).HasPrecision(5, 2);
+
+            entity.OwnsOne(e => e.Name, name => ConfigurePersonName(name));
+        });
+
+        // Guardian configuration
+        modelBuilder.Entity<Guardian>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Email).HasMaxLength(255);
+            entity.Property(e => e.PhoneNumber).HasMaxLength(20);
+
+            entity.OwnsOne(e => e.Name, name => ConfigurePersonName(name));
+        });
+
+        // StudentGuardian join configuration (many-to-many with relationship metadata)
+        modelBuilder.Entity<StudentGuardian>(entity =>
+        {
+            entity.HasKey(sg => new { sg.StudentId, sg.GuardianId });
+            entity.Property(e => e.Relationship).IsRequired().HasMaxLength(50);
+
+            entity.HasOne(sg => sg.Student)
+                .WithMany(s => s.StudentGuardians)
+                .HasForeignKey(sg => sg.StudentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(sg => sg.Guardian)
+                .WithMany(g => g.StudentGuardians)
+                .HasForeignKey(sg => sg.GuardianId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         // User configuration
@@ -47,6 +91,12 @@ public class ApplicationDbContext : DbContext
             entity.HasOne(e => e.Student)
                 .WithOne(s => s.User)
                 .HasForeignKey<User>(u => u.StudentId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // One-to-one relationship with Guardian (optional; guardian login is a later work order)
+            entity.HasOne(e => e.Guardian)
+                .WithOne(g => g.User)
+                .HasForeignKey<User>(u => u.GuardianId)
                 .OnDelete(DeleteBehavior.SetNull);
         });
 

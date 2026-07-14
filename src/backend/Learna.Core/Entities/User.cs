@@ -16,4 +16,7 @@ public class User
     // Foreign keys to domain entities (nullable - not all users are students/teachers)
     public int? StudentId { get; set; }
     public Student? Student { get; set; }
+
+    public int? GuardianId { get; set; }
+    public Guardian? Guardian { get; set; }
 }

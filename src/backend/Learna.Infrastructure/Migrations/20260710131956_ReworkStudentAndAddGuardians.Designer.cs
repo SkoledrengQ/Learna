@@ -4,6 +4,7 @@ using Learna.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Learna.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260710131956_ReworkStudentAndAddGuardians")]
+    partial class ReworkStudentAndAddGuardians
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,11 +147,6 @@ namespace Learna.Infrastructure.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
@@ -163,19 +161,10 @@ namespace Learna.Infrastructure.Migrations
                     b.Property<DateTime>("EnrollmentDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<decimal?>("Height")
-                        .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)");
-
                     b.Property<string>("IdCardNumber")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
 
                     b.Property<string>("StudentId")
                         .IsRequired()
@@ -184,10 +173,6 @@ namespace Learna.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<decimal?>("Weight")
-                        .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)");
 
                     b.HasKey("Id");
 
@@ -303,6 +288,10 @@ namespace Learna.Infrastructure.Migrations
                             b1.Property<int>("GuardianId")
                                 .HasColumnType("int");
 
+                            b1.Property<string>("DisplayName")
+                                .HasMaxLength(200)
+                                .HasColumnType("varchar(200)");
+
                             b1.Property<string>("FirstName")
                                 .IsRequired()
                                 .HasMaxLength(100)
@@ -358,6 +347,10 @@ namespace Learna.Infrastructure.Migrations
                         {
                             b1.Property<int>("StudentId")
                                 .HasColumnType("int");
+
+                            b1.Property<string>("DisplayName")
+                                .HasMaxLength(200)
+                                .HasColumnType("varchar(200)");
 
                             b1.Property<string>("FirstName")
                                 .IsRequired()

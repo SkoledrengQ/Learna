@@ -1,35 +1,47 @@
 namespace Learna.Api.DTOs;
 
-public record StudentDto(
-    int Id,
+public record PersonNameDto(
+    string? Title,
     string FirstName,
     string LastName,
+    string? FirstNameEnglish,
+    string? LastNameEnglish,
+    string? Nickname
+);
+
+public record StudentDto(
+    int Id,
+    PersonNameDto Name,
     string Email,
     string StudentId,
     string IdCardNumber,
     DateTime DateOfBirth,
-    string ParentPhoneNumber,
     DateTime EnrollmentDate,
-    int GradeLevel
+    string PhoneNumber,
+    string Address,
+    decimal? Height,
+    decimal? Weight
 );
 
 public record CreateStudentDto(
-    string FirstName,
-    string LastName,
+    PersonNameDto Name,
     string Email,
     string IdCardNumber,
     DateTime DateOfBirth,
-    string ParentPhoneNumber,
     DateTime EnrollmentDate,
-    int GradeLevel
+    string PhoneNumber,
+    string Address,
+    decimal? Height,
+    decimal? Weight
 );
 
 public record UpdateStudentDto(
-    string FirstName,
-    string LastName,
+    PersonNameDto Name,
     string Email,
     string IdCardNumber,
     DateTime DateOfBirth,
-    string ParentPhoneNumber,
-    int GradeLevel
+    string PhoneNumber,
+    string Address,
+    decimal? Height,
+    decimal? Weight
 );
