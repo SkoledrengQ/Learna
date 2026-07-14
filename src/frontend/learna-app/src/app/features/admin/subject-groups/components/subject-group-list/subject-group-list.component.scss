@@ -1,0 +1,36 @@
+mat-card {
+  margin: 20px;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filters {
+  display: flex;
+  gap: 16px;
+}
+
+.filter-field {
+  width: 220px;
+  margin-bottom: -1.25em;
+}
+
+.table-container {
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+  }
+}
+
+.loading-container {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}

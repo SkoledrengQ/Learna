@@ -1,0 +1,18 @@
+.search-field {
+  width: 100%;
+}
+
+.hint {
+  color: #666;
+  font-style: italic;
+  font-size: 13px;
+}
+
+.student-list {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.student-row {
+  padding: 6px 0;
+}

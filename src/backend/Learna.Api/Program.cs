@@ -40,6 +40,10 @@ builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
 builder.Services.AddScoped<ISchoolYearRepository, SchoolYearRepository>();
 builder.Services.AddScoped<ITermRepository, TermRepository>();
 builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
+builder.Services.AddScoped<ISchoolClassRepository, SchoolClassRepository>();
+builder.Services.AddScoped<IClassMembershipRepository, ClassMembershipRepository>();
+builder.Services.AddScoped<ISubjectGroupRepository, SubjectGroupRepository>();
+builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 

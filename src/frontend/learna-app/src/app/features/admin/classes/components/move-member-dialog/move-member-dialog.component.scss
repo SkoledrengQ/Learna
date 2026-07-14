@@ -1,0 +1,9 @@
+.form-row {
+  display: flex;
+  margin-bottom: 8px;
+
+  mat-form-field {
+    flex: 1;
+    min-width: 320px;
+  }
+}

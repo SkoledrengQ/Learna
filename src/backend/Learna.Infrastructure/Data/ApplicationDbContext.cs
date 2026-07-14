@@ -18,6 +18,10 @@ public class ApplicationDbContext : DbContext
     public DbSet<SchoolYear> SchoolYears { get; set; }
     public DbSet<Term> Terms { get; set; }
     public DbSet<Subject> Subjects { get; set; }
+    public DbSet<SchoolClass> SchoolClasses { get; set; }
+    public DbSet<ClassMembership> ClassMemberships { get; set; }
+    public DbSet<SubjectGroup> SubjectGroups { get; set; }
+    public DbSet<Enrollment> Enrollments { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
@@ -123,6 +127,82 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.NameEnglish).IsRequired().HasMaxLength(200);
             entity.Property(e => e.NameThai).HasMaxLength(200);
             entity.Property(e => e.Description).HasMaxLength(1000);
+        });
+
+        // SchoolClass configuration (administrative/homeroom group)
+        modelBuilder.Entity<SchoolClass>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+            entity.Property(e => e.Description).HasMaxLength(500);
+
+            entity.HasOne(e => e.SchoolYear)
+                .WithMany()
+                .HasForeignKey(e => e.SchoolYearId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.HomeroomTeacher)
+                .WithMany()
+                .HasForeignKey(e => e.HomeroomTeacherId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // ClassMembership configuration (Student <-> SchoolClass, history-preserving)
+        modelBuilder.Entity<ClassMembership>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.StudentId, e.LeftDate });
+            entity.HasIndex(e => e.ClassId);
+
+            entity.HasOne(e => e.Student)
+                .WithMany()
+                .HasForeignKey(e => e.StudentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Class)
+                .WithMany(c => c.Memberships)
+                .HasForeignKey(e => e.ClassId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // SubjectGroup configuration (teaching group)
+        modelBuilder.Entity<SubjectGroup>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
+
+            entity.HasOne(e => e.Subject)
+                .WithMany()
+                .HasForeignKey(e => e.SubjectId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Term)
+                .WithMany()
+                .HasForeignKey(e => e.TermId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Teacher)
+                .WithMany()
+                .HasForeignKey(e => e.TeacherId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // Enrollment configuration (Student <-> SubjectGroup, history-preserving)
+        modelBuilder.Entity<Enrollment>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.StudentId, e.UnenrolledDate });
+            entity.HasIndex(e => e.SubjectGroupId);
+
+            entity.HasOne(e => e.Student)
+                .WithMany()
+                .HasForeignKey(e => e.StudentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.SubjectGroup)
+                .WithMany(sg => sg.Enrollments)
+                .HasForeignKey(e => e.SubjectGroupId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         // User configuration

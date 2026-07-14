@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>Move Student to Another Class</h2>
+
+<mat-dialog-content>
+  <div class="form-row">
+    <mat-form-field appearance="outline">
+      <mat-label>Target Class</mat-label>
+      <mat-select [(ngModel)]="toClassId">
+        <mat-option *ngFor="let schoolClass of data.otherClasses" [value]="schoolClass.id">
+          {{ schoolClass.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="form-row">
+    <mat-form-field appearance="outline">
+      <mat-label>Move Date</mat-label>
+      <input matInput [matDatepicker]="movePicker" [(ngModel)]="moveDate">
+      <mat-datepicker-toggle matIconSuffix [for]="movePicker"></mat-datepicker-toggle>
+      <mat-datepicker #movePicker></mat-datepicker>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" [disabled]="!toClassId" (click)="onMove()">Move</button>
+</mat-dialog-actions>

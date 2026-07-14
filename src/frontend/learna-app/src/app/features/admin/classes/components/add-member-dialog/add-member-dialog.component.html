@@ -1,0 +1,34 @@
+<h2 mat-dialog-title>Add Student to Class</h2>
+
+<mat-dialog-content>
+  <div class="form-row">
+    <mat-form-field appearance="outline">
+      <mat-label>Student</mat-label>
+      <input
+        matInput
+        [value]="filterText()"
+        (input)="onFilterInput($any($event.target).value)"
+        [matAutocomplete]="auto"
+        placeholder="Search by name or student ID">
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onStudentSelected($event.option.value)">
+        <mat-option *ngFor="let student of filteredStudents()" [value]="student">
+          {{ getDisplayName(student.name) }} ({{ student.studentId }})
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+
+  <div class="form-row">
+    <mat-form-field appearance="outline">
+      <mat-label>Joined Date</mat-label>
+      <input matInput [matDatepicker]="joinedPicker" [(ngModel)]="joinedDate">
+      <mat-datepicker-toggle matIconSuffix [for]="joinedPicker"></mat-datepicker-toggle>
+      <mat-datepicker #joinedPicker></mat-datepicker>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" [disabled]="!selectedStudent()" (click)="onAdd()">Add</button>
+</mat-dialog-actions>

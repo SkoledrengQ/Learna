@@ -51,5 +51,39 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () => import('./school-years/components/school-year-form/school-year-form.component').then(m => m.SchoolYearFormComponent)
       }
     ]
+  },
+  {
+    path: 'classes',
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./classes/components/class-list/class-list.component').then(m => m.ClassListComponent)
+      },
+      {
+        path: 'new',
+        loadComponent: () => import('./classes/components/class-form/class-form.component').then(m => m.ClassFormComponent)
+      },
+      {
+        path: ':id',
+        loadComponent: () => import('./classes/components/class-form/class-form.component').then(m => m.ClassFormComponent)
+      }
+    ]
+  },
+  {
+    path: 'subject-groups',
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./subject-groups/components/subject-group-list/subject-group-list.component').then(m => m.SubjectGroupListComponent)
+      },
+      {
+        path: 'new',
+        loadComponent: () => import('./subject-groups/components/subject-group-form/subject-group-form.component').then(m => m.SubjectGroupFormComponent)
+      },
+      {
+        path: ':id',
+        loadComponent: () => import('./subject-groups/components/subject-group-form/subject-group-form.component').then(m => m.SubjectGroupFormComponent)
+      }
+    ]
   }
 ];

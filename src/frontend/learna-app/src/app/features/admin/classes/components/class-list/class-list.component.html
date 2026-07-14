@@ -1,0 +1,63 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Classes</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="table-header">
+      <mat-form-field appearance="outline" class="year-filter">
+        <mat-label>School Year</mat-label>
+        <mat-select
+          [value]="selectedSchoolYearId()"
+          (selectionChange)="onSchoolYearFilterChange($event.value)">
+          <mat-option [value]="null">All school years</mat-option>
+          <mat-option *ngFor="let year of schoolYears()" [value]="year.id">{{ year.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="onAddClass()">
+        <mat-icon>add</mat-icon>
+        Add New Class
+      </button>
+    </div>
+
+    <div class="table-container" *ngIf="!isLoading()">
+      <table mat-table [dataSource]="classes()" class="mat-elevation-z2">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let schoolClass">{{ schoolClass.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>Description</th>
+          <td mat-cell *matCellDef="let schoolClass">{{ schoolClass.description }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let schoolClass">
+            <button mat-icon-button color="primary" (click)="onEditClass(schoolClass.id)" matTooltip="Edit / manage members">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="onDeleteClass(schoolClass)" matTooltip="Delete">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+            No classes found. Click "Add New Class" to create one.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="loading-container" *ngIf="isLoading()">
+      <p>Loading classes...</p>
+    </div>
+  </mat-card-content>
+</mat-card>

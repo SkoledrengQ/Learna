@@ -47,3 +47,11 @@ export interface UpdateStudentDto {
   height?: number | null;
   weight?: number | null;
 }
+
+// Lightweight student projection used inside class-membership and enrollment rosters.
+export interface StudentSummary {
+  id: number;
+  name: PersonName;
+  studentId: string;
+  email: string;
+}
