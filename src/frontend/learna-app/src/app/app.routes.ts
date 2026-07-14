@@ -31,5 +31,11 @@ export const routes: Routes = [
         component: StudentFormComponent
       }
     ]
+  },
+  {
+    path: 'admin',
+    canActivate: [authGuard],
+    data: { roles: ['Admin'] },
+    loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
   }
 ];

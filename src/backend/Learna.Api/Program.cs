@@ -36,6 +36,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register repositories
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IGuardianRepository, GuardianRepository>();
+builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
+builder.Services.AddScoped<ISchoolYearRepository, SchoolYearRepository>();
+builder.Services.AddScoped<ITermRepository, TermRepository>();
+builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 

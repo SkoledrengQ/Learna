@@ -1,0 +1,56 @@
+mat-card {
+  margin: 20px;
+  max-width: 900px;
+}
+
+form {
+  padding: 20px 0;
+}
+
+.section-title {
+  margin: 24px 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.title-field {
+  max-width: 160px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  mat-form-field {
+    flex: 1;
+    min-width: 0;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.loading-container {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}

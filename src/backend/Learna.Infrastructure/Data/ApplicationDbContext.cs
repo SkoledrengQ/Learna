@@ -14,6 +14,10 @@ public class ApplicationDbContext : DbContext
     public DbSet<Student> Students { get; set; }
     public DbSet<Guardian> Guardians { get; set; }
     public DbSet<StudentGuardian> StudentGuardians { get; set; }
+    public DbSet<Teacher> Teachers { get; set; }
+    public DbSet<SchoolYear> SchoolYears { get; set; }
+    public DbSet<Term> Terms { get; set; }
+    public DbSet<Subject> Subjects { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
@@ -78,6 +82,49 @@ public class ApplicationDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
+        // Teacher configuration
+        modelBuilder.Entity<Teacher>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Email).IsUnique();
+            entity.Property(e => e.Email).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.PhoneNumber).HasMaxLength(20);
+            entity.Property(e => e.EmployeeId).HasMaxLength(50);
+
+            entity.OwnsOne(e => e.Name, name => ConfigurePersonName(name));
+        });
+
+        // SchoolYear configuration
+        modelBuilder.Entity<SchoolYear>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.IsArchived).HasDefaultValue(false);
+        });
+
+        // Term configuration
+        modelBuilder.Entity<Term>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(50);
+
+            entity.HasOne(t => t.SchoolYear)
+                .WithMany(sy => sy.Terms)
+                .HasForeignKey(t => t.SchoolYearId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Subject configuration
+        modelBuilder.Entity<Subject>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Code).IsUnique();
+            entity.Property(e => e.Code).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.NameEnglish).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.NameThai).HasMaxLength(200);
+            entity.Property(e => e.Description).HasMaxLength(1000);
+        });
+
         // User configuration
         modelBuilder.Entity<User>(entity =>
         {
@@ -97,6 +144,12 @@ public class ApplicationDbContext : DbContext
             entity.HasOne(e => e.Guardian)
                 .WithOne(g => g.User)
                 .HasForeignKey<User>(u => u.GuardianId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // One-to-one relationship with Teacher (optional; teacher login is a later work order)
+            entity.HasOne(e => e.Teacher)
+                .WithOne(t => t.User)
+                .HasForeignKey<User>(u => u.TeacherId)
                 .OnDelete(DeleteBehavior.SetNull);
         });
 

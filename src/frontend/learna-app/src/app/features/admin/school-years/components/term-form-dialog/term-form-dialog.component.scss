@@ -1,0 +1,26 @@
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 8px;
+
+  mat-form-field {
+    flex: 1;
+  }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+mat-dialog-content {
+  min-width: 400px;
+
+  @media (max-width: 600px) {
+    min-width: 0;
+  }
+}
+
+mat-dialog-actions {
+  gap: 8px;
+}

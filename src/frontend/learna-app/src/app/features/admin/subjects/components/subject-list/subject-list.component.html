@@ -1,0 +1,58 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Subjects</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="table-header">
+      <button mat-raised-button color="primary" (click)="onAddSubject()">
+        <mat-icon>add</mat-icon>
+        Add New Subject
+      </button>
+    </div>
+
+    <div class="table-container" *ngIf="!isLoading()">
+      <table mat-table [dataSource]="subjects()" class="mat-elevation-z2">
+        <ng-container matColumnDef="code">
+          <th mat-header-cell *matHeaderCellDef>Code</th>
+          <td mat-cell *matCellDef="let subject">{{ subject.code }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nameEnglish">
+          <th mat-header-cell *matHeaderCellDef>English Name</th>
+          <td mat-cell *matCellDef="let subject">{{ subject.nameEnglish }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nameThai">
+          <th mat-header-cell *matHeaderCellDef>Thai Name</th>
+          <td mat-cell *matCellDef="let subject">{{ subject.nameThai }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let subject">
+            <button mat-icon-button color="primary" (click)="onEditSubject(subject.id)" matTooltip="Edit">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="onDeleteSubject(subject)" matTooltip="Delete">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+            No subjects found. Click "Add New Subject" to create one.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="loading-container" *ngIf="isLoading()">
+      <p>Loading subjects...</p>
+    </div>
+  </mat-card-content>
+</mat-card>

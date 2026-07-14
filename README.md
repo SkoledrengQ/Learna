@@ -5,17 +5,20 @@ A comprehensive school management system inspired by Lectio, designed to help sc
 ## Tech Stack
 
 - **Backend**: ASP.NET Core 8 Web API
-- **Frontend**: Angular 17+ with Standalone Components
-- **Database**: PostgreSQL with Entity Framework Core
+- **Frontend**: Angular (standalone components, zoneless change detection)
+- **Database**: MySQL 8 with Entity Framework Core (Pomelo provider)
 - **UI Library**: Angular Material
 
 ## Features
 
-- Student management (CRUD operations)
-- Teacher management (planned)
+- Authentication & Authorization (JWT + refresh tokens, Admin/Teacher/Student/Parent roles)
+- Student management (CRUD operations), with Thai naming support
+- Guardian management, linked to one or more students
+- Teacher management (CRUD operations)
+- Subject management (CRUD, English + Thai names)
+- School year and term management (CRUD)
 - Class scheduling (planned)
 - Room allocation (planned)
-- Subject management (planned)
 - Attendance tracking (planned)
 
 ## Prerequisites
@@ -25,7 +28,7 @@ Before you begin, ensure you have the following installed:
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [Node.js 18+](https://nodejs.org/) and npm
 - [Angular CLI](https://angular.io/cli): `npm install -g @angular/cli`
-- [PostgreSQL 16+](https://www.postgresql.org/download/) or Docker
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (for the local MySQL database)
 
 ## Project Structure
 
@@ -56,26 +59,15 @@ cd Learna
 
 ### 2. Database Setup
 
-#### Option A: PostgreSQL (Native Installation)
-
-1. Install PostgreSQL from [postgresql.org](https://www.postgresql.org/download/)
-2. Create a new database:
+A `docker-compose.yml` is provided at the repo root, running MySQL 8 with the credentials
+`appsettings.Development.json` already expects:
 
 ```bash
-psql -U postgres
-CREATE DATABASE learna_dev;
-\q
+docker compose up -d
 ```
 
-#### Option B: PostgreSQL (Docker)
-
-```bash
-docker run --name learna-postgres \
-  -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=learna_dev \
-  -p 5432:5432 \
-  -d postgres:16
-```
+This starts a `learna-mysql` container on port 3306 (root/root, database `learna_dev`),
+with a named volume so data persists across restarts. No native MySQL install needed.
 
 ### 3. Backend Setup
 
@@ -85,12 +77,13 @@ Navigate to the API project:
 cd src/backend/Learna.Api
 ```
 
-Update the connection string in [appsettings.Development.json](src/backend/Learna.Api/appsettings.Development.json) if needed:
+The connection string in [appsettings.Development.json](src/backend/Learna.Api/appsettings.Development.json)
+already matches the docker-compose database:
 
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Database=learna_dev;Username=postgres;Password=postgres"
+    "DefaultConnection": "Server=localhost;Database=learna_dev;User=root;Password=root;"
   }
 }
 ```
@@ -104,18 +97,20 @@ dotnet restore
 Apply database migrations:
 
 ```bash
-dotnet ef database update
+cd ../Learna.Infrastructure
+dotnet ef database update --startup-project ../Learna.Api --project .
 ```
 
 Run the API:
 
 ```bash
+cd ../Learna.Api
 dotnet run
 ```
 
 The API will be available at:
-- HTTP: http://localhost:5000
-- Swagger UI: http://localhost:5000/swagger
+- HTTP: http://localhost:5157
+- Swagger UI: http://localhost:5157/swagger
 
 ### 4. Frontend Setup
 
@@ -159,9 +154,9 @@ This will start both the backend and frontend concurrently.
 npm start
 ```
 
-- Backend runs on: http://localhost:5000
+- Backend runs on: http://localhost:5157
 - Frontend runs on: http://localhost:4200
-- Swagger UI: http://localhost:5000/swagger
+- Swagger UI: http://localhost:5157/swagger
 
 ### Running Tests
 
@@ -186,35 +181,58 @@ npm run build
 
 ## API Endpoints
 
+All endpoints below require a valid JWT (`Authorize: Bearer <token>`), obtained via
+`POST /api/auth/login`. Write endpoints (POST/PUT/DELETE) on Teachers, Subjects, and
+School Years/Terms additionally require the Admin role.
+
 ### Students
 
-- `GET /api/students` - Get all students
-- `GET /api/students/{id}` - Get student by ID
-- `POST /api/students` - Create a new student
-- `PUT /api/students/{id}` - Update a student
-- `DELETE /api/students/{id}` - Delete a student
+- `GET /api/students` / `GET /api/students/{id}` - List / get a student
+- `POST /api/students` / `PUT /api/students/{id}` / `DELETE /api/students/{id}` - Create / update / delete
+- `GET|POST /api/students/{id}/guardians` - List / add guardians for a student
+- `PUT|DELETE /api/students/{id}/guardians/{guardianId}` - Update / unlink a guardian
+- `POST /api/students/{id}/guardians/{guardianId}/link` - Link an existing guardian to another student
 
-See Swagger UI for complete API documentation: http://localhost:5000/swagger
+### Teachers
+
+- `GET /api/teachers` / `GET /api/teachers/{id}` - List / get a teacher
+- `POST /api/teachers` / `PUT /api/teachers/{id}` / `DELETE /api/teachers/{id}` - Create / update / delete (Admin)
+
+### Subjects
+
+- `GET /api/subjects` / `GET /api/subjects/{id}` - List / get a subject
+- `POST /api/subjects` / `PUT /api/subjects/{id}` / `DELETE /api/subjects/{id}` - Create / update / delete (Admin)
+
+### School Years & Terms
+
+- `GET /api/school-years` / `GET /api/school-years/{id}` - List / get a school year
+- `POST /api/school-years` / `PUT /api/school-years/{id}` / `DELETE /api/school-years/{id}` - Create / update / delete (Admin)
+- `GET|POST /api/school-years/{id}/terms` - List / add terms for a school year (Admin for POST)
+- `PUT|DELETE /api/school-years/{id}/terms/{termId}` - Update / delete a term (Admin)
+
+See Swagger UI for complete API documentation: http://localhost:5157/swagger
 
 ## Database Migrations
+
+Run these from `src/backend/Learna.Infrastructure`:
 
 ### Create a new migration
 
 ```bash
-cd src/backend/Learna.Api
-dotnet ef migrations add MigrationName -p ../Learna.Infrastructure
+cd src/backend/Learna.Infrastructure
+dotnet ef migrations add MigrationName --startup-project ../Learna.Api --project .
 ```
 
 ### Apply migrations
 
 ```bash
-dotnet ef database update
+dotnet ef database update --startup-project ../Learna.Api --project .
 ```
 
 ### Rollback migration
 
 ```bash
-dotnet ef database update PreviousMigrationName
+dotnet ef database update PreviousMigrationName --startup-project ../Learna.Api --project .
 ```
 
 ## Adding New Features
@@ -224,8 +242,8 @@ dotnet ef database update PreviousMigrationName
 1. Create entity in `Learna.Core/Entities/`
 2. Create interface in `Learna.Core/Interfaces/`
 3. Add `DbSet<T>` to `ApplicationDbContext`
-4. Create migration: `dotnet ef migrations add AddEntity -p Learna.Infrastructure -s Learna.Api`
-5. Update database: `dotnet ef database update -s Learna.Api`
+4. Create migration (from `Learna.Infrastructure`): `dotnet ef migrations add AddEntity --startup-project ../Learna.Api --project .`
+5. Update database: `dotnet ef database update --startup-project ../Learna.Api --project .`
 6. Create repository in `Learna.Infrastructure/Repositories/`
 7. Create DTOs in `Learna.Api/DTOs/`
 8. Create controller in `Learna.Api/Controllers/`
@@ -248,15 +266,14 @@ dotnet ef database update PreviousMigrationName
 - Change ports in [Properties/launchSettings.json](src/backend/Learna.Api/Properties/launchSettings.json)
 
 **Database connection failed:**
-- Ensure PostgreSQL is running
+- Ensure the MySQL container is running: `docker ps` should show `learna-mysql` as healthy; if not, `docker compose up -d`
 - Verify connection string in [appsettings.Development.json](src/backend/Learna.Api/appsettings.Development.json)
-- Check username and password
 
 **Migration failed:**
 ```bash
-# Drop and recreate database
-dotnet ef database drop
-dotnet ef database update
+# Drop and recreate database (from src/backend/Learna.Infrastructure)
+dotnet ef database drop --startup-project ../Learna.Api --project .
+dotnet ef database update --startup-project ../Learna.Api --project .
 ```
 
 ### Frontend Issues
@@ -267,7 +284,7 @@ ng serve --port 4300
 ```
 
 **CORS errors:**
-- Verify backend is running on http://localhost:5000
+- Verify backend is running on http://localhost:5157
 - Check CORS configuration in [Program.cs](src/backend/Learna.Api/Program.cs)
 
 **Module not found:**
@@ -279,14 +296,13 @@ npm install
 
 ## Future Enhancements
 
-- Authentication & Authorization (ASP.NET Core Identity + JWT)
-- Teacher management
+- Class/homeroom, subject group, and student enrollment management
 - Class scheduling with timetable generation
 - Room allocation
-- Subject management
 - Attendance tracking
 - Grading system
-- Parent portal
+- Parent and teacher login/portal
+- Localization (English/Thai UI)
 - Email notifications
 - Real-time updates (SignalR)
 - Reporting (PDF generation)

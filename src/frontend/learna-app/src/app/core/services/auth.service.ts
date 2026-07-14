@@ -1,7 +1,8 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, tap, catchError, throwError } from 'rxjs';
+import { Observable, tap, catchError, throwError } from 'rxjs';
 import { LoginRequest, LoginResponse, User } from '../../shared/models/auth.model';
 import { environment } from '../../../environments/environment';
 
@@ -16,11 +17,13 @@ export class AuthService {
   private readonly TOKEN_KEY = 'access_token';
   private readonly USER_KEY = 'current_user';
 
-  private currentUserSubject = new BehaviorSubject<User | null>(this.getUserFromStorage());
-  public currentUser$ = this.currentUserSubject.asObservable();
+  // Signal-based authentication state (this app runs zoneless - state driving
+  // templates must be signals; an RxJS BehaviorSubject's .value is not tracked
+  // reactively by computed(), so it would only ever reflect the value at first read)
+  private currentUserSignal = signal<User | null>(this.getUserFromStorage());
+  public currentUser$ = toObservable(this.currentUserSignal);
 
-  // Signal-based authentication state
-  public isAuthenticated = computed(() => this.currentUserSubject.value !== null);
+  public isAuthenticated = computed(() => this.currentUserSignal() !== null);
 
   private tokenRefreshTimer?: number;
 
@@ -28,7 +31,6 @@ export class AuthService {
     // Initialize user from storage on service creation
     const user = this.getUserFromStorage();
     if (user) {
-      this.currentUserSubject.next(user);
       this.scheduleTokenRefresh();
     }
   }
@@ -88,7 +90,7 @@ export class AuthService {
   }
 
   getCurrentUser(): User | null {
-    return this.currentUserSubject.value;
+    return this.currentUserSignal();
   }
 
   getAccessToken(): string | null {
@@ -112,8 +114,8 @@ export class AuthService {
     // Store user info
     localStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
 
-    // Update current user subject
-    this.currentUserSubject.next(response.user);
+    // Update current user signal
+    this.currentUserSignal.set(response.user);
   }
 
   private clearSession(): void {
@@ -127,8 +129,8 @@ export class AuthService {
       this.tokenRefreshTimer = undefined;
     }
 
-    // Update current user subject
-    this.currentUserSubject.next(null);
+    // Update current user signal
+    this.currentUserSignal.set(null);
 
     // Navigate to login
     this.router.navigate(['/login']);

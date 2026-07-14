@@ -19,4 +19,7 @@ public class User
 
     public int? GuardianId { get; set; }
     public Guardian? Guardian { get; set; }
+
+    public int? TeacherId { get; set; }
+    public Teacher? Teacher { get; set; }
 }

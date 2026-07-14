@@ -1,0 +1,96 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ isEditMode ? 'Edit School Year' : 'Add New School Year' }}</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="schoolYearForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading()">
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" placeholder="e.g. 2026/2027 or 2569">
+          <mat-error *ngIf="schoolYearForm.get('name')?.invalid">
+            {{ getErrorMessage('name') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Start Date</mat-label>
+          <input matInput [matDatepicker]="startPicker" formControlName="startDate">
+          <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+          <mat-error *ngIf="schoolYearForm.get('startDate')?.invalid">
+            {{ getErrorMessage('startDate') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>End Date</mat-label>
+          <input matInput [matDatepicker]="endPicker" formControlName="endDate">
+          <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+          <mat-error *ngIf="schoolYearForm.get('endDate')?.invalid">
+            {{ getErrorMessage('endDate') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row" *ngIf="isEditMode">
+        <mat-checkbox formControlName="isArchived">Archived</mat-checkbox>
+      </div>
+
+      <div class="form-actions">
+        <button mat-button type="button" (click)="onCancel()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="isLoading()">
+          {{ isEditMode ? 'Update' : 'Create' }} School Year
+        </button>
+      </div>
+    </form>
+
+    <div class="loading-container" *ngIf="isLoading()">
+      <p>{{ isEditMode ? 'Loading school year data...' : 'Saving...' }}</p>
+    </div>
+
+    <div class="terms-section" *ngIf="!isLoading()">
+      <h3 class="section-title">Terms</h3>
+
+      <p class="hint" *ngIf="!isEditMode">
+        Save the school year first, then terms can be added.
+      </p>
+
+      <ng-container *ngIf="isEditMode">
+        <div class="term-list" *ngIf="!isLoadingTerms()">
+          <div class="term-row" *ngFor="let term of terms()">
+            <div class="term-info">
+              <span class="term-name">{{ term.name }}</span>
+              <div class="term-meta">
+                {{ formatDate(term.startDate) }} &ndash; {{ formatDate(term.endDate) }}
+              </div>
+            </div>
+            <div class="term-actions">
+              <button mat-icon-button (click)="onEditTerm(term)" matTooltip="Edit term">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="onRemoveTerm(term)" matTooltip="Remove term">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <p class="hint" *ngIf="terms().length === 0">No terms added yet.</p>
+        </div>
+
+        <div class="loading-container" *ngIf="isLoadingTerms()">
+          <p>Loading terms...</p>
+        </div>
+
+        <button mat-stroked-button type="button" (click)="onAddTerm()">
+          <mat-icon>add</mat-icon>
+          Add Term
+        </button>
+      </ng-container>
+    </div>
+  </mat-card-content>
+</mat-card>
