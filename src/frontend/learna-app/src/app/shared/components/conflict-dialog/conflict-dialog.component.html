@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>{{ 'schedule.conflicts.title' | transloco }}</h2>
+<mat-dialog-content>
+  <p>{{ 'schedule.conflicts.description' | transloco }}</p>
+  <mat-list>
+    <mat-list-item *ngFor="let conflict of data.conflicts">
+      <span matListItemTitle>
+        {{ ('schedule.conflicts.type.' + conflict.type) | transloco }} &ndash; {{ conflict.subjectGroupName }}
+      </span>
+      <span matListItemLine>
+        {{ conflict.date }}, {{ conflict.startTime.slice(0, 5) }}&ndash;{{ conflict.endTime.slice(0, 5) }}
+        <ng-container *ngIf="conflict.detail">({{ conflict.detail }})</ng-container>
+      </span>
+    </mat-list-item>
+  </mat-list>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">{{ 'common.cancel' | transloco }}</button>
+  <button mat-raised-button color="warn" (click)="onSaveAnyway()">{{ 'schedule.conflicts.saveAnyway' | transloco }}</button>
+</mat-dialog-actions>

@@ -22,6 +22,9 @@ public class ApplicationDbContext : DbContext
     public DbSet<ClassMembership> ClassMemberships { get; set; }
     public DbSet<SubjectGroup> SubjectGroups { get; set; }
     public DbSet<Enrollment> Enrollments { get; set; }
+    public DbSet<Room> Rooms { get; set; }
+    public DbSet<LessonRule> LessonRules { get; set; }
+    public DbSet<Lesson> Lessons { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
@@ -203,6 +206,64 @@ public class ApplicationDbContext : DbContext
                 .WithMany(sg => sg.Enrollments)
                 .HasForeignKey(e => e.SubjectGroupId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Room configuration
+        modelBuilder.Entity<Room>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Building).HasMaxLength(200);
+            entity.Property(e => e.Description).HasMaxLength(1000);
+        });
+
+        // LessonRule configuration (recurring weekly rule that generates Lessons)
+        modelBuilder.Entity<LessonRule>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.SubjectGroupId);
+
+            entity.HasOne(e => e.SubjectGroup)
+                .WithMany()
+                .HasForeignKey(e => e.SubjectGroupId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Room)
+                .WithMany()
+                .HasForeignKey(e => e.RoomId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // Lesson configuration (materialized class session, rule-sourced or one-off)
+        modelBuilder.Entity<Lesson>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Note).HasMaxLength(1000);
+            entity.HasIndex(e => e.Date);
+            entity.HasIndex(e => e.SubjectGroupId);
+            entity.HasIndex(e => e.RoomId);
+            entity.HasIndex(e => e.TeacherId);
+            entity.HasIndex(e => e.SourceRuleId);
+
+            entity.HasOne(e => e.SubjectGroup)
+                .WithMany()
+                .HasForeignKey(e => e.SubjectGroupId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Room)
+                .WithMany()
+                .HasForeignKey(e => e.RoomId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(e => e.Teacher)
+                .WithMany()
+                .HasForeignKey(e => e.TeacherId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(e => e.SourceRule)
+                .WithMany(r => r.Lessons)
+                .HasForeignKey(e => e.SourceRuleId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         // User configuration

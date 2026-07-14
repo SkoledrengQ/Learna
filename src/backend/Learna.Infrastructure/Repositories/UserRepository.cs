@@ -20,6 +20,7 @@ public class UserRepository : IUserRepository
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
             .Include(u => u.Student)
+            .Include(u => u.Teacher)
             .FirstOrDefaultAsync(u => u.Id == id);
     }
 

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 using Learna.Infrastructure.Data;
 using Learna.Core.Interfaces;
 using Learna.Infrastructure.Repositories;
@@ -10,7 +11,12 @@ using Learna.Infrastructure.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Readable enum JSON ("Cancelled" instead of 1) for LessonStatus/DayOfWeek/ConflictType etc.
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 // Configure CORS
 builder.Services.AddCors(options =>
@@ -44,12 +50,16 @@ builder.Services.AddScoped<ISchoolClassRepository, SchoolClassRepository>();
 builder.Services.AddScoped<IClassMembershipRepository, ClassMembershipRepository>();
 builder.Services.AddScoped<ISubjectGroupRepository, SubjectGroupRepository>();
 builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+builder.Services.AddScoped<ILessonRuleRepository, LessonRuleRepository>();
+builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
 // Register services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ILessonSchedulingService, LessonSchedulingService>();
 
 // Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");

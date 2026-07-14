@@ -46,6 +46,8 @@ export class ApiService {
     }
 
     console.error(errorMessage);
-    return throwError(() => new Error(errorMessage));
+    // Preserve the HTTP status and raw response body (e.g. a 409 conflict list) on the
+    // thrown error so callers can branch on them, not just read the generic message.
+    return throwError(() => Object.assign(new Error(errorMessage), { status: error.status, error: error.error }));
   }
 }

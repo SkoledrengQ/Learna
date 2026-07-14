@@ -103,5 +103,45 @@
         </button>
       </div>
     </div>
+
+    <div class="roster-section" *ngIf="isEditMode && !isLoading()">
+      <div class="section-header">
+        <h3 class="section-title">{{ 'admin.subjectGroups.rules.section' | transloco }}</h3>
+      </div>
+
+      <div class="roster-list" *ngIf="!isLoadingRules()">
+        <div class="roster-row" *ngFor="let rule of rules()">
+          <div class="roster-info">
+            <span class="roster-name">
+              {{ ('schedule.days.' + rule.dayOfWeek) | transloco }}
+              {{ rule.startTime.slice(0, 5) }}&ndash;{{ rule.endTime.slice(0, 5) }}
+            </span>
+            <span class="roster-meta">
+              {{ rule.roomName || ('common.none' | transloco) }}
+              &middot; {{ rule.startDate }} &ndash; {{ rule.endDate }}
+            </span>
+          </div>
+          <div class="roster-actions">
+            <button mat-icon-button (click)="onEditRule(rule)" [matTooltip]="'common.edit' | transloco">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="onDeleteRule(rule)" [matTooltip]="'common.delete' | transloco">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <p class="hint" *ngIf="rules().length === 0">{{ 'admin.subjectGroups.rules.noneYet' | transloco }}</p>
+      </div>
+
+      <div class="loading-container" *ngIf="isLoadingRules()">
+        <p>{{ 'admin.subjectGroups.rules.loading' | transloco }}</p>
+      </div>
+
+      <button mat-stroked-button type="button" (click)="onAddRule()">
+        <mat-icon>add</mat-icon>
+        {{ 'admin.subjectGroups.rules.addRule' | transloco }}
+      </button>
+    </div>
   </mat-card-content>
 </mat-card>

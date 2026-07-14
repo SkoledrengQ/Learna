@@ -28,6 +28,13 @@ public class EnrollmentRepository : IEnrollmentRepository
         return await query.ToListAsync();
     }
 
+    public async Task<IEnumerable<Enrollment>> GetActiveByStudentIdAsync(int studentId)
+    {
+        return await _context.Enrollments
+            .Where(e => e.StudentId == studentId && e.UnenrolledDate == null)
+            .ToListAsync();
+    }
+
     public async Task<Enrollment?> GetActiveBySubjectGroupAndStudentAsync(int subjectGroupId, int studentId)
     {
         return await _context.Enrollments

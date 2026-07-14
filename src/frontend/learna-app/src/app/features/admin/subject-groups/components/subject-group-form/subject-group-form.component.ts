@@ -17,16 +17,21 @@ import { SubjectGroupService } from '../../../services/subject-group.service';
 import { SchoolYearService } from '../../../services/school-year.service';
 import { SubjectService } from '../../../services/subject.service';
 import { TeacherService } from '../../../services/teacher.service';
+import { LessonRuleService } from '../../../services/lesson-rule.service';
 import { CreateSubjectGroupDto, UpdateSubjectGroupDto, Enrollment } from '../../../../../shared/models/subject-group.model';
 import { SchoolYear, Term } from '../../../../../shared/models/school-year.model';
 import { Subject as SubjectModel } from '../../../../../shared/models/subject.model';
 import { Teacher } from '../../../../../shared/models/teacher.model';
+import { LessonRule } from '../../../../../shared/models/lesson-rule.model';
 import { getDisplayName } from '../../../../../shared/models/student.model';
 import { ConfirmDialogComponent } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { ConflictDialogComponent } from '../../../../../shared/components/conflict-dialog/conflict-dialog.component';
 import { EnrollClassDialogComponent } from '../enroll-class-dialog/enroll-class-dialog.component';
 import { EnrollStudentsDialogComponent } from '../enroll-students-dialog/enroll-students-dialog.component';
+import { LessonRuleFormDialogComponent } from '../lesson-rule-form-dialog/lesson-rule-form-dialog.component';
 import { LanguageService } from '../../../../../core/services/language.service';
 import { LocalizedDatePipe } from '../../../../../shared/pipes/localized-date.pipe';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-subject-group-form',
@@ -57,6 +62,7 @@ export class SubjectGroupFormComponent implements OnInit {
   private schoolYearService = inject(SchoolYearService);
   private subjectService = inject(SubjectService);
   private teacherService = inject(TeacherService);
+  private lessonRuleService = inject(LessonRuleService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private dialog = inject(MatDialog);
@@ -80,6 +86,9 @@ export class SubjectGroupFormComponent implements OnInit {
   enrollments = signal<Enrollment[]>([]);
   showHistorical = signal(false);
   isLoadingEnrollments = signal(false);
+
+  rules = signal<LessonRule[]>([]);
+  isLoadingRules = signal(false);
 
   ngOnInit(): void {
     this.initializeForm();
@@ -114,6 +123,7 @@ export class SubjectGroupFormComponent implements OnInit {
       this.groupForm.get('termId')?.disable();
       this.loadGroup(this.groupId);
       this.loadEnrollments(this.groupId);
+      this.loadRules(this.groupId);
     }
   }
 
@@ -319,6 +329,108 @@ export class SubjectGroupFormComponent implements OnInit {
             this.snackBar.open(this.transloco.translate('admin.subjectGroups.unenrollFailed'), this.transloco.translate('common.close'), { duration: 3000 });
           }
         });
+      }
+    });
+  }
+
+  loadRules(groupId: number): void {
+    this.isLoadingRules.set(true);
+    this.lessonRuleService.getRules(groupId).subscribe({
+      next: (rules) => {
+        this.rules.set(rules);
+        this.isLoadingRules.set(false);
+      },
+      error: (error) => {
+        console.error('Error loading rules:', error);
+        this.snackBar.open(this.transloco.translate('admin.subjectGroups.rules.loadFailed'), this.transloco.translate('common.close'), { duration: 3000 });
+        this.isLoadingRules.set(false);
+      }
+    });
+  }
+
+  onAddRule(): void {
+    if (!this.groupId) return;
+
+    const dialogRef = this.dialog.open(LessonRuleFormDialogComponent, { width: '500px', data: {} });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) return;
+      this.saveRuleWithConflictHandling(
+        (force) => this.lessonRuleService.createRule(this.groupId!, { ...result, force }),
+        'admin.subjectGroups.rules.addSuccess',
+        'admin.subjectGroups.rules.addFailed'
+      );
+    });
+  }
+
+  onEditRule(rule: LessonRule): void {
+    if (!this.groupId) return;
+
+    const dialogRef = this.dialog.open(LessonRuleFormDialogComponent, { width: '500px', data: { rule } });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) return;
+      this.saveRuleWithConflictHandling(
+        (force) => this.lessonRuleService.updateRule(this.groupId!, rule.id, { ...result, force }),
+        'admin.subjectGroups.rules.updateSuccess',
+        'admin.subjectGroups.rules.updateFailed'
+      );
+    });
+  }
+
+  onDeleteRule(rule: LessonRule): void {
+    if (!this.groupId) return;
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: this.transloco.translate('admin.subjectGroups.rules.deleteTitle'),
+        message: this.transloco.translate('admin.subjectGroups.rules.deleteMessage')
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.lessonRuleService.deleteRule(this.groupId!, rule.id).subscribe({
+          next: () => {
+            this.snackBar.open(this.transloco.translate('admin.subjectGroups.rules.deleteSuccess'), this.transloco.translate('common.close'), { duration: 3000 });
+            this.loadRules(this.groupId!);
+          },
+          error: (error) => {
+            console.error('Error deleting rule:', error);
+            this.snackBar.open(this.transloco.translate('admin.subjectGroups.rules.deleteFailed'), this.transloco.translate('common.close'), { duration: 3000 });
+          }
+        });
+      }
+    });
+  }
+
+  private saveRuleWithConflictHandling(action: (force: boolean) => Observable<LessonRule>, successKey: string, failKey: string): void {
+    action(false).subscribe({
+      next: () => {
+        this.snackBar.open(this.transloco.translate(successKey), this.transloco.translate('common.close'), { duration: 3000 });
+        this.loadRules(this.groupId!);
+      },
+      error: (error: any) => {
+        if (error.status === 409 && error.error?.conflicts) {
+          const dialogRef = this.dialog.open(ConflictDialogComponent, { width: '520px', data: { conflicts: error.error.conflicts } });
+          dialogRef.afterClosed().subscribe(confirmed => {
+            if (!confirmed) return;
+            action(true).subscribe({
+              next: () => {
+                this.snackBar.open(this.transloco.translate(successKey), this.transloco.translate('common.close'), { duration: 3000 });
+                this.loadRules(this.groupId!);
+              },
+              error: (forceError: any) => {
+                console.error('Error force-saving rule:', forceError);
+                this.snackBar.open(forceError.error || this.transloco.translate(failKey), this.transloco.translate('common.close'), { duration: 5000 });
+              }
+            });
+          });
+        } else {
+          console.error('Error saving rule:', error);
+          this.snackBar.open(error.error || this.transloco.translate(failKey), this.transloco.translate('common.close'), { duration: 5000 });
+        }
       }
     });
   }

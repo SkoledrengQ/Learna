@@ -85,5 +85,26 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () => import('./subject-groups/components/subject-group-form/subject-group-form.component').then(m => m.SubjectGroupFormComponent)
       }
     ]
+  },
+  {
+    path: 'rooms',
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./rooms/components/room-list/room-list.component').then(m => m.RoomListComponent)
+      },
+      {
+        path: 'new',
+        loadComponent: () => import('./rooms/components/room-form/room-form.component').then(m => m.RoomFormComponent)
+      },
+      {
+        path: ':id',
+        loadComponent: () => import('./rooms/components/room-form/room-form.component').then(m => m.RoomFormComponent)
+      }
+    ]
+  },
+  {
+    path: 'lessons',
+    loadComponent: () => import('./lessons/components/lesson-list/lesson-list.component').then(m => m.LessonListComponent)
   }
 ];

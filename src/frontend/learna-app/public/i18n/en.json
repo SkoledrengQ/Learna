@@ -14,7 +14,8 @@
     "unassigned": "Unassigned",
     "showHistorical": "Show historical",
     "actions": "Actions",
-    "language": "Language"
+    "language": "Language",
+    "saving": "Saving..."
   },
   "nav": {
     "students": "Students",
@@ -24,7 +25,30 @@
     "schoolYears": "School Years",
     "classes": "Classes",
     "subjectGroups": "Subject Groups",
+    "rooms": "Rooms",
+    "lessons": "Lessons",
     "logout": "Logout"
+  },
+  "schedule": {
+    "days": {
+      "Sunday": "Sunday",
+      "Monday": "Monday",
+      "Tuesday": "Tuesday",
+      "Wednesday": "Wednesday",
+      "Thursday": "Thursday",
+      "Friday": "Friday",
+      "Saturday": "Saturday"
+    },
+    "conflicts": {
+      "title": "Scheduling conflicts found",
+      "description": "The following lessons overlap with what you're trying to save. You can go back and adjust, or save anyway.",
+      "type": {
+        "Teacher": "Teacher conflict",
+        "Room": "Room conflict",
+        "Student": "Student conflict"
+      },
+      "saveAnyway": "Save anyway"
+    }
   },
   "auth": {
     "loginTitle": "Learna Login",
@@ -335,7 +359,87 @@
       "searchLabel": "Search by name or student ID",
       "anyClassHint": "Students may be from any class.",
       "noMatchingStudents": "No matching students.",
-      "enrollButton": "Enroll {{count}} Student{{plural}}"
+      "enrollButton": "Enroll {{count}} Student{{plural}}",
+      "rules": {
+        "section": "Schedule Rules",
+        "addRule": "Add Rule",
+        "noneYet": "No schedule rules added yet.",
+        "loading": "Loading schedule rules...",
+        "loadFailed": "Failed to load schedule rules",
+        "editTitle": "Edit Schedule Rule",
+        "addTitle": "Add Schedule Rule",
+        "dayOfWeek": "Day of Week",
+        "startTime": "Start Time",
+        "endTime": "End Time",
+        "room": "Room",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "dateHint": "Leave blank to use the term's dates",
+        "addSuccess": "Schedule rule added",
+        "addFailed": "Failed to add schedule rule",
+        "updateSuccess": "Schedule rule updated",
+        "updateFailed": "Failed to update schedule rule",
+        "deleteTitle": "Delete Schedule Rule",
+        "deleteMessage": "Delete this schedule rule? Future lessons it generated will be removed; past and individually-edited lessons are kept.",
+        "deleteSuccess": "Schedule rule deleted",
+        "deleteFailed": "Failed to delete schedule rule"
+      }
+    },
+    "rooms": {
+      "title": "Rooms",
+      "addNew": "Add New Room",
+      "name": "Name",
+      "building": "Building",
+      "capacity": "Capacity",
+      "description": "Description",
+      "noRoomsFound": "No rooms found. Click \"Add New Room\" to create one.",
+      "loadingRooms": "Loading rooms...",
+      "loadFailed": "Failed to load rooms",
+      "deleteTitle": "Delete Room",
+      "deleteMessage": "Are you sure you want to delete {{name}}?",
+      "deleteSuccess": "Room deleted successfully",
+      "deleteFailed": "Failed to delete room",
+      "editTitle": "Edit Room",
+      "addTitle": "Add New Room",
+      "loadingRoomData": "Loading room data...",
+      "loadFailedSingle": "Failed to load room",
+      "createSuccess": "Room created successfully",
+      "createFailed": "Failed to create room",
+      "updateSuccess": "Room updated successfully",
+      "updateFailed": "Failed to update room",
+      "updateRoom": "Update Room",
+      "createRoom": "Create Room",
+      "placeholderName": "e.g. ห้อง 204, Science Lab"
+    },
+    "lessons": {
+      "title": "Lessons",
+      "addOneOff": "Create One-off Lesson",
+      "editTitle": "Edit Lesson",
+      "addTitle": "Create One-off Lesson",
+      "subjectGroup": "Subject Group",
+      "date": "Date",
+      "time": "Time",
+      "status": "Status",
+      "statusScheduled": "Scheduled",
+      "statusCancelled": "Cancelled",
+      "modified": "Modified",
+      "modifiedTooltip": "This lesson was individually edited and no longer matches its rule",
+      "note": "Note",
+      "from": "From",
+      "to": "To",
+      "allGroups": "All subject groups",
+      "allRooms": "All rooms",
+      "allTeachers": "All teachers",
+      "noLessonsFound": "No lessons found for the selected filters.",
+      "loadingLessons": "Loading lessons...",
+      "loadFailed": "Failed to load lessons",
+      "createSuccess": "Lesson created",
+      "createFailed": "Failed to create lesson",
+      "updateSuccess": "Lesson updated",
+      "updateFailed": "Failed to update lesson",
+      "cancelTooltip": "Cancel lesson",
+      "cancelSuccess": "Lesson cancelled",
+      "cancelFailed": "Failed to cancel lesson"
     }
   }
 }

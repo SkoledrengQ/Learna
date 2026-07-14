@@ -1,0 +1,57 @@
+<h2 mat-dialog-title>{{ (isEditMode ? 'admin.subjectGroups.rules.editTitle' : 'admin.subjectGroups.rules.addTitle') | transloco }}</h2>
+
+<form [formGroup]="ruleForm" (ngSubmit)="onSave()">
+  <mat-dialog-content>
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'admin.subjectGroups.rules.dayOfWeek' | transloco }}</mat-label>
+        <mat-select formControlName="dayOfWeek">
+          <mat-option *ngFor="let day of days" [value]="day">{{ ('schedule.days.' + day) | transloco }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'admin.subjectGroups.rules.startTime' | transloco }}</mat-label>
+        <input matInput type="time" formControlName="startTime">
+        <mat-error *ngIf="ruleForm.get('startTime')?.invalid">{{ 'validation.required' | transloco }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'admin.subjectGroups.rules.endTime' | transloco }}</mat-label>
+        <input matInput type="time" formControlName="endTime">
+        <mat-error *ngIf="ruleForm.get('endTime')?.invalid">{{ 'validation.required' | transloco }}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'admin.subjectGroups.rules.room' | transloco }}</mat-label>
+        <mat-select formControlName="roomId">
+          <mat-option [value]="null">{{ 'common.none' | transloco }}</mat-option>
+          <mat-option *ngFor="let room of rooms()" [value]="room.id">{{ room.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'admin.subjectGroups.rules.startDate' | transloco }}</mat-label>
+        <input matInput type="date" formControlName="startDate">
+        <mat-hint>{{ 'admin.subjectGroups.rules.dateHint' | transloco }}</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'admin.subjectGroups.rules.endDate' | transloco }}</mat-label>
+        <input matInput type="date" formControlName="endDate">
+        <mat-hint>{{ 'admin.subjectGroups.rules.dateHint' | transloco }}</mat-hint>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancel()">{{ 'common.cancel' | transloco }}</button>
+    <button mat-raised-button color="primary" type="submit">{{ (isEditMode ? 'common.save' : 'common.add') | transloco }}</button>
+  </mat-dialog-actions>
+</form>
