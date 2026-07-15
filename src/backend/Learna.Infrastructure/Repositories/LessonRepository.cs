@@ -21,6 +21,7 @@ public class LessonRepository : ILessonRepository
             .ThenInclude(g => g.Subject)
             .Include(l => l.Room)
             .Include(l => l.Teacher)
+            .Include(l => l.AttendanceRecords)
             .AsQueryable();
 
         if (from.HasValue)
@@ -54,6 +55,7 @@ public class LessonRepository : ILessonRepository
             .ThenInclude(g => g.Subject)
             .Include(l => l.Room)
             .Include(l => l.Teacher)
+            .Include(l => l.AttendanceRecords)
             .FirstOrDefaultAsync(l => l.Id == id);
     }
 

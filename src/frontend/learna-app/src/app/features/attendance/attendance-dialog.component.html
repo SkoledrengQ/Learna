@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>{{ 'attendance.registerTitle' | transloco }}</h2>
+<mat-dialog-content>
+  <p *ngIf="loading()">{{ 'common.loading' | transloco }}</p>
+  <ng-container *ngIf="attendance() as data">
+    <p class="readonly" *ngIf="!data.canEdit">{{ 'attendance.editWindowClosed' | transloco:{ date: (data.editDeadline | localizedDate:language.activeLang()) } }}</p>
+    <button mat-stroked-button type="button" *ngIf="data.canEdit" (click)="markAllPresent()">{{ 'attendance.markAllPresent' | transloco }}</button>
+    <div class="roster-row" *ngFor="let row of rows()">
+      <div class="student"><strong>{{ row.name }}</strong><span *ngIf="row.nickname"> ({{ row.nickname }})</span><small *ngIf="row.recordedBy">{{ 'attendance.lastRecorded' | transloco:{ who: row.recordedBy, when: (row.updatedAt | localizedDate:language.activeLang()) } }}</small></div>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'attendance.status' | transloco }}</mat-label>
+        <mat-select [(ngModel)]="row.status" [disabled]="!data.canEdit">
+          <mat-option *ngFor="let status of statuses" [value]="status">{{ ('attendance.statuses.' + status) | transloco }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>{{ 'attendance.note' | transloco }}</mat-label><input matInput [(ngModel)]="row.note" [disabled]="!data.canEdit"></mat-form-field>
+    </div>
+  </ng-container>
+</mat-dialog-content>
+<mat-dialog-actions align="end"><button mat-button mat-dialog-close>{{ 'common.close' | transloco }}</button><button mat-raised-button color="primary" *ngIf="attendance()?.canEdit" [disabled]="invalid() || saving()" (click)="save()">{{ 'common.save' | transloco }}</button></mat-dialog-actions>

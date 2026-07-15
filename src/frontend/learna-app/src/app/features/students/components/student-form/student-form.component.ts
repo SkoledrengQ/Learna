@@ -18,6 +18,7 @@ import { CreateStudentDto, UpdateStudentDto, getDisplayName } from '../../../../
 import { StudentGuardian } from '../../../../shared/models/guardian.model';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { GuardianFormDialogComponent } from '../guardian-form-dialog/guardian-form-dialog.component';
+import { AttendanceSummaryComponent } from '../../../attendance/attendance-summary.component';
 
 @Component({
   selector: 'app-student-form',
@@ -35,7 +36,8 @@ import { GuardianFormDialogComponent } from '../guardian-form-dialog/guardian-fo
     MatDialogModule,
     MatSnackBarModule,
     MatTooltipModule,
-    TranslocoModule
+    TranslocoModule,
+    AttendanceSummaryComponent
   ],
   templateUrl: './student-form.component.html',
   styleUrl: './student-form.component.scss'

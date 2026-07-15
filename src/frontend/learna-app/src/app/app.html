@@ -15,6 +15,10 @@
       {{ 'nav.schedule' | transloco }}
     </button>
 
+    <button mat-button routerLink="/attendance" *ngIf="isStudentLinked()">
+      <mat-icon>fact_check</mat-icon>{{ 'nav.attendance' | transloco }}
+    </button>
+
     <ng-container *ngIf="isAdmin()">
       <button mat-button [matMenuTriggerFor]="adminMenu">
         <mat-icon>admin_panel_settings</mat-icon>

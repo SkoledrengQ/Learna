@@ -11,8 +11,10 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
     public ApplicationDbContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+        var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+            ?? "Server=localhost;Database=learna_dev;User=root;Password=root;";
         optionsBuilder.UseMySql(
-            "Server=localhost;Database=learna_dev;User=root;Password=root;",
+            connectionString,
             new MySqlServerVersion(new Version(8, 0, 21)));
 
         return new ApplicationDbContext(optionsBuilder.Options);

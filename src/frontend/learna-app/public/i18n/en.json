@@ -15,11 +15,13 @@
     "showHistorical": "Show historical",
     "actions": "Actions",
     "language": "Language",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "loading": "Loading..."
   },
   "nav": {
     "students": "Students",
     "schedule": "Schedule",
+    "attendance": "Attendance",
     "admin": "Admin",
     "teachers": "Teachers",
     "subjects": "Subjects",
@@ -171,6 +173,31 @@
     "removeFailed": "Failed to remove guardian",
     "placeholderTitle": "e.g. นาง, Mr.",
     "placeholderRelationship": "e.g. mother, father"
+  },
+  "attendance": {
+    "registerTitle": "Register attendance",
+    "register": "Register attendance",
+    "viewOrEdit": "View or edit attendance",
+    "registered": "Attendance registered",
+    "notYet": "Attendance not yet registered",
+    "markAllPresent": "Mark all present",
+    "status": "Status",
+    "note": "Note",
+    "lastRecorded": "Last recorded by {{who}} at {{when}}",
+    "editWindowClosed": "This lesson is outside the attendance edit window (closed {{date}}). Existing records are read-only.",
+    "saved": "Attendance saved",
+    "loadFailed": "Failed to load attendance",
+    "saveFailed": "Failed to save attendance",
+    "summaryTitle": "Attendance summary",
+    "presence": "Presence",
+    "excused": "Excused absences",
+    "unexcused": "Unexcused absences",
+    "recordedLessons": "Recorded lessons",
+    "bySubject": "By subject group",
+    "subject": "Subject",
+    "recent": "Recent attendance",
+    "lesson": "Lesson",
+    "statuses": { "Present": "Present", "Absent": "Absent", "Late": "Late", "ExcusedAbsence": "Excused absence", "Sick": "Sick", "ApprovedLeave": "Approved leave" }
   },
   "admin": {
     "teachers": {

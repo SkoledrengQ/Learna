@@ -95,6 +95,9 @@
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>{{ 'common.actions' | transloco }}</th>
           <td mat-cell *matCellDef="let lesson">
+            <button mat-icon-button color="primary" (click)="onAttendance(lesson)" *ngIf="lesson.status !== 'Cancelled'" [matTooltip]="'attendance.viewOrEdit' | transloco">
+              <mat-icon>fact_check</mat-icon>
+            </button>
             <button mat-icon-button color="primary" (click)="onEditLesson(lesson)" [matTooltip]="'common.edit' | transloco">
               <mat-icon>edit</mat-icon>
             </button>

@@ -18,6 +18,8 @@ export interface Lesson {
   note?: string | null;
   sourceRuleId?: number | null;
   isModified: boolean;
+  attendanceRegistered: boolean;
+  canManageAttendance: boolean;
 }
 
 export interface CreateLessonDto {

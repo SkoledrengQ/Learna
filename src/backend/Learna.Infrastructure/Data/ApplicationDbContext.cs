@@ -25,6 +25,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Room> Rooms { get; set; }
     public DbSet<LessonRule> LessonRules { get; set; }
     public DbSet<Lesson> Lessons { get; set; }
+    public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
@@ -264,6 +265,27 @@ public class ApplicationDbContext : DbContext
                 .WithMany(r => r.Lessons)
                 .HasForeignKey(e => e.SourceRuleId)
                 .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<AttendanceRecord>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.LessonId, e.StudentId }).IsUnique();
+            entity.HasIndex(e => e.StudentId);
+            entity.Property(e => e.Note).HasMaxLength(1000);
+
+            entity.HasOne(e => e.Lesson)
+                .WithMany(l => l.AttendanceRecords)
+                .HasForeignKey(e => e.LessonId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Student)
+                .WithMany(s => s.AttendanceRecords)
+                .HasForeignKey(e => e.StudentId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.RecordedByUser)
+                .WithMany()
+                .HasForeignKey(e => e.RecordedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         // User configuration

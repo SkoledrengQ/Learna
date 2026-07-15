@@ -19,7 +19,9 @@ public record LessonDto(
     LessonStatus Status,
     string? Note,
     int? SourceRuleId,
-    bool IsModified
+    bool IsModified,
+    bool AttendanceRegistered,
+    bool CanManageAttendance
 );
 
 public record CreateLessonDto(

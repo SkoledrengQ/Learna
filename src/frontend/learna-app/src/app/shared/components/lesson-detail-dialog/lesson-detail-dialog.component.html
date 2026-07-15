@@ -35,5 +35,8 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
+  <button mat-stroked-button color="primary" *ngIf="lesson.canManageAttendance && lesson.status !== 'Cancelled'" (click)="openAttendance()">
+    <mat-icon>fact_check</mat-icon>{{ (lesson.attendanceRegistered ? 'attendance.viewOrEdit' : 'attendance.register') | transloco }}
+  </button>
   <button mat-raised-button color="primary" (click)="onClose()">{{ 'common.close' | transloco }}</button>
 </mat-dialog-actions>

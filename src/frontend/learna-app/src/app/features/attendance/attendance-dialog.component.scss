@@ -1,0 +1,5 @@
+.readonly { padding: 12px; border-radius: 4px; background: #fff3cd; }
+.roster-row { display: grid; grid-template-columns: minmax(180px, 1fr) 190px minmax(180px, 1fr); gap: 12px; align-items: center; margin-top: 12px; }
+.student small { display: block; color: #666; margin-top: 4px; }
+mat-dialog-content { min-width: min(780px, 80vw); }
+@media (max-width: 700px) { .roster-row { grid-template-columns: 1fr; gap: 0; } mat-dialog-content { min-width: auto; } }

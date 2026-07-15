@@ -24,6 +24,7 @@ import { SubjectGroup } from '../../../../../shared/models/subject-group.model';
 import { getDisplayName } from '../../../../../shared/models/student.model';
 import { ConflictDialogComponent } from '../../../../../shared/components/conflict-dialog/conflict-dialog.component';
 import { LessonFormDialogComponent } from '../lesson-form-dialog/lesson-form-dialog.component';
+import { AttendanceDialogComponent } from '../../../../attendance/attendance-dialog.component';
 
 @Component({
   selector: 'app-lesson-list',
@@ -149,6 +150,10 @@ export class LessonListComponent implements OnInit {
         this.snackBar.open(this.transloco.translate('admin.lessons.cancelFailed'), this.transloco.translate('common.close'), { duration: 3000 });
       }
     });
+  }
+
+  onAttendance(lesson: Lesson): void {
+    this.dialog.open(AttendanceDialogComponent, { width: '860px', maxWidth: '96vw', data: { lessonId: lesson.id } });
   }
 
   private saveWithConflictHandling(action: (force: boolean) => Observable<Lesson>, successKey: string, failKey: string): void {

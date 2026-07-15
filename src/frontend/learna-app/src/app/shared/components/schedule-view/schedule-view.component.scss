@@ -151,6 +151,8 @@
       background-color: #f9a825;
     }
 
+    .attendance-indicator { font-size: 10px; font-weight: 600; }
+
     &.cancelled {
       background-color: #f2f2f2;
       border-left-color: #aaa;
@@ -254,6 +256,8 @@
         height: 14px;
       }
     }
+
+    .attendance-indicator { display: inline-block; margin-top: 4px; font-size: 11px; color: #455a64; }
 
     &.cancelled {
       opacity: 0.65;

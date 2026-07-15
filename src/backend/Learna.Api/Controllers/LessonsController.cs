@@ -22,7 +22,7 @@ public class LessonsController : ControllerBase
 
     internal static string ComposeName(PersonName name) => $"{name.FirstName} {name.LastName}";
 
-    internal static LessonDto ToDto(Lesson lesson) => new(
+    internal static LessonDto ToDto(Lesson lesson, bool canManageAttendance = false) => new(
         lesson.Id,
         lesson.SubjectGroupId,
         lesson.SubjectGroup.Name,
@@ -38,7 +38,9 @@ public class LessonsController : ControllerBase
         lesson.Status,
         lesson.Note,
         lesson.SourceRuleId,
-        lesson.IsModified
+        lesson.IsModified,
+        lesson.AttendanceRecords.Count > 0,
+        canManageAttendance
     );
 
     private static LessonConflictDto ToConflictDto(LessonConflict c) => new(
@@ -51,7 +53,8 @@ public class LessonsController : ControllerBase
         [FromQuery] int? subjectGroupId, [FromQuery] int? roomId, [FromQuery] int? teacherId)
     {
         var lessons = await _lessonRepository.GetAllAsync(from, to, subjectGroupId, roomId, teacherId);
-        return Ok(lessons.Select(ToDto));
+        var canManage = User.IsInRole("Admin");
+        return Ok(lessons.Select(l => ToDto(l, canManage)));
     }
 
     [HttpPost]
@@ -73,7 +76,7 @@ public class LessonsController : ControllerBase
         }
 
         var created = await _lessonRepository.GetByIdAsync(result.Lesson.Id) ?? result.Lesson;
-        return CreatedAtAction(nameof(GetAll), null, ToDto(created));
+        return CreatedAtAction(nameof(GetAll), null, ToDto(created, true));
     }
 
     [HttpPut("{id}")]
@@ -100,7 +103,7 @@ public class LessonsController : ControllerBase
         }
 
         var updated = await _lessonRepository.GetByIdAsync(result.Lesson.Id) ?? result.Lesson;
-        return Ok(ToDto(updated));
+        return Ok(ToDto(updated, true));
     }
 
     [HttpDelete("{id}")]

@@ -20,4 +20,5 @@ public class Student
     public User? User { get; set; }
 
     public ICollection<StudentGuardian> StudentGuardians { get; set; } = new List<StudentGuardian>();
+    public ICollection<AttendanceRecord> AttendanceRecords { get; set; } = new List<AttendanceRecord>();
 }

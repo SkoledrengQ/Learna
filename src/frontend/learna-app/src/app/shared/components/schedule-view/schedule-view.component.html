@@ -68,6 +68,7 @@
               <span class="lesson-teacher" *ngIf="item.lesson.teacherName">{{ item.lesson.teacherName }}</span>
               <span class="cancelled-label" *ngIf="item.lesson.status === 'Cancelled'">{{ 'admin.lessons.statusCancelled' | transloco }}</span>
               <span class="modified-dot" *ngIf="item.lesson.isModified && item.lesson.status !== 'Cancelled'"></span>
+              <span class="attendance-indicator" *ngIf="attendanceRelevant(item.lesson)">{{ (item.lesson.attendanceRegistered ? 'attendance.registered' : 'attendance.notYet') | transloco }}</span>
             </div>
           </div>
         </div>
@@ -99,6 +100,7 @@
                 <span class="modified-chip" *ngIf="lesson.isModified && lesson.status !== 'Cancelled'">
                   <mat-icon>edit_note</mat-icon>{{ 'admin.lessons.modified' | transloco }}
                 </span>
+                <span class="attendance-indicator" *ngIf="attendanceRelevant(lesson)">{{ (lesson.attendanceRegistered ? 'attendance.registered' : 'attendance.notYet') | transloco }}</span>
               </div>
             </div>
           </div>

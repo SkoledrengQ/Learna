@@ -1,12 +1,13 @@
 import { Component, Inject, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LanguageService } from '../../../core/services/language.service';
 import { Lesson } from '../../models/lesson.model';
 import { LocalizedDatePipe } from '../../pipes/localized-date.pipe';
+import { AttendanceDialogComponent } from '../../../features/attendance/attendance-dialog.component';
 
 export interface LessonDetailDialogData {
   lesson: Lesson;
@@ -21,6 +22,7 @@ export interface LessonDetailDialogData {
 })
 export class LessonDetailDialogComponent {
   protected readonly languageService = inject(LanguageService);
+  private readonly dialog = inject(MatDialog);
 
   readonly lesson: Lesson;
 
@@ -41,5 +43,9 @@ export class LessonDetailDialogComponent {
 
   onClose(): void {
     this.dialogRef.close();
+  }
+
+  openAttendance(): void {
+    this.dialog.open(AttendanceDialogComponent, { width: '860px', maxWidth: '96vw', data: { lessonId: this.lesson.id } });
   }
 }

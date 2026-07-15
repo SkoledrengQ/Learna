@@ -47,7 +47,7 @@ public class ScheduleController : ControllerBase
         }
 
         var lessons = await GetStudentLessonsAsync(id, from, to);
-        return Ok(lessons.Select(LessonsController.ToDto));
+        return Ok(lessons.Select(l => LessonsController.ToDto(l, HttpContext?.User?.IsInRole("Admin") == true)));
     }
 
     [HttpGet("teachers/{id}")]
@@ -59,7 +59,9 @@ public class ScheduleController : ControllerBase
         }
 
         var lessons = await _lessonRepository.GetAllAsync(from, to, null, null, id);
-        return Ok(lessons.Select(LessonsController.ToDto));
+        var currentUser = await GetCurrentUserAsync();
+        var canManage = HttpContext?.User?.IsInRole("Admin") == true || currentUser?.TeacherId == id;
+        return Ok(lessons.Select(l => LessonsController.ToDto(l, canManage)));
     }
 
     [HttpGet("rooms/{id}")]
@@ -71,7 +73,7 @@ public class ScheduleController : ControllerBase
         }
 
         var lessons = await _lessonRepository.GetAllAsync(from, to, null, id, null);
-        return Ok(lessons.Select(LessonsController.ToDto));
+        return Ok(lessons.Select(l => LessonsController.ToDto(l, HttpContext?.User?.IsInRole("Admin") == true)));
     }
 
     [HttpGet("me")]
@@ -87,13 +89,13 @@ public class ScheduleController : ControllerBase
         if (user.StudentId.HasValue)
         {
             var lessons = await GetStudentLessonsAsync(user.StudentId.Value, from, to);
-            return Ok(lessons.Select(LessonsController.ToDto));
+            return Ok(lessons.Select(l => LessonsController.ToDto(l)));
         }
 
         if (user.TeacherId.HasValue)
         {
             var lessons = await _lessonRepository.GetAllAsync(from, to, null, null, user.TeacherId.Value);
-            return Ok(lessons.Select(LessonsController.ToDto));
+            return Ok(lessons.Select(l => LessonsController.ToDto(l, true)));
         }
 
         return NotFound();
@@ -114,5 +116,11 @@ public class ScheduleController : ControllerBase
         }
 
         return result.OrderBy(l => l.Date).ThenBy(l => l.StartTime).ToList();
+    }
+
+    private async Task<User?> GetCurrentUserAsync()
+    {
+        var claim = HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        return int.TryParse(claim, out var userId) ? await _userRepository.GetByIdAsync(userId) : null;
     }
 }

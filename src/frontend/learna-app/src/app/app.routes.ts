@@ -36,6 +36,12 @@ export const routes: Routes = [
     loadComponent: () => import('./features/schedule/components/my-schedule/my-schedule.component').then(m => m.MyScheduleComponent)
   },
   {
+    path: 'attendance',
+    canActivate: [authGuard],
+    data: { roles: ['Student'] },
+    loadComponent: () => import('./features/attendance/attendance-summary.component').then(m => m.AttendanceSummaryComponent)
+  },
+  {
     path: 'admin',
     canActivate: [authGuard],
     data: { roles: ['Admin'] },

@@ -32,6 +32,7 @@ export class App {
   protected readonly isAuthenticated = this.authService.isAuthenticated;
   protected readonly currentUser = computed(() => this.authService.getCurrentUser());
   protected readonly isAdmin = computed(() => this.authService.hasAnyRole(['Admin']));
+  protected readonly isStudentLinked = computed(() => !!this.currentUser()?.studentId);
 
   onLogout(): void {
     this.authService.logout();

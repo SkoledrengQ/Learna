@@ -161,6 +161,10 @@ export class ScheduleViewComponent {
     this.dialog.open(LessonDetailDialogComponent, { width: '480px', data: { lesson } });
   }
 
+  protected attendanceRelevant(lesson: Lesson): boolean {
+    return lesson.canManageAttendance && lesson.status !== 'Cancelled' && lesson.date <= toDateOnlyString(new Date());
+  }
+
   private formatHourLabel(minutes: number): string {
     const hours = Math.floor(minutes / 60) % 24;
     return `${hours.toString().padStart(2, '0')}:00`;
