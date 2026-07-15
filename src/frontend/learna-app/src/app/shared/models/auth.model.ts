@@ -15,6 +15,7 @@ export interface User {
   email: string;
   roles: string[];
   studentId?: number;
+  guardianId?: number;
   isActive: boolean;
   preferredLanguage?: string | null;
 }

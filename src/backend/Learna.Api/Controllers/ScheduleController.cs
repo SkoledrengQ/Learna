@@ -21,6 +21,7 @@ public class ScheduleController : ControllerBase
     private readonly ITeacherRepository _teacherRepository;
     private readonly IRoomRepository _roomRepository;
     private readonly IUserRepository _userRepository;
+    private readonly IGuardianRepository _guardianRepository;
 
     public ScheduleController(
         ILessonRepository lessonRepository,
@@ -28,7 +29,8 @@ public class ScheduleController : ControllerBase
         IStudentRepository studentRepository,
         ITeacherRepository teacherRepository,
         IRoomRepository roomRepository,
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        IGuardianRepository guardianRepository)
     {
         _lessonRepository = lessonRepository;
         _enrollmentRepository = enrollmentRepository;
@@ -36,18 +38,22 @@ public class ScheduleController : ControllerBase
         _teacherRepository = teacherRepository;
         _roomRepository = roomRepository;
         _userRepository = userRepository;
+        _guardianRepository = guardianRepository;
     }
 
     [HttpGet("students/{id}")]
-    [Authorize(Roles = "Admin,Teacher,Student")]
+    [Authorize(Roles = "Admin,Teacher,Student,Parent")]
     public async Task<ActionResult<IEnumerable<LessonDto>>> GetStudentSchedule(int id, [FromQuery] DateOnly? from, [FromQuery] DateOnly? to)
     {
-        if (HttpContext?.User?.IsInRole("Student") == true &&
+        if ((HttpContext?.User?.IsInRole("Student") == true || HttpContext?.User?.IsInRole("Parent") == true) &&
             HttpContext.User.IsInRole("Admin") == false &&
             HttpContext.User.IsInRole("Teacher") == false)
         {
             var currentUser = await GetCurrentUserAsync();
-            if (currentUser?.StudentId != id) return Forbid();
+            var isSelf = currentUser?.StudentId == id;
+            var isGuardian = currentUser?.GuardianId.HasValue == true &&
+                await _guardianRepository.GetLinkAsync(id, currentUser.GuardianId.Value) != null;
+            if (!isSelf && !isGuardian) return Forbid();
         }
 
         if (await _studentRepository.GetByIdAsync(id) == null)

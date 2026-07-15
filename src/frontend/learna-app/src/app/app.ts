@@ -36,7 +36,7 @@ export class App {
   protected readonly currentUser = computed(() => this.authService.getCurrentUser());
   protected readonly isAdmin = computed(() => this.authService.hasAnyRole(['Admin']));
   protected readonly canViewStudents = computed(() => this.authService.hasAnyRole(['Admin', 'Teacher']));
-  protected readonly isStudentLinked = computed(() => !!this.currentUser()?.studentId);
+  protected readonly canViewAttendance = computed(() => !!this.currentUser()?.studentId || !!this.currentUser()?.guardianId);
 
   onLogout(): void {
     this.authService.logout();

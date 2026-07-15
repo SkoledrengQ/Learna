@@ -24,3 +24,10 @@ export interface UpdateGuardianDto {
   relationship: string;
   isPrimaryContact: boolean;
 }
+
+export interface GuardianChild {
+  id: number;
+  name: PersonName;
+  relationship: string;
+  activeClassName?: string | null;
+}

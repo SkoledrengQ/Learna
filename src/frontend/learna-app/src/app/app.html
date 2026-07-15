@@ -13,7 +13,7 @@
       {{ 'nav.schedule' | transloco }}
     </button>
 
-    <button mat-button routerLink="/attendance" *ngIf="isStudentLinked()">
+    <button mat-button routerLink="/attendance" *ngIf="canViewAttendance()">
       <mat-icon>fact_check</mat-icon>{{ 'nav.attendance' | transloco }}
     </button>
 

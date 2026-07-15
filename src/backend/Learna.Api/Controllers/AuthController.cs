@@ -49,6 +49,7 @@ public class AuthController : ControllerBase
                 result.User.Email,
                 result.User.Roles,
                 result.User.StudentId,
+                result.User.GuardianId,
                 result.User.PreferredLanguage
             )
         );
@@ -92,6 +93,7 @@ public class AuthController : ControllerBase
                 result.User.Email,
                 result.User.Roles,
                 result.User.StudentId,
+                result.User.GuardianId,
                 result.User.PreferredLanguage
             )
         );
@@ -141,8 +143,10 @@ public class AuthController : ControllerBase
         var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
         var studentIdClaim = User.FindFirstValue("StudentId");
         var studentId = studentIdClaim != null ? int.Parse(studentIdClaim) : (int?)null;
+        var guardianIdClaim = User.FindFirstValue("GuardianId");
+        var guardianId = guardianIdClaim != null ? int.Parse(guardianIdClaim) : (int?)null;
 
-        return Ok(new UserDto(userId, email, roles, studentId, null));
+        return Ok(new UserDto(userId, email, roles, studentId, guardianId, null));
     }
 
     /// Self-service: any authenticated role may update their own language preference.
@@ -163,6 +167,6 @@ public class AuthController : ControllerBase
             return NotFound();
         }
 
-        return Ok(new UserDto(updatedUser.Id, updatedUser.Email, updatedUser.Roles, updatedUser.StudentId, updatedUser.PreferredLanguage));
+        return Ok(new UserDto(updatedUser.Id, updatedUser.Email, updatedUser.Roles, updatedUser.StudentId, updatedUser.GuardianId, updatedUser.PreferredLanguage));
     }
 }

@@ -15,11 +15,12 @@ public class AttendanceController : ControllerBase
     private readonly IAttendanceRepository _attendance;
     private readonly IUserRepository _users;
     private readonly IStudentRepository _students;
+    private readonly IGuardianRepository _guardians;
     private readonly int _editWindowDays;
 
-    public AttendanceController(ILessonRepository lessons, IAttendanceRepository attendance, IUserRepository users, IStudentRepository students, IConfiguration configuration)
+    public AttendanceController(ILessonRepository lessons, IAttendanceRepository attendance, IUserRepository users, IStudentRepository students, IGuardianRepository guardians, IConfiguration configuration)
     {
-        _lessons = lessons; _attendance = attendance; _users = users; _students = students;
+        _lessons = lessons; _attendance = attendance; _users = users; _students = students; _guardians = guardians;
         // TODO: make this rule school-configurable when school settings are introduced.
         _editWindowDays = configuration.GetValue("Attendance:EditWindowDays", 7);
     }
@@ -62,9 +63,11 @@ public class AttendanceController : ControllerBase
         if (from > to) return BadRequest("from must be on or before to.");
         if (await _students.GetByIdAsync(studentId) == null) return NotFound();
         var user = await CurrentUserAsync();
-        var allowed = User.IsInRole("Admin") || user.StudentId == studentId || (user.TeacherId.HasValue && await _attendance.TeacherHasStudentAsync(user.TeacherId.Value, studentId));
+        var allowed = User.IsInRole("Admin") || user.StudentId == studentId ||
+            (user.TeacherId.HasValue && await _attendance.TeacherHasStudentAsync(user.TeacherId.Value, studentId)) ||
+            (user.GuardianId.HasValue && await _guardians.GetLinkAsync(studentId, user.GuardianId.Value) != null);
         if (!allowed) return Forbid();
-        return Ok(await BuildSummaryAsync(studentId, from, to));
+        return Ok(await BuildSummaryAsync(_attendance, studentId, from, to));
     }
 
     [HttpGet("api/attendance/me")]
@@ -73,7 +76,7 @@ public class AttendanceController : ControllerBase
         if (from > to) return BadRequest("from must be on or before to.");
         var user = await CurrentUserAsync();
         if (!user.StudentId.HasValue) return NotFound();
-        return Ok(await BuildSummaryAsync(user.StudentId.Value, from, to));
+        return Ok(await BuildSummaryAsync(_attendance, user.StudentId.Value, from, to));
     }
 
     private async Task<(bool Allowed, bool IsAdmin)> GetLessonAccessAsync(Lesson lesson)
@@ -99,9 +102,9 @@ public class AttendanceController : ControllerBase
         }));
     }
 
-    private async Task<AttendanceSummaryDto> BuildSummaryAsync(int studentId, DateOnly? from, DateOnly? to)
+    internal static async Task<AttendanceSummaryDto> BuildSummaryAsync(IAttendanceRepository attendance, int studentId, DateOnly? from, DateOnly? to)
     {
-        var records = await _attendance.GetForStudentAsync(studentId, from, to, DateOnly.FromDateTime(DateTime.Today));
+        var records = await attendance.GetForStudentAsync(studentId, from, to, DateOnly.FromDateTime(DateTime.Today));
         static bool Present(AttendanceStatus s) => s is AttendanceStatus.Present or AttendanceStatus.Late;
         static bool Excused(AttendanceStatus s) => s is AttendanceStatus.ExcusedAbsence or AttendanceStatus.Sick or AttendanceStatus.ApprovedLeave;
         static decimal Percent(IEnumerable<AttendanceRecord> rs) { var list = rs.ToList(); return list.Count == 0 ? 0 : Math.Round(list.Count(r => Present(r.Status)) * 100m / list.Count, 2); }

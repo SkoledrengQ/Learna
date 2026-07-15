@@ -1,9 +1,14 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>{{ 'schedule.myScheduleTitle' | transloco }}</mat-card-title>
+    <mat-card-title>{{ (isGuardian() ? 'guardianPortal.childScheduleTitle' : 'schedule.myScheduleTitle') | transloco }}</mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
+    <p *ngIf="portal.loading()">{{ 'guardianPortal.loadingChildren' | transloco }}</p>
+    <p class="not-found" *ngIf="portal.loadFailed()">{{ 'guardianPortal.childrenLoadFailed' | transloco }}</p>
+    <p class="not-found" *ngIf="noChildren()">{{ 'guardianPortal.noChildren' | transloco }}</p>
+    <app-child-selector *ngIf="isGuardian() && portal.selectedChild()"></app-child-selector>
+
     <div class="not-found" *ngIf="notFound()">
       <p>{{ 'schedule.noPersonalSchedule' | transloco }}</p>
       <button mat-raised-button color="primary" routerLink="/admin/schedule" *ngIf="isAdmin()">
@@ -12,7 +17,7 @@
     </div>
 
     <app-schedule-view
-      *ngIf="!notFound()"
+      *ngIf="!notFound() && (!isGuardian() || !!portal.selectedChild())"
       [lessons]="lessons()"
       [loading]="isLoading()"
       (weekRangeChange)="onWeekRangeChange($event)">

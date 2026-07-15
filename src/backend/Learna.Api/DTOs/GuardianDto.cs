@@ -29,3 +29,10 @@ public record LinkGuardianDto(
     string Relationship,
     bool IsPrimaryContact
 );
+
+public record GuardianChildDto(
+    int Id,
+    PersonNameDto Name,
+    string Relationship,
+    string? ActiveClassName
+);

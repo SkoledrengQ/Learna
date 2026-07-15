@@ -183,6 +183,19 @@
     "placeholderTitle": "e.g. นาง, Mr.",
     "placeholderRelationship": "e.g. mother, father"
   },
+  "guardianPortal": {
+    "viewingFor": "Viewing data for",
+    "selectChild": "Select child",
+    "childScheduleTitle": "Child's Schedule",
+    "loadingChildren": "Loading your children...",
+    "childrenLoadFailed": "We could not load your linked children. Please try again.",
+    "noChildren": "No children are linked to your account yet. Please contact the school office.",
+    "relationships": {
+      "mother": "Mother",
+      "father": "Father",
+      "guardian": "Guardian"
+    }
+  },
   "attendance": {
     "registerTitle": "Register attendance",
     "register": "Register attendance",

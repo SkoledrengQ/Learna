@@ -183,6 +183,19 @@
     "placeholderTitle": "เช่น นาง, Mr.",
     "placeholderRelationship": "เช่น มารดา, บิดา"
   },
+  "guardianPortal": {
+    "viewingFor": "กำลังดูข้อมูลของ",
+    "selectChild": "เลือกบุตรหลาน",
+    "childScheduleTitle": "ตารางเรียนของบุตรหลาน",
+    "loadingChildren": "กำลังโหลดข้อมูลบุตรหลาน...",
+    "childrenLoadFailed": "ไม่สามารถโหลดข้อมูลบุตรหลานที่เชื่อมโยงได้ โปรดลองอีกครั้ง",
+    "noChildren": "ยังไม่มีบุตรหลานเชื่อมโยงกับบัญชีของคุณ โปรดติดต่อสำนักงานโรงเรียน",
+    "relationships": {
+      "mother": "มารดา",
+      "father": "บิดา",
+      "guardian": "ผู้ปกครอง"
+    }
+  },
   "attendance": {
     "registerTitle": "บันทึกการเข้าเรียน",
     "register": "บันทึกการเข้าเรียน",

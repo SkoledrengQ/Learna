@@ -61,7 +61,7 @@ public class UserAccountManagementTests
         password.GetCustomAttributes<HttpMethodAttribute>().Single().Template.Should().Be("password");
 
         var studentSchedule = typeof(ScheduleController).GetMethod(nameof(ScheduleController.GetStudentSchedule))!;
-        studentSchedule.GetCustomAttribute<AuthorizeAttribute>()!.Roles.Should().Be("Admin,Teacher,Student");
+        studentSchedule.GetCustomAttribute<AuthorizeAttribute>()!.Roles.Should().Be("Admin,Teacher,Student,Parent");
         typeof(ScheduleController).GetMethod(nameof(ScheduleController.GetTeacherSchedule))!.GetCustomAttribute<AuthorizeAttribute>()!.Roles.Should().Be("Admin,Teacher");
         typeof(ScheduleController).GetMethod(nameof(ScheduleController.GetRoomSchedule))!.GetCustomAttribute<AuthorizeAttribute>()!.Roles.Should().Be("Admin,Teacher");
 
@@ -160,7 +160,7 @@ public class UserAccountManagementTests
         var user = new User { Email = "own-login@test", PasswordHash = "x", StudentId = own.Id };
         db.Users.Add(user);
         await db.SaveChangesAsync();
-        var schedule = WithUser(new ScheduleController(new LessonRepository(db), new EnrollmentRepository(db), new StudentRepository(db), new TeacherRepository(db), new RoomRepository(db), new UserRepository(db)), user.Id, "Student");
+        var schedule = WithUser(new ScheduleController(new LessonRepository(db), new EnrollmentRepository(db), new StudentRepository(db), new TeacherRepository(db), new RoomRepository(db), new UserRepository(db), new GuardianRepository(db)), user.Id, "Student");
 
         (await schedule.GetStudentSchedule(own.Id, null, null)).Result.Should().BeOfType<OkObjectResult>();
         (await schedule.GetStudentSchedule(other.Id, null, null)).Result.Should().BeOfType<ForbidResult>();

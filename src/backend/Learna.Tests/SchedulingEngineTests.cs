@@ -46,7 +46,8 @@ public class SchedulingEngineTests
         new StudentRepository(context),
         new TeacherRepository(context),
         new RoomRepository(context),
-        new UserRepository(context));
+        new UserRepository(context),
+        new GuardianRepository(context));
 
     private static RoomsController CreateRoomsController(ApplicationDbContext context) => new(new RoomRepository(context));
 

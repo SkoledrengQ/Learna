@@ -71,4 +71,16 @@ public class GuardianRepository : IGuardianRepository
         await _context.SaveChangesAsync();
         return true;
     }
+
+    public async Task<IEnumerable<StudentGuardian>> GetChildrenAsync(int guardianId)
+    {
+        return await _context.StudentGuardians
+            .Where(sg => sg.GuardianId == guardianId)
+            .Include(sg => sg.Student)
+                .ThenInclude(s => s.ClassMemberships)
+                .ThenInclude(m => m.Class)
+            .OrderBy(sg => sg.Student.Name.FirstName)
+            .ThenBy(sg => sg.Student.Name.LastName)
+            .ToListAsync();
+    }
 }

@@ -6,6 +6,7 @@ public interface IGuardianRepository
 {
     Task<IEnumerable<Guardian>> GetAllAsync();
     Task<Guardian?> GetByIdAsync(int id);
+    Task<IEnumerable<StudentGuardian>> GetChildrenAsync(int guardianId);
     Task<Guardian> CreateAsync(Guardian guardian);
     Task<Guardian> UpdateAsync(Guardian guardian);
     Task<StudentGuardian?> GetLinkAsync(int studentId, int guardianId);

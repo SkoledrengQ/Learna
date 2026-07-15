@@ -38,8 +38,8 @@ export const routes: Routes = [
   {
     path: 'attendance',
     canActivate: [authGuard],
-    data: { roles: ['Student'] },
-    loadComponent: () => import('./features/attendance/attendance-summary.component').then(m => m.AttendanceSummaryComponent)
+    data: { roles: ['Student', 'Parent'] },
+    loadComponent: () => import('./features/attendance/attendance-page.component').then(m => m.AttendancePageComponent)
   },
   {
     path: 'admin',

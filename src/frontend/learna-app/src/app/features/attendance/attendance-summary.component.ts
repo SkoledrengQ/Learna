@@ -11,7 +11,7 @@ import { AttendanceService } from './attendance.service';
 @Component({ selector: 'app-attendance-summary', standalone: true, imports: [CommonModule, MatCardModule, MatTableModule, TranslocoModule, LocalizedDatePipe], templateUrl: './attendance-summary.component.html', styleUrl: './attendance-summary.component.scss' })
 export class AttendanceSummaryComponent {
   private service = inject(AttendanceService); protected language = inject(LanguageService);
-  studentId = input<number | null>(null); summary = signal<AttendanceSummary | null>(null); loading = signal(true);
+  studentId = input<number | null>(null); guardianChildId = input<number | null>(null); summary = signal<AttendanceSummary | null>(null); loading = signal(true);
   groupColumns = ['subject', 'recorded', 'presence', 'excused', 'unexcused']; recentColumns = ['date', 'lesson', 'status', 'note'];
-  constructor() { effect(() => { this.loading.set(true); const id = this.studentId(); const request = id ? this.service.getStudent(id) : this.service.getMine(); request.subscribe({ next: x => { this.summary.set(x); this.loading.set(false); }, error: () => this.loading.set(false) }); }); }
+  constructor() { effect(onCleanup => { this.loading.set(true); const guardianId = this.guardianChildId(); const id = this.studentId(); const request = guardianId ? this.service.getGuardianChild(guardianId) : id ? this.service.getStudent(id) : this.service.getMine(); const subscription = request.subscribe({ next: x => { this.summary.set(x); this.loading.set(false); }, error: () => { this.summary.set(null); this.loading.set(false); } }); onCleanup(() => subscription.unsubscribe()); }); }
 }

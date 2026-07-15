@@ -13,4 +13,5 @@ export class AttendanceService {
   }
   getMine(): Observable<AttendanceSummary> { return this.http.get<AttendanceSummary>(`${environment.apiUrl}/attendance/me`); }
   getStudent(studentId: number): Observable<AttendanceSummary> { return this.http.get<AttendanceSummary>(`${environment.apiUrl}/students/${studentId}/attendance/summary`); }
+  getGuardianChild(studentId: number): Observable<AttendanceSummary> { return this.http.get<AttendanceSummary>(`${environment.apiUrl}/guardians/me/children/${studentId}/attendance`); }
 }

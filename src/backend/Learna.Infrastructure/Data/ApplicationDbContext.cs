@@ -159,7 +159,7 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(e => e.ClassId);
 
             entity.HasOne(e => e.Student)
-                .WithMany()
+                .WithMany(s => s.ClassMemberships)
                 .HasForeignKey(e => e.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);
 

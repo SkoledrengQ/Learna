@@ -25,5 +25,6 @@ public class UserInfo
     public string Email { get; set; } = string.Empty;
     public List<string> Roles { get; set; } = new();
     public int? StudentId { get; set; }
+    public int? GuardianId { get; set; }
     public string? PreferredLanguage { get; set; }
 }

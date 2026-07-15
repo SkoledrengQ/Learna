@@ -19,7 +19,7 @@ public class AttendanceTests
 
     private static AttendanceController Controller(ApplicationDbContext db, User user, string role, int days = 7)
     {
-        var controller = new AttendanceController(new LessonRepository(db), new AttendanceRepository(db), new UserRepository(db), new StudentRepository(db), Config(days));
+        var controller = new AttendanceController(new LessonRepository(db), new AttendanceRepository(db), new UserRepository(db), new StudentRepository(db), new GuardianRepository(db), Config(days));
         controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), new Claim(ClaimTypes.Role, role) }, "test")) } };
         return controller;
     }

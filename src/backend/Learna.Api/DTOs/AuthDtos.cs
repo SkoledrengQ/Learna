@@ -17,6 +17,7 @@ public record UserDto(
     string Email,
     List<string> Roles,
     int? StudentId,
+    int? GuardianId,
     string? PreferredLanguage
 );
 
