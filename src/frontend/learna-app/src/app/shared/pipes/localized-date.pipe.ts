@@ -2,10 +2,16 @@ import { formatDate } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
 import { SupportedLanguage } from '../../core/services/language.service';
 
-// TODO: Buddhist Era year display for Thai locale is deferred (out of scope for WO4).
 const LOCALE_BY_LANGUAGE: Record<SupportedLanguage, string> = {
   en: 'en-US',
-  th: 'th-TH'
+  th: 'th-TH-u-ca-buddhist'
+};
+
+const THAI_FORMAT_OPTIONS: Record<string, Intl.DateTimeFormatOptions> = {
+  mediumDate: { day: 'numeric', month: 'short', year: 'numeric' },
+  'd MMM': { day: 'numeric', month: 'short' },
+  'd MMM y': { day: 'numeric', month: 'short', year: 'numeric' },
+  fullDate: { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }
 };
 
 @Pipe({
@@ -17,6 +23,13 @@ export class LocalizedDatePipe implements PipeTransform {
     if (!value) {
       return '';
     }
+
+    if (lang === 'th') {
+      const date = value instanceof Date ? value : new Date(value);
+      const options = THAI_FORMAT_OPTIONS[format] ?? THAI_FORMAT_OPTIONS['mediumDate'];
+      return new Intl.DateTimeFormat(LOCALE_BY_LANGUAGE.th, options).format(date);
+    }
+
     return formatDate(value, format, LOCALE_BY_LANGUAGE[lang]);
   }
 }
