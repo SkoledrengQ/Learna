@@ -27,6 +27,9 @@ public class ApplicationDbContext : DbContext
     public DbSet<Lesson> Lessons { get; set; }
     public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
     public DbSet<FileResource> FileResources { get; set; }
+    public DbSet<Assignment> Assignments { get; set; }
+    public DbSet<AssignmentExtension> AssignmentExtensions { get; set; }
+    public DbSet<Submission> Submissions { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
@@ -299,11 +302,43 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Description).HasMaxLength(2000);
             entity.HasIndex(e => e.SubjectGroupId);
             entity.HasIndex(e => e.LessonId);
+            entity.HasIndex(e => e.AssignmentId);
+            entity.HasIndex(e => e.SubmissionId);
             entity.HasIndex(e => e.UploadedByUserId);
-            entity.ToTable(t => t.HasCheckConstraint("CK_FileResource_ExactlyOneTarget", "(`SubjectGroupId` IS NULL) <> (`LessonId` IS NULL)"));
+            entity.ToTable(t => t.HasCheckConstraint("CK_FileResource_ExactlyOneTarget", "((`SubjectGroupId` IS NOT NULL) + (`LessonId` IS NOT NULL) + (`AssignmentId` IS NOT NULL) + (`SubmissionId` IS NOT NULL)) = 1"));
             entity.HasOne(e => e.UploadedByUser).WithMany().HasForeignKey(e => e.UploadedByUserId).OnDelete(DeleteBehavior.Restrict);
             entity.HasOne(e => e.SubjectGroup).WithMany().HasForeignKey(e => e.SubjectGroupId).OnDelete(DeleteBehavior.Cascade);
             entity.HasOne(e => e.Lesson).WithMany().HasForeignKey(e => e.LessonId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Assignment).WithMany(a => a.Files).HasForeignKey(e => e.AssignmentId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Submission).WithMany(s => s.Files).HasForeignKey(e => e.SubmissionId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Assignment>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Title).IsRequired().HasMaxLength(300);
+            entity.Property(e => e.Description).HasColumnType("longtext");
+            entity.HasIndex(e => e.SubjectGroupId);
+            entity.HasOne(e => e.SubjectGroup).WithMany().HasForeignKey(e => e.SubjectGroupId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.CreatedByUser).WithMany().HasForeignKey(e => e.CreatedByUserId).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<AssignmentExtension>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.AssignmentId, e.StudentId }).IsUnique();
+            entity.Property(e => e.Note).HasMaxLength(2000);
+            entity.HasOne(e => e.Assignment).WithMany(a => a.Extensions).HasForeignKey(e => e.AssignmentId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Student).WithMany().HasForeignKey(e => e.StudentId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Submission>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.AssignmentId, e.StudentId }).IsUnique();
+            entity.Property(e => e.Text).HasColumnType("longtext");
+            entity.HasOne(e => e.Assignment).WithMany(a => a.Submissions).HasForeignKey(e => e.AssignmentId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Student).WithMany().HasForeignKey(e => e.StudentId).OnDelete(DeleteBehavior.Cascade);
         });
 
         // User configuration

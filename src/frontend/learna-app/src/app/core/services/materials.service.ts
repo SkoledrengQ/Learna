@@ -11,12 +11,14 @@ export class MaterialsService {
 
   listSubjectGroup(id: number): Observable<FileResource[]> { return this.http.get<FileResource[]>(`${this.api}/subject-groups/${id}/files`); }
   listLesson(id: number): Observable<FileResource[]> { return this.http.get<FileResource[]>(`${this.api}/lessons/${id}/files`); }
+  listAssignment(id: number): Observable<FileResource[]> { return this.http.get<FileResource[]>(`${this.api}/assignments/${id}/files`); }
   listMine(): Observable<FileResource[]> { return this.http.get<FileResource[]>(`${this.api}/files/my`); }
   uploadSubjectGroup(id: number, file: File, description: string): Observable<FileResource> { return this.upload(`subject-groups/${id}/files`, file, description); }
   uploadLesson(id: number, file: File, description: string): Observable<FileResource> { return this.upload(`lessons/${id}/files`, file, description); }
+  uploadAssignment(id: number, file: File, description: string): Observable<FileResource> { return this.upload(`assignments/${id}/files`, file, description); }
   delete(id: number): Observable<void> { return this.http.delete<void>(`${this.api}/files/${id}`); }
 
-  download(file: FileResource): void {
+  download(file: Pick<FileResource, 'id' | 'originalFileName'>): void {
     this.http.get(`${this.api}/files/${file.id}/download`, { responseType: 'blob' }).subscribe(blob => {
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement('a');

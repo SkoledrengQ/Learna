@@ -26,5 +26,6 @@ public class UserInfo
     public List<string> Roles { get; set; } = new();
     public int? StudentId { get; set; }
     public int? GuardianId { get; set; }
+    public int? TeacherId { get; set; }
     public string? PreferredLanguage { get; set; }
 }

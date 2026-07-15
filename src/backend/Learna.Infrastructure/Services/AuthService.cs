@@ -54,7 +54,8 @@ public class AuthService : IAuthService
             user.Email,
             roles,
             user.StudentId,
-            user.GuardianId
+            user.GuardianId,
+            user.TeacherId
         );
 
         var refreshTokenValue = _tokenService.GenerateRefreshToken();
@@ -80,6 +81,7 @@ public class AuthService : IAuthService
                 Roles = roles.ToList(),
                 StudentId = user.StudentId,
                 GuardianId = user.GuardianId,
+                TeacherId = user.TeacherId,
                 PreferredLanguage = user.PreferredLanguage
             }
         };
@@ -107,7 +109,8 @@ public class AuthService : IAuthService
             user.Email,
             roles,
             user.StudentId,
-            user.GuardianId
+            user.GuardianId,
+            user.TeacherId
         );
 
         // Generate new refresh token
@@ -138,6 +141,7 @@ public class AuthService : IAuthService
                 Roles = roles.ToList(),
                 StudentId = user.StudentId,
                 GuardianId = user.GuardianId,
+                TeacherId = user.TeacherId,
                 PreferredLanguage = user.PreferredLanguage
             }
         };
@@ -182,6 +186,7 @@ public class AuthService : IAuthService
             Roles = roles.ToList(),
             StudentId = user.StudentId,
             GuardianId = user.GuardianId,
+            TeacherId = user.TeacherId,
             PreferredLanguage = user.PreferredLanguage
         };
     }

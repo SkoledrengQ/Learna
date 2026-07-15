@@ -18,6 +18,7 @@ public record UserDto(
     List<string> Roles,
     int? StudentId,
     int? GuardianId,
+    int? TeacherId,
     string? PreferredLanguage
 );
 

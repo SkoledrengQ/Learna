@@ -20,7 +20,7 @@ import { LanguageService } from '../../../core/services/language.service';
   templateUrl: './material-list.component.html', styleUrl: './material-list.component.scss'
 })
 export class MaterialListComponent implements OnInit {
-  @Input({ required: true }) targetType!: 'subject-group' | 'lesson';
+  @Input({ required: true }) targetType!: 'subject-group' | 'lesson' | 'assignment';
   @Input({ required: true }) targetId!: number;
   @Input() canUpload = false;
   private readonly materials = inject(MaterialsService);
@@ -38,14 +38,14 @@ export class MaterialListComponent implements OnInit {
   ngOnInit(): void { this.load(); }
   load(): void {
     this.loading.set(true);
-    const request = this.targetType === 'lesson' ? this.materials.listLesson(this.targetId) : this.materials.listSubjectGroup(this.targetId);
+    const request = this.targetType === 'lesson' ? this.materials.listLesson(this.targetId) : this.targetType === 'assignment' ? this.materials.listAssignment(this.targetId) : this.materials.listSubjectGroup(this.targetId);
     request.subscribe({ next: files => { this.files.set(files); this.loading.set(false); }, error: () => { this.loading.set(false); this.message('materials.loadFailed'); } });
   }
   choose(event: Event): void { this.fileInput = event.target as HTMLInputElement; this.selectedFile = this.fileInput.files?.[0] ?? null; }
   upload(): void {
     if (!this.selectedFile) return;
     this.uploading.set(true);
-    const request = this.targetType === 'lesson' ? this.materials.uploadLesson(this.targetId, this.selectedFile, this.description) : this.materials.uploadSubjectGroup(this.targetId, this.selectedFile, this.description);
+    const request = this.targetType === 'lesson' ? this.materials.uploadLesson(this.targetId, this.selectedFile, this.description) : this.targetType === 'assignment' ? this.materials.uploadAssignment(this.targetId, this.selectedFile, this.description) : this.materials.uploadSubjectGroup(this.targetId, this.selectedFile, this.description);
     request.subscribe({ next: () => { this.selectedFile = null; if (this.fileInput) this.fileInput.value = ''; this.description = ''; this.uploading.set(false); this.message('materials.uploaded'); this.load(); }, error: error => { this.uploading.set(false); this.message(error.error?.code === 'FILE_TOO_LARGE' ? 'materials.tooLarge' : error.error?.code === 'FILE_TYPE_NOT_ALLOWED' ? 'materials.wrongType' : 'materials.uploadFailed'); } });
   }
   download(file: FileResource): void { this.materials.download(file); }

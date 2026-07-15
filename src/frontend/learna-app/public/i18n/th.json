@@ -23,6 +23,8 @@
     "schedule": "ตารางเรียน",
     "attendance": "การเข้าเรียน",
     "materials": "สื่อการเรียน",
+    "myGroups": "กลุ่มของฉัน",
+    "assignments": "งานที่มอบหมาย",
     "admin": "ผู้ดูแลระบบ",
     "users": "บัญชีผู้ใช้",
     "teachers": "ครู",
@@ -52,6 +54,22 @@
     "deleteMessage": "ลบ {{name}} หรือไม่",
     "deleted": "ลบไฟล์แล้ว",
     "deleteFailed": "ไม่สามารถลบไฟล์ได้"
+  },
+  "groups": {
+    "title": "กลุ่มของฉัน",
+    "empty": "ยังไม่มีกลุ่มวิชาที่มอบหมายให้คุณ",
+    "materials": "สื่อการเรียน"
+  },
+  "assignments": {
+    "title": "งานที่มอบหมาย", "create": "สร้างงาน", "edit": "แก้ไขงาน", "emptyTeacher": "ยังไม่มีงานในกลุ่มนี้", "empty": "ยังไม่มีงานที่มอบหมาย",
+    "deadline": "กำหนดส่ง", "submitted": "ส่งแล้ว", "publish": "เผยแพร่", "close": "ปิดงาน", "viewSubmissions": "ดูการส่งงาน", "submissionsFor": "การส่งงาน: {{title}}", "filter": "กรองสถานะ", "grantExtension": "ขยายเวลา", "extensionFor": "ขยายเวลาให้ {{name}}", "extensionNote": "หมายเหตุ", "extensionSaved": "บันทึกการขยายเวลาแล้ว",
+    "saved": "บันทึกงานแล้ว", "saveFailed": "ไม่สามารถบันทึกงานได้", "loadFailed": "ไม่สามารถโหลดงานได้", "publishTitle": "เผยแพร่งานหรือไม่", "publishConfirm": "นักเรียนจะเห็นงานนี้ตั้งแต่วันที่เริ่มต้น", "closeTitle": "ปิดงานหรือไม่", "closeConfirm": "นักเรียนจะไม่สามารถส่งหรือส่งใหม่ได้", "deleteTitle": "ลบร่างหรือไม่", "deleteConfirm": "ร่างและไฟล์แนบจะถูกลบอย่างถาวร",
+    "upcoming": "งานที่กำลังมาถึง", "past": "งานที่ผ่านมา", "extended": "ขยายกำหนดส่งแล้ว", "back": "กลับไปงานที่มอบหมาย", "yourSubmission": "งานที่คุณส่ง", "onTime": "ตรงเวลา", "lastSubmitted": "ส่งล่าสุด", "submissionText": "ข้อความคำตอบ (ไม่บังคับ)", "submissionFiles": "ไฟล์คำตอบ", "filesSelected": "ไฟล์ที่เลือก", "submit": "ส่งงาน", "resubmit": "ส่งใหม่", "submittedSuccess": "ส่งงานเรียบร้อยแล้ว",
+    "fields": { "title": "ชื่อเรื่อง", "description": "คำอธิบาย", "startDate": "แสดงตั้งแต่วันที่ (ไม่บังคับ)", "deadlineDate": "วันที่กำหนดส่ง", "deadlineTime": "เวลากำหนดส่ง", "latePolicy": "นโยบายส่งล่าช้า", "attachments": "ไฟล์แนบ" },
+    "policies": { "Block": "ไม่อนุญาตให้ส่งหลังกำหนด", "AllowMarkLate": "อนุญาตและทำเครื่องหมายว่าส่งช้า" },
+    "statuses": { "Draft": "ร่าง", "Published": "เผยแพร่แล้ว", "Closed": "ปิดแล้ว", "Graded": "ตรวจแล้ว", "Archived": "เก็บถาวร" },
+    "filters": { "All": "ทั้งหมด", "Submitted": "ส่งแล้ว", "Missing": "ยังไม่ส่ง", "Late": "ส่งช้า" },
+    "errors": { "LATE_SUBMISSION_BLOCKED": "เลยกำหนดส่งแล้วและไม่อนุญาตให้ส่งล่าช้า", "ASSIGNMENT_CLOSED": "งานนี้ปิดแล้วและไม่รับการส่งงาน", "SUBMISSION_EMPTY": "เพิ่มข้อความหรือไฟล์อย่างน้อยหนึ่งไฟล์ก่อนส่ง", "FILE_TOO_LARGE": "ไฟล์ที่เลือกมีขนาดใหญ่เกินไป", "FILE_TYPE_NOT_ALLOWED": "ไม่อนุญาตไฟล์ประเภทนี้", "SUBMIT_FAILED": "ไม่สามารถบันทึกการส่งงานได้" }
   },
   "schedule": {
     "days": {

@@ -17,4 +17,8 @@ public class FileResource
     public SubjectGroup? SubjectGroup { get; set; }
     public int? LessonId { get; set; }
     public Lesson? Lesson { get; set; }
+    public int? AssignmentId { get; set; }
+    public Assignment? Assignment { get; set; }
+    public int? SubmissionId { get; set; }
+    public Submission? Submission { get; set; }
 }

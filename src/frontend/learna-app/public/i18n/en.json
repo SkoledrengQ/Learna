@@ -23,6 +23,8 @@
     "schedule": "Schedule",
     "attendance": "Attendance",
     "materials": "Materials",
+    "myGroups": "My groups",
+    "assignments": "Assignments",
     "admin": "Admin",
     "users": "Users",
     "teachers": "Teachers",
@@ -52,6 +54,22 @@
     "deleteMessage": "Delete {{name}}?",
     "deleted": "File deleted",
     "deleteFailed": "The file could not be deleted"
+  },
+  "groups": {
+    "title": "My groups",
+    "empty": "No subject groups are assigned to you yet.",
+    "materials": "Materials"
+  },
+  "assignments": {
+    "title": "Assignments", "create": "Create assignment", "edit": "Edit assignment", "emptyTeacher": "No assignments have been created for this group.", "empty": "No assignments are available.",
+    "deadline": "Deadline", "submitted": "submitted", "publish": "Publish", "close": "Close", "viewSubmissions": "View submissions", "submissionsFor": "Submissions for {{title}}", "filter": "Status filter", "grantExtension": "Grant extension", "extensionFor": "Extension for {{name}}", "extensionNote": "Note", "extensionSaved": "Extension saved",
+    "saved": "Assignment saved", "saveFailed": "The assignment could not be saved", "loadFailed": "Assignments could not be loaded", "publishTitle": "Publish assignment?", "publishConfirm": "Students will be able to see this assignment from its start date.", "closeTitle": "Close assignment?", "closeConfirm": "Students will no longer be able to submit or resubmit.", "deleteTitle": "Delete draft?", "deleteConfirm": "This draft and its attachments will be permanently deleted.",
+    "upcoming": "Upcoming", "past": "Past", "extended": "Extended deadline", "back": "Back to assignments", "yourSubmission": "Your submission", "onTime": "On time", "lastSubmitted": "Last submitted", "submissionText": "Submission text (optional)", "submissionFiles": "Submission files", "filesSelected": "file(s) selected", "submit": "Submit", "resubmit": "Resubmit", "submittedSuccess": "Assignment submitted successfully",
+    "fields": { "title": "Title", "description": "Description", "startDate": "Visible from (optional)", "deadlineDate": "Deadline date", "deadlineTime": "Deadline time", "latePolicy": "Late submission policy", "attachments": "Attachments" },
+    "policies": { "Block": "Block submissions after the deadline", "AllowMarkLate": "Allow and mark late" },
+    "statuses": { "Draft": "Draft", "Published": "Published", "Closed": "Closed", "Graded": "Graded", "Archived": "Archived" },
+    "filters": { "All": "All", "Submitted": "Submitted", "Missing": "Missing", "Late": "Late" },
+    "errors": { "LATE_SUBMISSION_BLOCKED": "The deadline has passed and late submissions are blocked.", "ASSIGNMENT_CLOSED": "This assignment is closed and no longer accepts submissions.", "SUBMISSION_EMPTY": "Add text or at least one file before submitting.", "FILE_TOO_LARGE": "A selected file is too large.", "FILE_TYPE_NOT_ALLOWED": "A selected file type is not allowed.", "SUBMIT_FAILED": "The submission could not be saved." }
   },
   "schedule": {
     "days": {

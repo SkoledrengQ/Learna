@@ -23,7 +23,7 @@ public class TokenService : ITokenService
         _audience = _configuration["Jwt:Audience"] ?? "LearnaApp";
     }
 
-    public string GenerateAccessToken(int userId, string email, IEnumerable<string> roles, int? studentId = null, int? guardianId = null)
+    public string GenerateAccessToken(int userId, string email, IEnumerable<string> roles, int? studentId = null, int? guardianId = null, int? teacherId = null)
     {
         var claims = new List<Claim>
         {
@@ -48,6 +48,7 @@ public class TokenService : ITokenService
         {
             claims.Add(new Claim("GuardianId", guardianId.Value.ToString()));
         }
+        if (teacherId.HasValue) claims.Add(new Claim("TeacherId", teacherId.Value.ToString()));
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

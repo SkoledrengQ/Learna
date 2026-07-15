@@ -46,6 +46,17 @@ export const routes: Routes = [
     loadComponent: () => import('./features/materials/materials-page.component').then(m => m.MaterialsPageComponent)
   },
   {
+    path: 'groups', canActivate: [authGuard], data: { roles: ['Teacher'] },
+    loadComponent: () => import('./features/groups/groups-page.component').then(m => m.GroupsPageComponent)
+  },
+  {
+    path: 'assignments', canActivate: [authGuard], data: { roles: ['Student', 'Parent'] },
+    children: [
+      { path: '', loadComponent: () => import('./features/assignments/assignments-page.component').then(m => m.AssignmentsPageComponent) },
+      { path: ':id', data: { roles: ['Student'] }, loadComponent: () => import('./features/assignments/assignment-detail.component').then(m => m.AssignmentDetailComponent) }
+    ]
+  },
+  {
     path: 'admin',
     canActivate: [authGuard],
     data: { roles: ['Admin'] },

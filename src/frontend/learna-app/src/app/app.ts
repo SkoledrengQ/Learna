@@ -38,6 +38,8 @@ export class App {
   protected readonly canViewStudents = computed(() => this.authService.hasAnyRole(['Admin', 'Teacher']));
   protected readonly canViewAttendance = computed(() => !!this.currentUser()?.studentId || !!this.currentUser()?.guardianId);
   protected readonly canViewMaterials = computed(() => !!this.currentUser()?.studentId || !!this.currentUser()?.guardianId);
+  protected readonly canViewGroups = computed(() => !!this.currentUser()?.teacherId);
+  protected readonly canViewAssignments = computed(() => !!this.currentUser()?.studentId || !!this.currentUser()?.guardianId);
 
   onLogout(): void {
     this.authService.logout();

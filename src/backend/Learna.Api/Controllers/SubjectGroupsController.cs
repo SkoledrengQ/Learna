@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Learna.Core.Entities;
 using Learna.Core.Interfaces;
 using Learna.Api.DTOs;
+using System.Security.Claims;
 
 namespace Learna.Api.Controllers;
 
@@ -19,6 +20,7 @@ public class SubjectGroupsController : ControllerBase
     private readonly ISubjectRepository _subjectRepository;
     private readonly ITermRepository _termRepository;
     private readonly ITeacherRepository _teacherRepository;
+    private readonly IUserRepository? _userRepository;
 
     public SubjectGroupsController(
         ISubjectGroupRepository subjectGroupRepository,
@@ -28,7 +30,8 @@ public class SubjectGroupsController : ControllerBase
         IStudentRepository studentRepository,
         ISubjectRepository subjectRepository,
         ITermRepository termRepository,
-        ITeacherRepository teacherRepository)
+        ITeacherRepository teacherRepository,
+        IUserRepository? userRepository = null)
     {
         _subjectGroupRepository = subjectGroupRepository;
         _enrollmentRepository = enrollmentRepository;
@@ -38,6 +41,7 @@ public class SubjectGroupsController : ControllerBase
         _subjectRepository = subjectRepository;
         _termRepository = termRepository;
         _teacherRepository = teacherRepository;
+        _userRepository = userRepository;
     }
 
     private static SubjectGroupDto ToDto(SubjectGroup group) => new(
@@ -74,6 +78,16 @@ public class SubjectGroupsController : ControllerBase
     {
         var groups = await _subjectGroupRepository.GetAllAsync(termId, subjectId);
         return Ok(groups.Select(ToDto));
+    }
+
+    [HttpGet("mine")]
+    [Authorize(Roles = "Teacher")]
+    public async Task<ActionResult<IEnumerable<SubjectGroupDto>>> Mine()
+    {
+        if (_userRepository == null) return Forbid();
+        var user = await _userRepository.GetByIdAsync(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+        if (user?.TeacherId is not int teacherId) return Forbid();
+        return Ok((await _subjectGroupRepository.GetAllAsync(null, null)).Where(g => g.TeacherId == teacherId).Select(ToDto));
     }
 
     [HttpGet("{id}")]
