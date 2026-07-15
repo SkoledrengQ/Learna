@@ -19,4 +19,5 @@ public class SubjectGroup
     public DateTime? UpdatedAt { get; set; }
 
     public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+    public ICollection<Grade> Grades { get; set; } = new List<Grade>();
 }

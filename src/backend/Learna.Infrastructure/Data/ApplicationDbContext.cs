@@ -30,6 +30,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Assignment> Assignments { get; set; }
     public DbSet<AssignmentExtension> AssignmentExtensions { get; set; }
     public DbSet<Submission> Submissions { get; set; }
+    public DbSet<Grade> Grades { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
@@ -339,6 +340,26 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Text).HasColumnType("longtext");
             entity.HasOne(e => e.Assignment).WithMany(a => a.Submissions).HasForeignKey(e => e.AssignmentId).OnDelete(DeleteBehavior.Cascade);
             entity.HasOne(e => e.Student).WithMany().HasForeignKey(e => e.StudentId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Grade>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.SubmissionId).IsUnique();
+            entity.HasIndex(e => new { e.SubjectGroupId, e.StudentId });
+            entity.Property(e => e.Category).IsRequired().HasMaxLength(300);
+            entity.Property(e => e.Score).HasPrecision(10, 2);
+            entity.Property(e => e.MaxScore).HasPrecision(10, 2).HasDefaultValue(100m);
+            entity.Property(e => e.Feedback).HasColumnType("longtext");
+            entity.ToTable(t =>
+            {
+                t.HasCheckConstraint("CK_Grade_MaxScore_Positive", "`MaxScore` > 0");
+                t.HasCheckConstraint("CK_Grade_Score_Bounds", "`Score` >= 0 AND `Score` <= `MaxScore`");
+            });
+            entity.HasOne(e => e.Student).WithMany().HasForeignKey(e => e.StudentId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.SubjectGroup).WithMany(g => g.Grades).HasForeignKey(e => e.SubjectGroupId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Submission).WithOne(s => s.Grade).HasForeignKey<Grade>(e => e.SubmissionId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.GradedByUser).WithMany().HasForeignKey(e => e.GradedByUserId).OnDelete(DeleteBehavior.Restrict);
         });
 
         // User configuration

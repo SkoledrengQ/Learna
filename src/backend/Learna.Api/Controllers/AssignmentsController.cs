@@ -104,10 +104,11 @@ public sealed class AssignmentsController(IAssignmentRepository assignments, ISu
     public async Task<ActionResult<SubmissionDto>> Submit(int id, [FromForm] List<IFormFile>? files, [FromForm] string? text, CancellationToken cancellationToken)
     {
         var a = await assignments.GetAsync(id); if (a == null) return NotFound(); var user = await CurrentUserAsync(); if (user.StudentId is not int studentId || !await assignments.IsEnrolledAsync(a.SubjectGroupId, studentId)) return Forbid();
-        if (!Visible(a)) return Forbid(); if (a.Status == AssignmentStatus.Closed) return Conflict(new AssignmentErrorDto("ASSIGNMENT_CLOSED"));
+        if (!Visible(a)) return Forbid(); if (a.Status is AssignmentStatus.Closed or AssignmentStatus.Graded) return Conflict(new AssignmentErrorDto("ASSIGNMENT_CLOSED"));
         var deadline = EffectiveDeadline(a, studentId); var late = Now > deadline;
         if (late && a.LatePolicy == LatePolicy.Block) return Conflict(new AssignmentErrorDto("LATE_SUBMISSION_BLOCKED"));
         var existing = await assignments.GetSubmissionAsync(id, studentId); var incoming = files ?? [];
+        if (existing?.Grade?.Status == GradeStatus.Published) return Conflict(new AssignmentErrorDto("PUBLISHED_GRADE_LOCKS_SUBMISSION"));
         if (existing == null && incoming.Count == 0 && string.IsNullOrWhiteSpace(text)) return BadRequest(new AssignmentErrorDto("SUBMISSION_EMPTY"));
         var stored = new List<(StoredFile Data, IFormFile Upload)>();
         try { foreach (var upload in incoming) { await using var stream = upload.OpenReadStream(); stored.Add((await storage.StoreAsync(stream, SafeName(upload.FileName), upload.Length, cancellationToken), upload)); } }
@@ -143,8 +144,8 @@ public sealed class AssignmentsController(IAssignmentRepository assignments, ISu
     private static string? Clean(string? s) => string.IsNullOrWhiteSpace(s) ? null : s.Trim();
     private static string SafeName(string name) => name.Replace('\\', '/').Split('/').Last();
     private static AssignmentFileDto FileDto(FileResource f) => new(f.Id, f.OriginalFileName, f.ContentType, f.SizeBytes, f.Description, f.CreatedAt);
-    private static SubmissionDto ToSubmission(Submission s) => new(s.Id, s.StudentId, s.SubmittedAt, s.Text, s.IsLate, s.Files.Select(FileDto).ToList());
-    private AssignmentDto ToDto(Assignment a, int? studentId = null, int? rosterCount = null) { var effective = studentId.HasValue ? EffectiveDeadline(a, studentId.Value) : a.DeadlineDate.ToDateTime(a.DeadlineTime); var own = studentId.HasValue ? a.Submissions.FirstOrDefault(s => s.StudentId == studentId) : null; return new(a.Id, a.SubjectGroupId, a.SubjectGroup.Name, a.Title, a.Description, a.StartDate, a.DeadlineDate, a.DeadlineTime, DateOnly.FromDateTime(effective), TimeOnly.FromDateTime(effective), studentId.HasValue && a.Extensions.Any(e => e.StudentId == studentId), a.LatePolicy, a.Status, a.Submissions.Count, rosterCount ?? 0, own == null ? null : ToSubmission(own), a.Files.Select(FileDto).ToList(), a.CreatedAt, a.UpdatedAt); }
+    private static SubmissionDto ToSubmission(Submission s, bool publishedOnly = false) => new(s.Id, s.StudentId, s.SubmittedAt, s.Text, s.IsLate, s.Files.Select(FileDto).ToList(), s.Grade == null || publishedOnly && s.Grade.Status != GradeStatus.Published ? null : GradesController.ToDto(s.Grade));
+    private AssignmentDto ToDto(Assignment a, int? studentId = null, int? rosterCount = null) { var effective = studentId.HasValue ? EffectiveDeadline(a, studentId.Value) : a.DeadlineDate.ToDateTime(a.DeadlineTime); var own = studentId.HasValue ? a.Submissions.FirstOrDefault(s => s.StudentId == studentId) : null; return new(a.Id, a.SubjectGroupId, a.SubjectGroup.Name, a.Title, a.Description, a.StartDate, a.DeadlineDate, a.DeadlineTime, DateOnly.FromDateTime(effective), TimeOnly.FromDateTime(effective), studentId.HasValue && a.Extensions.Any(e => e.StudentId == studentId), a.LatePolicy, a.Status, a.Submissions.Count, rosterCount ?? 0, own == null ? null : ToSubmission(own, true), a.Files.Select(FileDto).ToList(), a.CreatedAt, a.UpdatedAt); }
     private async Task<User> CurrentUserAsync() => (await users.GetByIdAsync(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)))!;
     private DateTime Now => timeProvider.GetLocalNow().DateTime;
 }

@@ -11,6 +11,7 @@ public sealed class AssignmentRepository(ApplicationDbContext context) : IAssign
         .Include(a => a.SubjectGroup).ThenInclude(g => g.Subject)
         .Include(a => a.Extensions)
         .Include(a => a.Submissions).ThenInclude(s => s.Files)
+        .Include(a => a.Submissions).ThenInclude(s => s.Grade)
         .Include(a => a.Files).ThenInclude(f => f.UploadedByUser);
 
     public Task<Assignment?> GetAsync(int id) => Query.FirstOrDefaultAsync(a => a.Id == id);
@@ -30,9 +31,9 @@ public sealed class AssignmentRepository(ApplicationDbContext context) : IAssign
     public Task<AssignmentExtension?> GetExtensionAsync(int assignmentId, int studentId) => context.AssignmentExtensions.FirstOrDefaultAsync(e => e.AssignmentId == assignmentId && e.StudentId == studentId);
     public async Task UpsertExtensionAsync(AssignmentExtension extension) { if (extension.Id == 0) context.Add(extension); await context.SaveChangesAsync(); }
     public async Task DeleteExtensionAsync(AssignmentExtension extension) { context.Remove(extension); await context.SaveChangesAsync(); }
-    public Task<Submission?> GetSubmissionAsync(int assignmentId, int studentId) => context.Submissions.Include(s => s.Files).FirstOrDefaultAsync(s => s.AssignmentId == assignmentId && s.StudentId == studentId);
+    public Task<Submission?> GetSubmissionAsync(int assignmentId, int studentId) => context.Submissions.Include(s => s.Files).Include(s => s.Grade).FirstOrDefaultAsync(s => s.AssignmentId == assignmentId && s.StudentId == studentId);
     public async Task<IReadOnlyList<Enrollment>> GetRosterAsync(int groupId) => await context.Enrollments.Include(e => e.Student).Where(e => e.SubjectGroupId == groupId && e.UnenrolledDate == null).OrderBy(e => e.Student.Name.FirstName).ThenBy(e => e.Student.Name.LastName).ToListAsync();
-    public async Task<IReadOnlyList<Submission>> GetSubmissionsAsync(int assignmentId) => await context.Submissions.Include(s => s.Student).Include(s => s.Files).Where(s => s.AssignmentId == assignmentId).ToListAsync();
+    public async Task<IReadOnlyList<Submission>> GetSubmissionsAsync(int assignmentId) => await context.Submissions.Include(s => s.Student).Include(s => s.Files).Include(s => s.Grade).Where(s => s.AssignmentId == assignmentId).ToListAsync();
     public async Task<FileResource> AddFileAsync(FileResource file) { context.Add(file); await context.SaveChangesAsync(); return file; }
     public async Task<IReadOnlyList<FileResource>> GetAssignmentFilesAsync(int assignmentId) => await context.FileResources.Include(f => f.UploadedByUser).Where(f => f.AssignmentId == assignmentId).OrderByDescending(f => f.CreatedAt).ToListAsync();
     public async Task<IReadOnlyList<FileResource>> GetSubmissionFilesAsync(int submissionId) => await context.FileResources.Include(f => f.UploadedByUser).Where(f => f.SubmissionId == submissionId).OrderByDescending(f => f.CreatedAt).ToListAsync();

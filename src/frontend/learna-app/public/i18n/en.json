@@ -25,6 +25,7 @@
     "materials": "Materials",
     "myGroups": "My groups",
     "assignments": "Assignments",
+    "grades": "Grades",
     "admin": "Admin",
     "users": "Users",
     "teachers": "Teachers",
@@ -69,7 +70,12 @@
     "policies": { "Block": "Block submissions after the deadline", "AllowMarkLate": "Allow and mark late" },
     "statuses": { "Draft": "Draft", "Published": "Published", "Closed": "Closed", "Graded": "Graded", "Archived": "Archived" },
     "filters": { "All": "All", "Submitted": "Submitted", "Missing": "Missing", "Late": "Late" },
-    "errors": { "LATE_SUBMISSION_BLOCKED": "The deadline has passed and late submissions are blocked.", "ASSIGNMENT_CLOSED": "This assignment is closed and no longer accepts submissions.", "SUBMISSION_EMPTY": "Add text or at least one file before submitting.", "FILE_TOO_LARGE": "A selected file is too large.", "FILE_TYPE_NOT_ALLOWED": "A selected file type is not allowed.", "SUBMIT_FAILED": "The submission could not be saved." }
+    "errors": { "LATE_SUBMISSION_BLOCKED": "The deadline has passed and late submissions are blocked.", "ASSIGNMENT_CLOSED": "This assignment is closed and no longer accepts submissions.", "PUBLISHED_GRADE_LOCKS_SUBMISSION": "This submission is locked because its grade has been published.", "SUBMISSION_EMPTY": "Add text or at least one file before submitting.", "FILE_TOO_LARGE": "A selected file is too large.", "FILE_TYPE_NOT_ALLOWED": "A selected file type is not allowed.", "SUBMIT_FAILED": "The submission could not be saved." }
+  },
+  "grades": {
+    "title": "Grades", "gradebook": "Gradebook", "grade": "Grade", "student": "Student", "category": "Category", "score": "Score", "maxScore": "Maximum score", "feedback": "Feedback", "average": "Average", "publishedGrade": "Published grade",
+    "empty": "No published grades are available yet.", "noRoster": "There are no students in this group.", "addColumn": "Add grade column", "publish": "Publish", "publishAll": "Publish all grades", "publishAllTitle": "Publish all draft grades?", "publishAllConfirm": "Students and guardians will immediately see every draft grade for this assignment.",
+    "saved": "Grade saved", "saveFailed": "The grade could not be saved", "loadFailed": "Grades could not be loaded", "states": { "Ungraded": "Ungraded", "Draft": "Draft", "Published": "Published" }
   },
   "schedule": {
     "days": {

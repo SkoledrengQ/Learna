@@ -11,4 +11,5 @@ public class Submission
     public string? Text { get; set; }
     public bool IsLate { get; set; }
     public ICollection<FileResource> Files { get; set; } = new List<FileResource>();
+    public Grade? Grade { get; set; }
 }

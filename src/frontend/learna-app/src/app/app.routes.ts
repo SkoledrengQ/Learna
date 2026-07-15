@@ -57,6 +57,10 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'grades', canActivate: [authGuard], data: { roles: ['Student', 'Parent'] },
+    loadComponent: () => import('./features/grades/grades-page.component').then(m => m.GradesPageComponent)
+  },
+  {
     path: 'admin',
     canActivate: [authGuard],
     data: { roles: ['Admin'] },

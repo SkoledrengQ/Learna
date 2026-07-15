@@ -40,6 +40,7 @@ export class App {
   protected readonly canViewMaterials = computed(() => !!this.currentUser()?.studentId || !!this.currentUser()?.guardianId);
   protected readonly canViewGroups = computed(() => !!this.currentUser()?.teacherId);
   protected readonly canViewAssignments = computed(() => !!this.currentUser()?.studentId || !!this.currentUser()?.guardianId);
+  protected readonly canViewGrades = computed(() => !!this.currentUser()?.studentId || !!this.currentUser()?.guardianId);
 
   onLogout(): void {
     this.authService.logout();
