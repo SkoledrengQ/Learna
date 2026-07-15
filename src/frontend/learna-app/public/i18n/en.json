@@ -22,6 +22,7 @@
     "students": "Students",
     "schedule": "Schedule",
     "attendance": "Attendance",
+    "materials": "Materials",
     "admin": "Admin",
     "users": "Users",
     "teachers": "Teachers",
@@ -33,6 +34,24 @@
     "lessons": "Lessons",
     "adminSchedule": "Schedule Viewer",
     "logout": "Logout"
+  },
+  "materials": {
+    "title": "Materials",
+    "pageTitle": "Learning materials",
+    "description": "Description",
+    "upload": "Upload",
+    "download": "Download",
+    "empty": "No learning materials are available yet.",
+    "lessonTag": "Lesson {{date}}",
+    "loadFailed": "Failed to load materials",
+    "uploaded": "File uploaded",
+    "uploadFailed": "The file could not be uploaded",
+    "tooLarge": "This file is too large. The maximum size is 25 MB.",
+    "wrongType": "This file type is not allowed.",
+    "deleteTitle": "Delete file",
+    "deleteMessage": "Delete {{name}}?",
+    "deleted": "File deleted",
+    "deleteFailed": "The file could not be deleted"
   },
   "schedule": {
     "days": {

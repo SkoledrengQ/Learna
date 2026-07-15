@@ -143,5 +143,7 @@
         {{ 'admin.subjectGroups.rules.addRule' | transloco }}
       </button>
     </div>
+
+    <app-material-list *ngIf="isEditMode && groupId && !isLoading()" targetType="subject-group" [targetId]="groupId" [canUpload]="true"></app-material-list>
   </mat-card-content>
 </mat-card>

@@ -1,0 +1,15 @@
+<section class="materials">
+  <h3>{{ 'materials.title' | transloco }}</h3>
+  <div class="upload" *ngIf="canUpload">
+    <input #picker type="file" (change)="choose($event)">
+    <mat-form-field appearance="outline"><mat-label>{{ 'materials.description' | transloco }}</mat-label><input matInput [(ngModel)]="description"></mat-form-field>
+    <button mat-raised-button color="primary" [disabled]="!selectedFile || uploading()" (click)="upload()"><mat-icon>upload</mat-icon>{{ 'materials.upload' | transloco }}</button>
+  </div>
+  <p class="hint" *ngIf="loading()">{{ 'common.loading' | transloco }}</p>
+  <p class="hint" *ngIf="!loading() && files().length === 0">{{ 'materials.empty' | transloco }}</p>
+  <div class="file" *ngFor="let file of files()">
+    <div class="info"><strong>{{ file.originalFileName }}</strong><span *ngIf="file.description">{{ file.description }}</span><small>{{ size(file.sizeBytes) }} · {{ file.uploadedBy }} · {{ file.createdAt | localizedDate:language.activeLang():'mediumDate' }}<ng-container *ngIf="file.lessonDate"> · {{ 'materials.lessonTag' | transloco: { date: (file.lessonDate | localizedDate:language.activeLang()) } }}</ng-container></small></div>
+    <button mat-icon-button (click)="download(file)" [attr.aria-label]="'materials.download' | transloco"><mat-icon>download</mat-icon></button>
+    <button mat-icon-button color="warn" *ngIf="file.canDelete" (click)="remove(file)" [attr.aria-label]="'common.delete' | transloco"><mat-icon>delete</mat-icon></button>
+  </div>
+</section>

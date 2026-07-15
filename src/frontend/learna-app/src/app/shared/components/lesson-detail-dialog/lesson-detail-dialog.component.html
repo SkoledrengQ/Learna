@@ -32,6 +32,7 @@
       <dd>{{ lesson.note }}</dd>
     </ng-container>
   </dl>
+  <app-material-list targetType="lesson" [targetId]="lesson.id" [canUpload]="lesson.canManageAttendance"></app-material-list>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

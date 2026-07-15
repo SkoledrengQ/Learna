@@ -32,6 +32,7 @@ import { LessonRuleFormDialogComponent } from '../lesson-rule-form-dialog/lesson
 import { LanguageService } from '../../../../../core/services/language.service';
 import { LocalizedDatePipe } from '../../../../../shared/pipes/localized-date.pipe';
 import { Observable } from 'rxjs';
+import { MaterialListComponent } from '../../../../../shared/components/material-list/material-list.component';
 
 @Component({
   selector: 'app-subject-group-form',
@@ -51,7 +52,8 @@ import { Observable } from 'rxjs';
     MatSnackBarModule,
     MatTooltipModule,
     TranslocoModule,
-    LocalizedDatePipe
+    LocalizedDatePipe,
+    MaterialListComponent
   ],
   templateUrl: './subject-group-form.component.html',
   styleUrl: './subject-group-form.component.scss'

@@ -42,6 +42,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/attendance/attendance-page.component').then(m => m.AttendancePageComponent)
   },
   {
+    path: 'materials', canActivate: [authGuard], data: { roles: ['Student', 'Parent'] },
+    loadComponent: () => import('./features/materials/materials-page.component').then(m => m.MaterialsPageComponent)
+  },
+  {
     path: 'admin',
     canActivate: [authGuard],
     data: { roles: ['Admin'] },

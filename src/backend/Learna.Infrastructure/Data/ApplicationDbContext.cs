@@ -26,6 +26,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<LessonRule> LessonRules { get; set; }
     public DbSet<Lesson> Lessons { get; set; }
     public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
+    public DbSet<FileResource> FileResources { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
@@ -286,6 +287,23 @@ public class ApplicationDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(e => e.RecordedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<FileResource>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.OriginalFileName).IsRequired().HasMaxLength(500);
+            entity.Property(e => e.StoredPath).IsRequired().HasMaxLength(500);
+            entity.Property(e => e.StoredName).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.ContentType).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.Description).HasMaxLength(2000);
+            entity.HasIndex(e => e.SubjectGroupId);
+            entity.HasIndex(e => e.LessonId);
+            entity.HasIndex(e => e.UploadedByUserId);
+            entity.ToTable(t => t.HasCheckConstraint("CK_FileResource_ExactlyOneTarget", "(`SubjectGroupId` IS NULL) <> (`LessonId` IS NULL)"));
+            entity.HasOne(e => e.UploadedByUser).WithMany().HasForeignKey(e => e.UploadedByUserId).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.SubjectGroup).WithMany().HasForeignKey(e => e.SubjectGroupId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Lesson).WithMany().HasForeignKey(e => e.LessonId).OnDelete(DeleteBehavior.Cascade);
         });
 
         // User configuration

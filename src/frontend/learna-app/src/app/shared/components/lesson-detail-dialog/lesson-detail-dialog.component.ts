@@ -8,6 +8,7 @@ import { LanguageService } from '../../../core/services/language.service';
 import { Lesson } from '../../models/lesson.model';
 import { LocalizedDatePipe } from '../../pipes/localized-date.pipe';
 import { AttendanceDialogComponent } from '../../../features/attendance/attendance-dialog.component';
+import { MaterialListComponent } from '../material-list/material-list.component';
 
 export interface LessonDetailDialogData {
   lesson: Lesson;
@@ -16,7 +17,7 @@ export interface LessonDetailDialogData {
 @Component({
   selector: 'app-lesson-detail-dialog',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, TranslocoModule, LocalizedDatePipe],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, TranslocoModule, LocalizedDatePipe, MaterialListComponent],
   templateUrl: './lesson-detail-dialog.component.html',
   styleUrl: './lesson-detail-dialog.component.scss'
 })

@@ -16,6 +16,9 @@
     <button mat-button routerLink="/attendance" *ngIf="canViewAttendance()">
       <mat-icon>fact_check</mat-icon>{{ 'nav.attendance' | transloco }}
     </button>
+    <button mat-button routerLink="/materials" *ngIf="canViewMaterials()">
+      <mat-icon>folder</mat-icon>{{ 'nav.materials' | transloco }}
+    </button>
 
     <ng-container *ngIf="isAdmin()">
       <button mat-button [matMenuTriggerFor]="adminMenu">

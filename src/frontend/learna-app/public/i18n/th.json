@@ -22,6 +22,7 @@
     "students": "นักเรียน",
     "schedule": "ตารางเรียน",
     "attendance": "การเข้าเรียน",
+    "materials": "สื่อการเรียน",
     "admin": "ผู้ดูแลระบบ",
     "users": "บัญชีผู้ใช้",
     "teachers": "ครู",
@@ -33,6 +34,24 @@
     "lessons": "คาบเรียน",
     "adminSchedule": "ดูตารางเรียน",
     "logout": "ออกจากระบบ"
+  },
+  "materials": {
+    "title": "สื่อการเรียน",
+    "pageTitle": "สื่อและเอกสารการเรียน",
+    "description": "คำอธิบาย",
+    "upload": "อัปโหลด",
+    "download": "ดาวน์โหลด",
+    "empty": "ยังไม่มีสื่อการเรียน",
+    "lessonTag": "คาบเรียนวันที่ {{date}}",
+    "loadFailed": "ไม่สามารถโหลดสื่อการเรียนได้",
+    "uploaded": "อัปโหลดไฟล์แล้ว",
+    "uploadFailed": "ไม่สามารถอัปโหลดไฟล์ได้",
+    "tooLarge": "ไฟล์มีขนาดใหญ่เกินไป ขนาดสูงสุดคือ 25 MB",
+    "wrongType": "ไม่อนุญาตให้ใช้ไฟล์ประเภทนี้",
+    "deleteTitle": "ลบไฟล์",
+    "deleteMessage": "ลบ {{name}} หรือไม่",
+    "deleted": "ลบไฟล์แล้ว",
+    "deleteFailed": "ไม่สามารถลบไฟล์ได้"
   },
   "schedule": {
     "days": {

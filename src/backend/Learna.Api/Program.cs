@@ -54,6 +54,7 @@ builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<ILessonRuleRepository, LessonRuleRepository>();
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+builder.Services.AddScoped<IFileResourceRepository, FileResourceRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
@@ -61,6 +62,7 @@ builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ILessonSchedulingService, LessonSchedulingService>();
+builder.Services.AddSingleton<IFileStorage, LocalFileStorage>();
 
 // Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");
