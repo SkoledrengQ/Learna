@@ -4,6 +4,7 @@ namespace Learna.Core.Interfaces;
 
 public interface IGuardianRepository
 {
+    Task<IEnumerable<Guardian>> GetAllAsync();
     Task<Guardian?> GetByIdAsync(int id);
     Task<Guardian> CreateAsync(Guardian guardian);
     Task<Guardian> UpdateAsync(Guardian guardian);

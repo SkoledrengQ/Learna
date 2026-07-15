@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { TeacherService } from '../../../services/teacher.service';
+import { LoginSectionComponent } from '../../../../../shared/components/login-section/login-section.component';
 import { CreateTeacherDto, UpdateTeacherDto } from '../../../../../shared/models/teacher.model';
 
 @Component({
@@ -22,7 +23,8 @@ import { CreateTeacherDto, UpdateTeacherDto } from '../../../../../shared/models
     MatInputModule,
     MatButtonModule,
     MatSnackBarModule,
-    TranslocoModule
+    TranslocoModule,
+    LoginSectionComponent
   ],
   templateUrl: './teacher-form.component.html',
   styleUrl: './teacher-form.component.scss'

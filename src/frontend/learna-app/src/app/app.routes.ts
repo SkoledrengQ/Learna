@@ -4,7 +4,7 @@ import { authGuard } from './core/guards/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/students',
+    redirectTo: '/schedule',
     pathMatch: 'full'
   },
   {
@@ -14,7 +14,7 @@ export const routes: Routes = [
   {
     path: 'students',
     canActivate: [authGuard],
-    data: { roles: ['Admin', 'Teacher', 'Student'] },
+    data: { roles: ['Admin', 'Teacher'] },
     children: [
       {
         path: '',
@@ -46,5 +46,9 @@ export const routes: Routes = [
     canActivate: [authGuard],
     data: { roles: ['Admin'] },
     loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
+  },
+  {
+    path: 'unauthorized',
+    loadComponent: () => import('./shared/components/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent)
   }
 ];

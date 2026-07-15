@@ -19,6 +19,7 @@ import { StudentGuardian } from '../../../../shared/models/guardian.model';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { GuardianFormDialogComponent } from '../guardian-form-dialog/guardian-form-dialog.component';
 import { AttendanceSummaryComponent } from '../../../attendance/attendance-summary.component';
+import { LoginSectionComponent } from '../../../../shared/components/login-section/login-section.component';
 
 @Component({
   selector: 'app-student-form',
@@ -37,7 +38,8 @@ import { AttendanceSummaryComponent } from '../../../attendance/attendance-summa
     MatSnackBarModule,
     MatTooltipModule,
     TranslocoModule,
-    AttendanceSummaryComponent
+    AttendanceSummaryComponent,
+    LoginSectionComponent
   ],
   templateUrl: './student-form.component.html',
   styleUrl: './student-form.component.scss'

@@ -39,8 +39,17 @@ public class ScheduleController : ControllerBase
     }
 
     [HttpGet("students/{id}")]
+    [Authorize(Roles = "Admin,Teacher,Student")]
     public async Task<ActionResult<IEnumerable<LessonDto>>> GetStudentSchedule(int id, [FromQuery] DateOnly? from, [FromQuery] DateOnly? to)
     {
+        if (HttpContext?.User?.IsInRole("Student") == true &&
+            HttpContext.User.IsInRole("Admin") == false &&
+            HttpContext.User.IsInRole("Teacher") == false)
+        {
+            var currentUser = await GetCurrentUserAsync();
+            if (currentUser?.StudentId != id) return Forbid();
+        }
+
         if (await _studentRepository.GetByIdAsync(id) == null)
         {
             return NotFound();
@@ -51,6 +60,7 @@ public class ScheduleController : ControllerBase
     }
 
     [HttpGet("teachers/{id}")]
+    [Authorize(Roles = "Admin,Teacher")]
     public async Task<ActionResult<IEnumerable<LessonDto>>> GetTeacherSchedule(int id, [FromQuery] DateOnly? from, [FromQuery] DateOnly? to)
     {
         if (await _teacherRepository.GetByIdAsync(id) == null)
@@ -65,6 +75,7 @@ public class ScheduleController : ControllerBase
     }
 
     [HttpGet("rooms/{id}")]
+    [Authorize(Roles = "Admin,Teacher")]
     public async Task<ActionResult<IEnumerable<LessonDto>>> GetRoomSchedule(int id, [FromQuery] DateOnly? from, [FromQuery] DateOnly? to)
     {
         if (await _roomRepository.GetByIdAsync(id) == null)

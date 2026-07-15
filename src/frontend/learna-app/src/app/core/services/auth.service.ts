@@ -85,7 +85,7 @@ export class AuthService {
   }
 
   changePassword(currentPassword: string, newPassword: string): Observable<void> {
-    return this.http.post<void>(`${this.API_URL}/change-password`, {
+    return this.http.put<void>(`${this.API_URL}/password`, {
       currentPassword,
       newPassword
     });

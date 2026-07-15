@@ -112,10 +112,15 @@ public class AuthController : ControllerBase
         return Ok(new { message = "Logged out successfully" });
     }
 
-    [HttpPost("change-password")]
+    [HttpPut("password")]
     [Authorize]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDto request)
     {
+        if (!UsersController.IsValidPassword(request.NewPassword))
+        {
+            return BadRequest(new { message = "Password must be at least 8 characters." });
+        }
+
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var result = await _authService.ChangePasswordAsync(userId, request.CurrentPassword, request.NewPassword);
 

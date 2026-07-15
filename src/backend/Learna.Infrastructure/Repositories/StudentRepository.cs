@@ -16,12 +16,12 @@ public class StudentRepository : IStudentRepository
 
     public async Task<IEnumerable<Student>> GetAllAsync()
     {
-        return await _context.Students.ToListAsync();
+        return await _context.Students.Include(s => s.User).ToListAsync();
     }
 
     public async Task<Student?> GetByIdAsync(int id)
     {
-        return await _context.Students.FindAsync(id);
+        return await _context.Students.Include(s => s.User).FirstOrDefaultAsync(s => s.Id == id);
     }
 
     public async Task<Student?> GetByIdWithGuardiansAsync(int id)

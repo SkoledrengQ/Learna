@@ -14,6 +14,28 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
+    public async Task<IEnumerable<User>> GetAllAsync(string? search = null)
+    {
+        var query = _context.Users
+            .Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+            .Include(u => u.Student)
+            .Include(u => u.Teacher)
+            .Include(u => u.Guardian)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = search.Trim().ToLower();
+            query = query.Where(u =>
+                u.Email.ToLower().Contains(term) ||
+                (u.Student != null && (u.Student.Name.FirstName.ToLower().Contains(term) || u.Student.Name.LastName.ToLower().Contains(term))) ||
+                (u.Teacher != null && (u.Teacher.Name.FirstName.ToLower().Contains(term) || u.Teacher.Name.LastName.ToLower().Contains(term))) ||
+                (u.Guardian != null && (u.Guardian.Name.FirstName.ToLower().Contains(term) || u.Guardian.Name.LastName.ToLower().Contains(term))));
+        }
+
+        return await query.OrderBy(u => u.Email).ToListAsync();
+    }
+
     public async Task<User?> GetByIdAsync(int id)
     {
         return await _context.Users
@@ -21,6 +43,7 @@ public class UserRepository : IUserRepository
             .ThenInclude(ur => ur.Role)
             .Include(u => u.Student)
             .Include(u => u.Teacher)
+            .Include(u => u.Guardian)
             .FirstOrDefaultAsync(u => u.Id == id);
     }
 
@@ -30,6 +53,8 @@ public class UserRepository : IUserRepository
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
             .Include(u => u.Student)
+            .Include(u => u.Teacher)
+            .Include(u => u.Guardian)
             .FirstOrDefaultAsync(u => u.Email == email);
     }
 
@@ -61,4 +86,7 @@ public class UserRepository : IUserRepository
             .Select(ur => ur.Role.Name)
             .ToListAsync();
     }
+
+    public Task<Role?> GetRoleByNameAsync(string roleName) =>
+        _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
 }

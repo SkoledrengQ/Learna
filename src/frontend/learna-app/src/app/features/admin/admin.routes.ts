@@ -2,6 +2,10 @@ import { Routes } from '@angular/router';
 
 export const ADMIN_ROUTES: Routes = [
   {
+    path: 'users',
+    loadComponent: () => import('./users/user-list.component').then(m => m.UserListComponent)
+  },
+  {
     path: 'teachers',
     children: [
       {

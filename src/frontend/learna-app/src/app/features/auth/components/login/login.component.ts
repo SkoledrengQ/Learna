@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   isLoading = signal(false);
   hidePassword = signal(true);
-  returnUrl: string = '/students';
+  returnUrl: string = '/schedule';
 
   ngOnInit(): void {
     // Create login form
@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
     });
 
     // Get return URL from query params or default to students
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/students';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/schedule';
 
     // If already logged in, redirect to return URL
     if (this.authService.getCurrentUser()) {

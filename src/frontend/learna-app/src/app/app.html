@@ -3,9 +3,7 @@
   <span class="spacer"></span>
 
   <ng-container *ngIf="isAuthenticated()">
-    <span class="user-info">{{ currentUser()?.email }}</span>
-
-    <button mat-button routerLink="/students">
+    <button mat-button routerLink="/students" *ngIf="canViewStudents()">
       <mat-icon>school</mat-icon>
       {{ 'nav.students' | transloco }}
     </button>
@@ -25,6 +23,10 @@
         {{ 'nav.admin' | transloco }}
       </button>
       <mat-menu #adminMenu="matMenu">
+        <button mat-menu-item routerLink="/admin/users">
+          <mat-icon>manage_accounts</mat-icon>
+          {{ 'nav.users' | transloco }}
+        </button>
         <button mat-menu-item routerLink="/admin/teachers">
           <mat-icon>person</mat-icon>
           {{ 'nav.teachers' | transloco }}
@@ -60,10 +62,11 @@
       </mat-menu>
     </ng-container>
 
-    <button mat-button (click)="onLogout()">
-      <mat-icon>logout</mat-icon>
-      {{ 'nav.logout' | transloco }}
-    </button>
+    <button mat-button [matMenuTriggerFor]="userMenu"><mat-icon>account_circle</mat-icon>{{ currentUser()?.email }}</button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item (click)="onChangePassword()"><mat-icon>password</mat-icon>{{ 'auth.changePassword' | transloco }}</button>
+      <button mat-menu-item (click)="onLogout()"><mat-icon>logout</mat-icon>{{ 'nav.logout' | transloco }}</button>
+    </mat-menu>
   </ng-container>
 
   <button mat-button [matMenuTriggerFor]="languageMenu" [attr.aria-label]="'common.language' | transloco">

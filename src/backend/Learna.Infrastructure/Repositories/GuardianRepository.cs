@@ -14,9 +14,14 @@ public class GuardianRepository : IGuardianRepository
         _context = context;
     }
 
+    public async Task<IEnumerable<Guardian>> GetAllAsync()
+    {
+        return await _context.Guardians.Include(g => g.User).OrderBy(g => g.Name.FirstName).ThenBy(g => g.Name.LastName).ToListAsync();
+    }
+
     public async Task<Guardian?> GetByIdAsync(int id)
     {
-        return await _context.Guardians.FindAsync(id);
+        return await _context.Guardians.Include(g => g.User).FirstOrDefaultAsync(g => g.Id == id);
     }
 
     public async Task<Guardian> CreateAsync(Guardian guardian)

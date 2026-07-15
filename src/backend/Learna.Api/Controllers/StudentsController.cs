@@ -6,7 +6,7 @@ using Learna.Api.DTOs;
 
 namespace Learna.Api.Controllers;
 
-[Authorize] // Require authentication for all endpoints
+[Authorize(Roles = "Admin,Teacher")]
 [ApiController]
 [Route("api/[controller]")]
 public class StudentsController : ControllerBase
@@ -87,6 +87,7 @@ public class StudentsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<StudentDto>> Create(CreateStudentDto createDto)
     {
         // Generate unique student ID
@@ -128,6 +129,7 @@ public class StudentsController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<StudentDto>> Update(int id, UpdateStudentDto updateDto)
     {
         var existingStudent = await _repository.GetByIdAsync(id);
@@ -152,6 +154,7 @@ public class StudentsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _repository.DeleteAsync(id);
@@ -176,6 +179,7 @@ public class StudentsController : ControllerBase
     }
 
     [HttpPost("{studentId}/guardians")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<StudentGuardianDto>> AddGuardian(int studentId, CreateGuardianDto createDto)
     {
         var student = await _repository.GetByIdAsync(studentId);
@@ -207,6 +211,7 @@ public class StudentsController : ControllerBase
     }
 
     [HttpPost("{studentId}/guardians/{guardianId}/link")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<StudentGuardianDto>> LinkExistingGuardian(int studentId, int guardianId, LinkGuardianDto linkDto)
     {
         var student = await _repository.GetByIdAsync(studentId);
@@ -241,6 +246,7 @@ public class StudentsController : ControllerBase
     }
 
     [HttpPut("{studentId}/guardians/{guardianId}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<StudentGuardianDto>> UpdateGuardian(int studentId, int guardianId, UpdateGuardianDto updateDto)
     {
         var link = await _guardianRepository.GetLinkAsync(studentId, guardianId);
@@ -264,6 +270,7 @@ public class StudentsController : ControllerBase
     }
 
     [HttpDelete("{studentId}/guardians/{guardianId}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> RemoveGuardian(int studentId, int guardianId)
     {
         var result = await _guardianRepository.UnlinkAsync(studentId, guardianId);

@@ -87,7 +87,7 @@ public class AuthService : IAuthService
     {
         var storedToken = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
 
-        if (storedToken == null || !storedToken.IsActive)
+        if (storedToken == null || !storedToken.IsActive || !storedToken.User.IsActive)
         {
             return new AuthResult
             {

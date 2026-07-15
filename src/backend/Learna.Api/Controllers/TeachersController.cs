@@ -37,19 +37,20 @@ public class TeachersController : ControllerBase
         Nickname = dto.Nickname
     };
 
-    private static TeacherDto ToTeacherDto(Teacher teacher) => new(
+    private static TeacherDto ToTeacherDto(Teacher teacher, bool includePrivate = true) => new(
         teacher.Id,
         ToDto(teacher.Name),
-        teacher.Email,
-        teacher.PhoneNumber,
-        teacher.EmployeeId
+        includePrivate ? teacher.Email : null,
+        includePrivate ? teacher.PhoneNumber : null,
+        includePrivate ? teacher.EmployeeId : null
     );
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TeacherDto>>> GetAll()
     {
         var teachers = await _repository.GetAllAsync();
-        return Ok(teachers.Select(ToTeacherDto));
+        var includePrivate = User.IsInRole("Admin");
+        return Ok(teachers.Select(t => ToTeacherDto(t, includePrivate)));
     }
 
     [HttpGet("{id}")]
@@ -61,7 +62,7 @@ public class TeachersController : ControllerBase
             return NotFound();
         }
 
-        return Ok(ToTeacherDto(teacher));
+        return Ok(ToTeacherDto(teacher, User.IsInRole("Admin")));
     }
 
     [HttpPost]

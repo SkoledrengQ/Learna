@@ -126,6 +126,8 @@
         </mat-form-field>
       </div>
 
+      <app-login-section linkType="student" [linkedId]="studentId" [email]="studentForm.get('email')?.value || ''"></app-login-section>
+
       <div class="form-actions">
         <button mat-button type="button" (click)="onCancel()">{{ 'common.cancel' | transloco }}</button>
         <button mat-raised-button color="primary" type="submit" [disabled]="isLoading()">

@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from './core/services/auth.service';
 import { LanguageService, SupportedLanguage } from './core/services/language.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +20,8 @@ import { LanguageService, SupportedLanguage } from './core/services/language.ser
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
-    TranslocoModule
+    TranslocoModule,
+    MatDialogModule
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
@@ -27,15 +29,23 @@ import { LanguageService, SupportedLanguage } from './core/services/language.ser
 export class App {
   private authService = inject(AuthService);
   protected readonly languageService = inject(LanguageService);
+  private readonly dialog = inject(MatDialog);
 
   protected readonly title = signal('Learna');
   protected readonly isAuthenticated = this.authService.isAuthenticated;
   protected readonly currentUser = computed(() => this.authService.getCurrentUser());
   protected readonly isAdmin = computed(() => this.authService.hasAnyRole(['Admin']));
+  protected readonly canViewStudents = computed(() => this.authService.hasAnyRole(['Admin', 'Teacher']));
   protected readonly isStudentLinked = computed(() => !!this.currentUser()?.studentId);
 
   onLogout(): void {
     this.authService.logout();
+  }
+
+  onChangePassword(): void {
+    import('./shared/components/change-password-dialog/change-password-dialog.component').then(({ ChangePasswordDialogComponent }) =>
+      this.dialog.open(ChangePasswordDialogComponent, { width: '480px' })
+    );
   }
 
   onSelectLanguage(lang: SupportedLanguage): void {
