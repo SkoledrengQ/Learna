@@ -1,4 +1,4 @@
-import { Component, signal, inject, computed } from '@angular/core';
+import { Component, signal, inject, computed, effect } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +9,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from './core/services/auth.service';
 import { LanguageService, SupportedLanguage } from './core/services/language.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { AnnouncementsService } from './core/services/announcements.service';
 
 @Component({
   selector: 'app-root',
@@ -30,6 +31,7 @@ export class App {
   private authService = inject(AuthService);
   protected readonly languageService = inject(LanguageService);
   private readonly dialog = inject(MatDialog);
+  protected readonly announcements = inject(AnnouncementsService);
 
   protected readonly title = signal('Learna');
   protected readonly isAuthenticated = this.authService.isAuthenticated;
@@ -41,6 +43,14 @@ export class App {
   protected readonly canViewGroups = computed(() => !!this.currentUser()?.teacherId);
   protected readonly canViewAssignments = computed(() => !!this.currentUser()?.studentId || !!this.currentUser()?.guardianId);
   protected readonly canViewGrades = computed(() => !!this.currentUser()?.studentId || !!this.currentUser()?.guardianId);
+
+  constructor() {
+    effect(() => {
+      if (this.isAuthenticated()) {
+        this.announcements.loadMine().subscribe({ error: () => undefined });
+      }
+    });
+  }
 
   onLogout(): void {
     this.authService.logout();

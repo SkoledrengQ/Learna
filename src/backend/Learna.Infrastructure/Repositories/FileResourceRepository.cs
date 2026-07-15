@@ -12,15 +12,18 @@ public sealed class FileResourceRepository(ApplicationDbContext context) : IFile
         .Include(f => f.SubjectGroup)!.ThenInclude(g => g!.Subject)
         .Include(f => f.Lesson)!.ThenInclude(l => l!.SubjectGroup).ThenInclude(g => g.Subject)
         .Include(f => f.Assignment)!.ThenInclude(a => a!.SubjectGroup)
-        .Include(f => f.Submission)!.ThenInclude(s => s!.Assignment).ThenInclude(a => a.SubjectGroup);
+        .Include(f => f.Submission)!.ThenInclude(s => s!.Assignment).ThenInclude(a => a.SubjectGroup)
+        .Include(f => f.Announcement);
 
     public Task<FileResource?> GetByIdAsync(int id) => Files.FirstOrDefaultAsync(f => f.Id == id);
     public async Task<IReadOnlyList<FileResource>> GetForSubjectGroupAsync(int subjectGroupId) => await Files.Where(f => f.SubjectGroupId == subjectGroupId || (f.LessonId != null && f.Lesson!.SubjectGroupId == subjectGroupId)).OrderByDescending(f => f.CreatedAt).ToListAsync();
     public async Task<IReadOnlyList<FileResource>> GetForLessonAsync(int lessonId) => await Files.Where(f => f.LessonId == lessonId).OrderByDescending(f => f.CreatedAt).ToListAsync();
     public async Task<IReadOnlyList<FileResource>> GetForAssignmentAsync(int assignmentId) => await Files.Where(f => f.AssignmentId == assignmentId).OrderByDescending(f => f.CreatedAt).ToListAsync();
+    public async Task<IReadOnlyList<FileResource>> GetForAnnouncementAsync(int announcementId) => await Files.Where(f => f.AnnouncementId == announcementId).OrderByDescending(f => f.CreatedAt).ToListAsync();
     public Task<SubjectGroup?> GetSubjectGroupAsync(int id) => context.SubjectGroups.Include(g => g.Subject).FirstOrDefaultAsync(g => g.Id == id);
     public Task<Lesson?> GetLessonAsync(int id) => context.Lessons.Include(l => l.SubjectGroup).ThenInclude(g => g.Subject).FirstOrDefaultAsync(l => l.Id == id);
     public Task<Assignment?> GetAssignmentAsync(int id) => context.Assignments.Include(a => a.SubjectGroup).Include(a => a.Extensions).FirstOrDefaultAsync(a => a.Id == id);
+    public Task<Announcement?> GetAnnouncementAsync(int id) => context.Announcements.Include(a => a.Reads).Include(a => a.Files).FirstOrDefaultAsync(a => a.Id == id);
     public Task<bool> HasActiveEnrollmentAsync(int studentId, int subjectGroupId) => context.Enrollments.AnyAsync(e => e.StudentId == studentId && e.SubjectGroupId == subjectGroupId && e.UnenrolledDate == null);
     public Task<bool> GuardianHasActiveEnrollmentAsync(int guardianId, int subjectGroupId) => context.Enrollments.AnyAsync(e => e.SubjectGroupId == subjectGroupId && e.UnenrolledDate == null && context.StudentGuardians.Any(sg => sg.GuardianId == guardianId && sg.StudentId == e.StudentId));
 

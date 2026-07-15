@@ -21,4 +21,6 @@ public class FileResource
     public Assignment? Assignment { get; set; }
     public int? SubmissionId { get; set; }
     public Submission? Submission { get; set; }
+    public int? AnnouncementId { get; set; }
+    public Announcement? Announcement { get; set; }
 }

@@ -20,13 +20,13 @@ public class AssignmentTests
     private static ApplicationDbContext Context() => new(new DbContextOptionsBuilder<ApplicationDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
 
     [Fact]
-    public void Model_EnforcesUniqueRowsAndFourWayFileTarget()
+    public void Model_EnforcesUniqueRowsAndFileTargetXor()
     {
         using var db = Context(); var model = db.GetService<IDesignTimeModel>().Model;
         model.FindEntityType(typeof(Submission))!.GetIndexes().Single(i => i.IsUnique).Properties.Select(p => p.Name).Should().Equal("AssignmentId", "StudentId");
         model.FindEntityType(typeof(AssignmentExtension))!.GetIndexes().Single(i => i.IsUnique).Properties.Select(p => p.Name).Should().Equal("AssignmentId", "StudentId");
         var sql = model.FindEntityType(typeof(FileResource))!.GetCheckConstraints().Single(c => c.Name == "CK_FileResource_ExactlyOneTarget").Sql;
-        sql.Should().ContainAll("SubjectGroupId", "LessonId", "AssignmentId", "SubmissionId");
+        sql.Should().ContainAll("SubjectGroupId", "LessonId", "AssignmentId", "SubmissionId", "AnnouncementId");
     }
 
     [Fact]
@@ -96,7 +96,7 @@ public class AssignmentTests
     {
         var c = new AssignmentsController(new AssignmentRepository(db), new SubjectGroupRepository(db), new UserRepository(db), storage, clock, NullLogger<AssignmentsController>.Instance); SetUser(c, user, roles); return c;
     }
-    private static FilesController Files(ApplicationDbContext db, User user, IFileStorage storage, params string[] roles) { var c = new FilesController(new FileResourceRepository(db), storage, new UserRepository(db), NullLogger<FilesController>.Instance); SetUser(c, user, roles); return c; }
+    private static FilesController Files(ApplicationDbContext db, User user, IFileStorage storage, params string[] roles) { var c = new FilesController(new FileResourceRepository(db), new AnnouncementRepository(db), storage, new UserRepository(db), TimeProvider.System, NullLogger<FilesController>.Instance); SetUser(c, user, roles); return c; }
     private static void SetUser(ControllerBase c, User user, IEnumerable<string> roles) { var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, user.Id.ToString()) }; claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r))); c.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(new ClaimsIdentity(claims, "test")) } }; }
     private static FormFile FormFile(string name) { var bytes = new byte[] { 0x25, 0x50, 0x44, 0x46 }; return new FormFile(new MemoryStream(bytes), 0, bytes.Length, "files", name) { Headers = new HeaderDictionary(), ContentType = "application/pdf" }; }
 

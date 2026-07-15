@@ -28,6 +28,13 @@
     <button mat-button routerLink="/grades" *ngIf="canViewGrades()">
       <mat-icon>grade</mat-icon>{{ 'nav.grades' | transloco }}
     </button>
+    <button mat-button routerLink="/announcements">
+      <span class="badge-wrap">
+        <mat-icon>campaign</mat-icon>
+        <span class="nav-badge" *ngIf="announcements.unreadCount() > 0">{{ announcements.unreadCount() }}</span>
+      </span>
+      {{ 'nav.announcements' | transloco }}
+    </button>
 
     <ng-container *ngIf="isAdmin()">
       <button mat-button [matMenuTriggerFor]="adminMenu">

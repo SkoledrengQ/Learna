@@ -26,6 +26,7 @@
     "myGroups": "My groups",
     "assignments": "Assignments",
     "grades": "Grades",
+    "announcements": "Announcements",
     "admin": "Admin",
     "users": "Users",
     "teachers": "Teachers",
@@ -76,6 +77,33 @@
     "title": "Grades", "gradebook": "Gradebook", "grade": "Grade", "student": "Student", "category": "Category", "score": "Score", "maxScore": "Maximum score", "feedback": "Feedback", "average": "Average", "publishedGrade": "Published grade",
     "empty": "No published grades are available yet.", "noRoster": "There are no students in this group.", "addColumn": "Add grade column", "publish": "Publish", "publishAll": "Publish all grades", "publishAllTitle": "Publish all draft grades?", "publishAllConfirm": "Students and guardians will immediately see every draft grade for this assignment.",
     "saved": "Grade saved", "saveFailed": "The grade could not be saved", "loadFailed": "Grades could not be loaded", "states": { "Ungraded": "Ungraded", "Draft": "Draft", "Published": "Published" }
+  },
+  "announcements": {
+    "title": "Announcements",
+    "compose": "Compose",
+    "edit": "Edit announcement",
+    "empty": "No announcements are available.",
+    "selectPrompt": "Select an announcement to read it.",
+    "unread": "Unread",
+    "future": "Future",
+    "expired": "Expired",
+    "school": "School",
+    "attachments": "Attachments",
+    "noAttachments": "No attachments.",
+    "unreadCount": "{{count}} unread",
+    "saved": "Announcement saved",
+    "deleted": "Announcement deleted",
+    "loadFailed": "Announcements could not be loaded",
+    "saveFailed": "The announcement could not be saved",
+    "deleteFailed": "The announcement could not be deleted",
+    "fields": {
+      "title": "Title",
+      "body": "Body",
+      "audience": "Audience",
+      "publishAt": "Publish at",
+      "expiresAt": "Expires at",
+      "attachment": "Attachment"
+    }
   },
   "schedule": {
     "days": {

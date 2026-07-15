@@ -16,6 +16,7 @@ export class MaterialsService {
   uploadSubjectGroup(id: number, file: File, description: string): Observable<FileResource> { return this.upload(`subject-groups/${id}/files`, file, description); }
   uploadLesson(id: number, file: File, description: string): Observable<FileResource> { return this.upload(`lessons/${id}/files`, file, description); }
   uploadAssignment(id: number, file: File, description: string): Observable<FileResource> { return this.upload(`assignments/${id}/files`, file, description); }
+  uploadAnnouncement(id: number, file: File, description: string): Observable<FileResource> { return this.upload(`announcements/${id}/files`, file, description); }
   delete(id: number): Observable<void> { return this.http.delete<void>(`${this.api}/files/${id}`); }
 
   download(file: Pick<FileResource, 'id' | 'originalFileName'>): void {

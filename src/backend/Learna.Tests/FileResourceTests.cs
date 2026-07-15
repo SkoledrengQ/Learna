@@ -85,7 +85,7 @@ public class FileResourceTests
     private static FilesController Controller(ApplicationDbContext db, IFileResourceRepository repo, IFileStorage storage, User user, params string[] roles)
     {
         var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, user.Id.ToString()) }; claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
-        var controller = new FilesController(repo, storage, new UserRepository(db), NullLogger<FilesController>.Instance);
+        var controller = new FilesController(repo, new AnnouncementRepository(db), storage, new UserRepository(db), TimeProvider.System, NullLogger<FilesController>.Instance);
         controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(new ClaimsIdentity(claims, "test")) } };
         return controller;
     }

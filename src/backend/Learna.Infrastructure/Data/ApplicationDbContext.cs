@@ -31,6 +31,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<AssignmentExtension> AssignmentExtensions { get; set; }
     public DbSet<Submission> Submissions { get; set; }
     public DbSet<Grade> Grades { get; set; }
+    public DbSet<Announcement> Announcements { get; set; }
+    public DbSet<AnnouncementRead> AnnouncementReads { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
@@ -305,13 +307,15 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(e => e.LessonId);
             entity.HasIndex(e => e.AssignmentId);
             entity.HasIndex(e => e.SubmissionId);
+            entity.HasIndex(e => e.AnnouncementId);
             entity.HasIndex(e => e.UploadedByUserId);
-            entity.ToTable(t => t.HasCheckConstraint("CK_FileResource_ExactlyOneTarget", "((`SubjectGroupId` IS NOT NULL) + (`LessonId` IS NOT NULL) + (`AssignmentId` IS NOT NULL) + (`SubmissionId` IS NOT NULL)) = 1"));
+            entity.ToTable(t => t.HasCheckConstraint("CK_FileResource_ExactlyOneTarget", "((`SubjectGroupId` IS NOT NULL) + (`LessonId` IS NOT NULL) + (`AssignmentId` IS NOT NULL) + (`SubmissionId` IS NOT NULL) + (`AnnouncementId` IS NOT NULL)) = 1"));
             entity.HasOne(e => e.UploadedByUser).WithMany().HasForeignKey(e => e.UploadedByUserId).OnDelete(DeleteBehavior.Restrict);
             entity.HasOne(e => e.SubjectGroup).WithMany().HasForeignKey(e => e.SubjectGroupId).OnDelete(DeleteBehavior.Cascade);
             entity.HasOne(e => e.Lesson).WithMany().HasForeignKey(e => e.LessonId).OnDelete(DeleteBehavior.Cascade);
             entity.HasOne(e => e.Assignment).WithMany(a => a.Files).HasForeignKey(e => e.AssignmentId).OnDelete(DeleteBehavior.Cascade);
             entity.HasOne(e => e.Submission).WithMany(s => s.Files).HasForeignKey(e => e.SubmissionId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Announcement).WithMany(a => a.Files).HasForeignKey(e => e.AnnouncementId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Assignment>(entity =>
@@ -360,6 +364,31 @@ public class ApplicationDbContext : DbContext
             entity.HasOne(e => e.SubjectGroup).WithMany(g => g.Grades).HasForeignKey(e => e.SubjectGroupId).OnDelete(DeleteBehavior.Cascade);
             entity.HasOne(e => e.Submission).WithOne(s => s.Grade).HasForeignKey<Grade>(e => e.SubmissionId).OnDelete(DeleteBehavior.Cascade);
             entity.HasOne(e => e.GradedByUser).WithMany().HasForeignKey(e => e.GradedByUserId).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<Announcement>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Title).IsRequired().HasMaxLength(300);
+            entity.Property(e => e.Body).IsRequired().HasColumnType("longtext");
+            entity.Property(e => e.AudienceType).HasConversion<string>().HasMaxLength(50);
+            entity.HasIndex(e => e.PublishAt);
+            entity.HasIndex(e => e.ExpiresAt);
+            entity.HasIndex(e => new { e.AudienceType, e.TargetId });
+            entity.HasOne(e => e.CreatedByUser).WithMany().HasForeignKey(e => e.CreatedByUserId).OnDelete(DeleteBehavior.Restrict);
+            entity.ToTable(t =>
+            {
+                t.HasCheckConstraint("CK_Announcement_Target", "((`AudienceType` = 'School' AND `TargetId` IS NULL) OR (`AudienceType` <> 'School' AND `TargetId` IS NOT NULL))");
+                t.HasCheckConstraint("CK_Announcement_ExpiryAfterPublish", "`ExpiresAt` IS NULL OR `ExpiresAt` > `PublishAt`");
+            });
+        });
+
+        modelBuilder.Entity<AnnouncementRead>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.AnnouncementId, e.UserId }).IsUnique();
+            entity.HasOne(e => e.Announcement).WithMany(a => a.Reads).HasForeignKey(e => e.AnnouncementId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.User).WithMany().HasForeignKey(e => e.UserId).OnDelete(DeleteBehavior.Cascade);
         });
 
         // User configuration
