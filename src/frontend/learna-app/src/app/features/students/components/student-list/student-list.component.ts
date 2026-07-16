@@ -14,6 +14,9 @@ import { Student, getDisplayName } from '../../../../shared/models/student.model
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { LanguageService } from '../../../../core/services/language.service';
 import { LocalizedDatePipe } from '../../../../shared/pipes/localized-date.pipe';
+import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
 
 @Component({
   selector: 'app-student-list',
@@ -28,7 +31,10 @@ import { LocalizedDatePipe } from '../../../../shared/pipes/localized-date.pipe'
     MatSnackBarModule,
     MatTooltipModule,
     TranslocoModule,
-    LocalizedDatePipe
+    LocalizedDatePipe,
+    PageHeaderComponent,
+    EmptyStateComponent,
+    LoadingStateComponent
   ],
   templateUrl: './student-list.component.html',
   styleUrl: './student-list.component.scss'

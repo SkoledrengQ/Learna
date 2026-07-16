@@ -11,11 +11,13 @@ import { Lesson } from '../../../../shared/models/lesson.model';
 import { ScheduleViewComponent } from '../../../../shared/components/schedule-view/schedule-view.component';
 import { GuardianPortalService } from '../../../../core/services/guardian-portal.service';
 import { ChildSelectorComponent } from '../../../../shared/components/child-selector/child-selector.component';
+import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
+import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
 
 @Component({
   selector: 'app-my-schedule',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatCardModule, MatButtonModule, MatSnackBarModule, TranslocoModule, ScheduleViewComponent, ChildSelectorComponent],
+  imports: [CommonModule, RouterLink, MatCardModule, MatButtonModule, MatSnackBarModule, TranslocoModule, ScheduleViewComponent, ChildSelectorComponent, PageHeaderComponent, LoadingStateComponent],
   templateUrl: './my-schedule.component.html',
   styleUrl: './my-schedule.component.scss'
 })

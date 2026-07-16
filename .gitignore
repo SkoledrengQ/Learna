@@ -116,3 +116,6 @@ Thumbs.db
 **/.claude-backups/
 .storage/
 storage/
+
+# Work-order verification screenshots (dev-only artifacts)
+wo14-screenshots/

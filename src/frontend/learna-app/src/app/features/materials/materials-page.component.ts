@@ -10,8 +10,11 @@ import { ChildSelectorComponent } from '../../shared/components/child-selector/c
 import { FileResource } from '../../shared/models/file-resource.model';
 import { LocalizedDatePipe } from '../../shared/pipes/localized-date.pipe';
 import { LanguageService } from '../../core/services/language.service';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
+import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
+import { LoadingStateComponent } from '../../shared/components/loading-state/loading-state.component';
 
-@Component({ selector:'app-materials-page', standalone:true, imports:[CommonModule, MatButtonModule, MatCardModule, MatIconModule, TranslocoModule, ChildSelectorComponent, LocalizedDatePipe], templateUrl:'./materials-page.component.html', styleUrl:'./materials-page.component.scss' })
+@Component({ selector:'app-materials-page', standalone:true, imports:[CommonModule, MatButtonModule, MatCardModule, MatIconModule, TranslocoModule, ChildSelectorComponent, LocalizedDatePipe, PageHeaderComponent, EmptyStateComponent, LoadingStateComponent], templateUrl:'./materials-page.component.html', styleUrl:'./materials-page.component.scss' })
 export class MaterialsPageComponent {
   readonly portal=inject(GuardianPortalService); private readonly service=inject(MaterialsService);
   readonly language=inject(LanguageService);

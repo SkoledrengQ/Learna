@@ -1,0 +1,53 @@
+<app-page-header [title]="'admin.settings.title' | transloco" [subtitle]="'admin.settings.subtitle' | transloco" />
+
+<app-loading-state *ngIf="isLoading(); else content" [message]="'common.loading' | transloco" />
+
+<ng-template #content>
+  <mat-card class="settings-card">
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="settings-form">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'admin.settings.schoolName' | transloco }}</mat-label>
+          <input matInput formControlName="schoolName" maxlength="200" />
+          <mat-error *ngIf="form.controls.schoolName.hasError('required')">{{ 'validation.required' | transloco }}</mat-error>
+        </mat-form-field>
+
+        <div class="settings-form__color-row">
+          <mat-form-field appearance="outline" class="settings-form__color-field">
+            <mat-label>{{ 'admin.settings.primaryColor' | transloco }}</mat-label>
+            <input matInput formControlName="primaryColor" placeholder="#00695C" />
+            <mat-hint>{{ 'admin.settings.colorHint' | transloco }}</mat-hint>
+            <mat-error *ngIf="form.controls.primaryColor.invalid">{{ getColorErrorMessage() }}</mat-error>
+          </mat-form-field>
+          <input
+            class="settings-form__color-picker"
+            type="color"
+            [value]="previewColor()"
+            (input)="form.controls.primaryColor.setValue($any($event.target).value)"
+            [attr.aria-label]="'admin.settings.primaryColor' | transloco"
+          />
+        </div>
+
+        <div class="settings-preview">
+          <span class="settings-preview__label">{{ 'admin.settings.preview' | transloco }}</span>
+          <div class="settings-preview__swatch" [style.background-color]="previewColor()"></div>
+          <button
+            mat-flat-button
+            type="button"
+            [style.background-color]="previewColor()"
+            [style.color]="previewOnColor()"
+            class="settings-preview__button"
+          >
+            {{ 'admin.settings.previewButton' | transloco }}
+          </button>
+        </div>
+
+        <div class="settings-form__actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="isSaving()">
+            {{ (isSaving() ? 'common.saving' : 'common.save') | transloco }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</ng-template>

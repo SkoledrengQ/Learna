@@ -10,6 +10,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { RoomService } from '../../../services/room.service';
 import { CreateRoomDto, UpdateRoomDto } from '../../../../../shared/models/room.model';
+import { PageHeaderComponent } from '../../../../../shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'app-room-form',
@@ -22,7 +23,8 @@ import { CreateRoomDto, UpdateRoomDto } from '../../../../../shared/models/room.
     MatInputModule,
     MatButtonModule,
     MatSnackBarModule,
-    TranslocoModule
+    TranslocoModule,
+    PageHeaderComponent
   ],
   templateUrl: './room-form.component.html',
   styleUrl: './room-form.component.scss'

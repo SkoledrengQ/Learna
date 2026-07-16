@@ -37,7 +37,13 @@
     "rooms": "Rooms",
     "lessons": "Lessons",
     "adminSchedule": "Schedule Viewer",
-    "logout": "Logout"
+    "settings": "Settings",
+    "logout": "Logout",
+    "personalSection": "General",
+    "teacherSection": "Teaching",
+    "adminSection": "Administration",
+    "toggleMenu": "Toggle menu",
+    "userMenu": "Account menu"
   },
   "materials": {
     "title": "Materials",
@@ -628,6 +634,19 @@
       "searchLabel": "Search",
       "searchPlaceholder": "Search by name",
       "pickHint": "Search and select above to view a schedule."
+    },
+    "settings": {
+      "title": "School settings",
+      "subtitle": "Branding shown throughout the app for every user.",
+      "schoolName": "School name",
+      "primaryColor": "Primary color",
+      "colorHint": "Used for buttons, highlights, and the navigation sidebar.",
+      "preview": "Preview",
+      "previewButton": "Sample button",
+      "invalidColor": "Enter a valid hex color, e.g. #00695C",
+      "loadFailed": "Failed to load school settings",
+      "saved": "School settings saved",
+      "saveFailed": "Failed to save school settings"
     }
   }
 }

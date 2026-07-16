@@ -18,6 +18,9 @@ import { SubjectGroup } from '../../../../../shared/models/subject-group.model';
 import { SchoolYear, Term } from '../../../../../shared/models/school-year.model';
 import { Subject as SubjectModel } from '../../../../../shared/models/subject.model';
 import { ConfirmDialogComponent } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { PageHeaderComponent } from '../../../../../shared/components/page-header/page-header.component';
+import { EmptyStateComponent } from '../../../../../shared/components/empty-state/empty-state.component';
+import { LoadingStateComponent } from '../../../../../shared/components/loading-state/loading-state.component';
 
 @Component({
   selector: 'app-subject-group-list',
@@ -33,6 +36,9 @@ import { ConfirmDialogComponent } from '../../../../../shared/components/confirm
     MatDialogModule,
     MatSnackBarModule,
     MatTooltipModule,
+    PageHeaderComponent,
+    EmptyStateComponent,
+    LoadingStateComponent,
     TranslocoModule
   ],
   templateUrl: './subject-group-list.component.html',

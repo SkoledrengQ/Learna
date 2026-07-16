@@ -1,8 +1,13 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>{{ 'admin.lessons.title' | transloco }}</mat-card-title>
-  </mat-card-header>
+<app-page-header [title]="'admin.lessons.title' | transloco">
+  <button pageActions mat-flat-button color="primary" (click)="onCreateLesson()">
+    <mat-icon>add</mat-icon>
+    {{ 'admin.lessons.addOneOff' | transloco }}
+  </button>
+</app-page-header>
 
+<app-loading-state *ngIf="isLoading()" [message]="'admin.lessons.loadingLessons' | transloco" />
+
+<mat-card *ngIf="!isLoading()">
   <mat-card-content>
     <div class="filters">
       <mat-form-field appearance="outline">
@@ -40,15 +45,15 @@
       </mat-form-field>
     </div>
 
-    <div class="table-header">
-      <button mat-raised-button color="primary" (click)="onCreateLesson()">
-        <mat-icon>add</mat-icon>
-        {{ 'admin.lessons.addOneOff' | transloco }}
-      </button>
-    </div>
+    <app-empty-state
+      *ngIf="lessons().length === 0; else table"
+      icon="event"
+      [message]="'admin.lessons.noLessonsFound' | transloco"
+    />
 
-    <div class="table-container" *ngIf="!isLoading()">
-      <table mat-table [dataSource]="lessons()" class="mat-elevation-z2">
+    <ng-template #table>
+    <div class="table-container">
+      <table mat-table [dataSource]="lessons()" class="mat-elevation-z2 app-table">
         <ng-container matColumnDef="date">
           <th mat-header-cell *matHeaderCellDef>{{ 'admin.lessons.date' | transloco }}</th>
           <td mat-cell *matCellDef="let lesson" [class.cancelled]="lesson.status === 'Cancelled'">{{ lesson.date }}</td>
@@ -79,22 +84,25 @@
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef>{{ 'admin.lessons.status' | transloco }}</th>
           <td mat-cell *matCellDef="let lesson">
-            <span class="status-badge" [class.cancelled-chip]="lesson.status === 'Cancelled'">
+            <app-status-chip [variant]="lessonStatusVariant(lesson.status, false)">
               {{ (lesson.status === 'Cancelled' ? 'admin.lessons.statusCancelled' : 'admin.lessons.statusScheduled') | transloco }}
-            </span>
+            </app-status-chip>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="modified">
           <th mat-header-cell *matHeaderCellDef>{{ 'admin.lessons.modified' | transloco }}</th>
           <td mat-cell *matCellDef="let lesson">
-            <mat-icon *ngIf="lesson.isModified" [matTooltip]="'admin.lessons.modifiedTooltip' | transloco">edit_note</mat-icon>
+            <app-status-chip *ngIf="lesson.isModified" variant="warning" [matTooltip]="'admin.lessons.modifiedTooltip' | transloco">
+              <mat-icon inline="true">edit_note</mat-icon>
+              {{ 'admin.lessons.modified' | transloco }}
+            </app-status-chip>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>{{ 'common.actions' | transloco }}</th>
-          <td mat-cell *matCellDef="let lesson">
+          <td mat-cell *matCellDef="let lesson" class="actions-cell">
             <button mat-icon-button color="primary" (click)="onAttendance(lesson)" *ngIf="lesson.status !== 'Cancelled'" [matTooltip]="'attendance.viewOrEdit' | transloco">
               <mat-icon>fact_check</mat-icon>
             </button>
@@ -110,17 +118,8 @@
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-        <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-            {{ 'admin.lessons.noLessonsFound' | transloco }}
-          </td>
-        </tr>
       </table>
     </div>
-
-    <div class="loading-container" *ngIf="isLoading()">
-      <p>{{ 'admin.lessons.loadingLessons' | transloco }}</p>
-    </div>
+    </ng-template>
   </mat-card-content>
 </mat-card>

@@ -1,18 +1,25 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>{{ 'admin.teachers.title' | transloco }}</mat-card-title>
-  </mat-card-header>
+<app-page-header [title]="'admin.teachers.title' | transloco">
+  <button pageActions mat-flat-button color="primary" (click)="onAddTeacher()">
+    <mat-icon>add</mat-icon>
+    {{ 'admin.teachers.addNew' | transloco }}
+  </button>
+</app-page-header>
 
+<app-loading-state *ngIf="isLoading()" [message]="'admin.teachers.loadingTeachers' | transloco" />
+
+<mat-card *ngIf="!isLoading()">
   <mat-card-content>
-    <div class="table-header">
-      <button mat-raised-button color="primary" (click)="onAddTeacher()">
-        <mat-icon>add</mat-icon>
-        {{ 'admin.teachers.addNew' | transloco }}
-      </button>
-    </div>
+    <app-empty-state
+      *ngIf="teachers().length === 0; else table"
+      icon="person"
+      [message]="'admin.teachers.noTeachersFound' | transloco"
+      [actionLabel]="'admin.teachers.addNew' | transloco"
+      (action)="onAddTeacher()"
+    />
 
-    <div class="table-container" *ngIf="!isLoading()">
-      <table mat-table [dataSource]="teachers()" class="mat-elevation-z2">
+    <ng-template #table>
+    <div class="table-container">
+      <table mat-table [dataSource]="teachers()" class="mat-elevation-z2 app-table">
         <ng-container matColumnDef="employeeId">
           <th mat-header-cell *matHeaderCellDef>{{ 'admin.teachers.employeeId' | transloco }}</th>
           <td mat-cell *matCellDef="let teacher">{{ teacher.employeeId }}</td>
@@ -35,7 +42,7 @@
 
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>{{ 'common.actions' | transloco }}</th>
-          <td mat-cell *matCellDef="let teacher">
+          <td mat-cell *matCellDef="let teacher" class="actions-cell">
             <button mat-icon-button color="primary" (click)="onEditTeacher(teacher.id)" [matTooltip]="'common.edit' | transloco">
               <mat-icon>edit</mat-icon>
             </button>
@@ -47,17 +54,8 @@
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-        <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-            {{ 'admin.teachers.noTeachersFound' | transloco }}
-          </td>
-        </tr>
       </table>
     </div>
-
-    <div class="loading-container" *ngIf="isLoading()">
-      <p>{{ 'admin.teachers.loadingTeachers' | transloco }}</p>
-    </div>
+    </ng-template>
   </mat-card-content>
 </mat-card>

@@ -16,33 +16,39 @@ import { LocalizedDatePipe } from '../../../shared/pipes/localized-date.pipe';
 import { UserManagementService } from '../services/user-management.service';
 import { CreateUserDialogComponent } from './create-user-dialog.component';
 import { ResetPasswordDialogComponent } from './reset-password-dialog.component';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
+import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
+import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 
 @Component({
   selector: 'app-user-list', standalone: true,
-  imports: [CommonModule, FormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatTableModule, TranslocoModule, LocalizedDatePipe],
+  imports: [CommonModule, FormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatTableModule, TranslocoModule, LocalizedDatePipe, PageHeaderComponent, EmptyStateComponent, LoadingStateComponent, StatusChipComponent],
   template: `
-    <mat-card>
-      <mat-card-header><mat-card-title>{{ 'users.title' | transloco }}</mat-card-title></mat-card-header>
+    <app-page-header [title]="'users.title' | transloco">
+      <mat-form-field pageActions appearance="outline" subscriptSizing="dynamic"><mat-label>{{ 'users.search' | transloco }}</mat-label><input matInput [(ngModel)]="search" (keyup.enter)="load()"><button mat-icon-button matSuffix (click)="load()"><mat-icon>search</mat-icon></button></mat-form-field>
+      <button pageActions mat-flat-button color="primary" (click)="create()"><mat-icon>person_add</mat-icon>{{ 'users.createLogin' | transloco }}</button>
+    </app-page-header>
+
+    <app-loading-state *ngIf="loading()" [message]="'common.loading' | transloco" />
+
+    <mat-card *ngIf="!loading()">
       <mat-card-content>
-        <div class="toolbar">
-          <mat-form-field appearance="outline"><mat-label>{{ 'users.search' | transloco }}</mat-label><input matInput [(ngModel)]="search" (keyup.enter)="load()"><button mat-icon-button matSuffix (click)="load()"><mat-icon>search</mat-icon></button></mat-form-field>
-          <button mat-raised-button color="primary" (click)="create()"><mat-icon>person_add</mat-icon>{{ 'users.createLogin' | transloco }}</button>
-        </div>
-        <div class="table-wrap">
-          <table mat-table [dataSource]="users()">
+        <app-empty-state *ngIf="users().length === 0" icon="manage_accounts" [message]="'users.noUsers' | transloco" />
+        <div class="table-wrap" *ngIf="users().length > 0">
+          <table mat-table [dataSource]="users()" class="app-table">
             <ng-container matColumnDef="email"><th mat-header-cell *matHeaderCellDef>{{ 'users.email' | transloco }}</th><td mat-cell *matCellDef="let user">{{ user.email }}</td></ng-container>
             <ng-container matColumnDef="role"><th mat-header-cell *matHeaderCellDef>{{ 'users.role' | transloco }}</th><td mat-cell *matCellDef="let user">{{ user.roles.join(', ') }}</td></ng-container>
             <ng-container matColumnDef="person"><th mat-header-cell *matHeaderCellDef>{{ 'users.linkedPerson' | transloco }}</th><td mat-cell *matCellDef="let user"><span *ngIf="user.linkedName; else none">{{ user.linkedName }} ({{ ('users.linkTypes.' + user.linkType) | transloco }})</span><ng-template #none>—</ng-template></td></ng-container>
-            <ng-container matColumnDef="status"><th mat-header-cell *matHeaderCellDef>{{ 'users.status' | transloco }}</th><td mat-cell *matCellDef="let user"><span [class.inactive]="!user.isActive">{{ (user.isActive ? 'users.active' : 'users.inactive') | transloco }}</span></td></ng-container>
+            <ng-container matColumnDef="status"><th mat-header-cell *matHeaderCellDef>{{ 'users.status' | transloco }}</th><td mat-cell *matCellDef="let user"><app-status-chip [variant]="user.isActive ? 'success' : 'neutral'">{{ (user.isActive ? 'users.active' : 'users.inactive') | transloco }}</app-status-chip></td></ng-container>
             <ng-container matColumnDef="lastLogin"><th mat-header-cell *matHeaderCellDef>{{ 'users.lastLogin' | transloco }}</th><td mat-cell *matCellDef="let user">{{ user.lastLoginAt ? (user.lastLoginAt | localizedDate:language.activeLang():'mediumDate') : ('users.never' | transloco) }}</td></ng-container>
-            <ng-container matColumnDef="actions"><th mat-header-cell *matHeaderCellDef>{{ 'common.actions' | transloco }}</th><td mat-cell *matCellDef="let user"><button mat-button (click)="reset(user)">{{ 'users.resetPassword' | transloco }}</button><button mat-button (click)="toggleActive(user)">{{ (user.isActive ? 'users.deactivate' : 'users.reactivate') | transloco }}</button></td></ng-container>
+            <ng-container matColumnDef="actions"><th mat-header-cell *matHeaderCellDef>{{ 'common.actions' | transloco }}</th><td mat-cell *matCellDef="let user" class="actions-cell"><button mat-button (click)="reset(user)">{{ 'users.resetPassword' | transloco }}</button><button mat-button (click)="toggleActive(user)">{{ (user.isActive ? 'users.deactivate' : 'users.reactivate') | transloco }}</button></td></ng-container>
             <tr mat-header-row *matHeaderRowDef="columns"></tr><tr mat-row *matRowDef="let row; columns: columns"></tr>
           </table>
         </div>
-        <p *ngIf="!loading() && users().length === 0">{{ 'users.noUsers' | transloco }}</p>
       </mat-card-content>
     </mat-card>`,
-  styles: [`.toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:16px}.table-wrap{overflow:auto}table{width:100%}.inactive{color:var(--mat-sys-error)}td:last-child{white-space:nowrap}@media(max-width:700px){.toolbar{align-items:stretch;flex-direction:column}}`]
+  styles: [`.table-wrap{overflow:auto}table{width:100%}td:last-child{white-space:nowrap}`]
 })
 export class UserListComponent {
   private service = inject(UserManagementService); private dialog = inject(MatDialog); private transloco = inject(TranslocoService);

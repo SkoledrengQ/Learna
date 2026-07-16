@@ -1,38 +1,45 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>{{ 'admin.subjectGroups.title' | transloco }}</mat-card-title>
-  </mat-card-header>
+<app-page-header [title]="'admin.subjectGroups.title' | transloco">
+  <div pageActions class="filters">
+    <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
+      <mat-label>{{ 'admin.subjectGroups.schoolYearLabel' | transloco }}</mat-label>
+      <mat-select
+        [value]="selectedSchoolYearId()"
+        (selectionChange)="onSchoolYearChange($event.value)">
+        <mat-option *ngFor="let year of schoolYears()" [value]="year.id">{{ year.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
+    <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
+      <mat-label>{{ 'admin.subjectGroups.termLabel' | transloco }}</mat-label>
+      <mat-select
+        [value]="selectedTermId()"
+        (selectionChange)="onTermChange($event.value)">
+        <mat-option *ngFor="let term of terms()" [value]="term.id">{{ term.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <button pageActions mat-flat-button color="primary" (click)="onAddGroup()">
+    <mat-icon>add</mat-icon>
+    {{ 'admin.subjectGroups.addNew' | transloco }}
+  </button>
+</app-page-header>
+
+<app-loading-state *ngIf="isLoading()" [message]="'admin.subjectGroups.loadingGroups' | transloco" />
+
+<mat-card *ngIf="!isLoading()">
   <mat-card-content>
-    <div class="table-header">
-      <div class="filters">
-        <mat-form-field appearance="outline" class="filter-field">
-          <mat-label>{{ 'admin.subjectGroups.schoolYearLabel' | transloco }}</mat-label>
-          <mat-select
-            [value]="selectedSchoolYearId()"
-            (selectionChange)="onSchoolYearChange($event.value)">
-            <mat-option *ngFor="let year of schoolYears()" [value]="year.id">{{ year.name }}</mat-option>
-          </mat-select>
-        </mat-form-field>
+    <app-empty-state
+      *ngIf="groups().length === 0; else table"
+      icon="groups"
+      [message]="'admin.subjectGroups.noGroupsFound' | transloco"
+      [actionLabel]="'admin.subjectGroups.addNew' | transloco"
+      (action)="onAddGroup()"
+    />
 
-        <mat-form-field appearance="outline" class="filter-field">
-          <mat-label>{{ 'admin.subjectGroups.termLabel' | transloco }}</mat-label>
-          <mat-select
-            [value]="selectedTermId()"
-            (selectionChange)="onTermChange($event.value)">
-            <mat-option *ngFor="let term of terms()" [value]="term.id">{{ term.name }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-
-      <button mat-raised-button color="primary" (click)="onAddGroup()">
-        <mat-icon>add</mat-icon>
-        {{ 'admin.subjectGroups.addNew' | transloco }}
-      </button>
-    </div>
-
-    <div class="table-container" *ngIf="!isLoading()">
-      <table mat-table [dataSource]="groups()" class="mat-elevation-z2">
+    <ng-template #table>
+    <div class="table-container">
+      <table mat-table [dataSource]="groups()" class="mat-elevation-z2 app-table">
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>{{ 'admin.subjectGroups.name' | transloco }}</th>
           <td mat-cell *matCellDef="let group">{{ group.name }}</td>
@@ -50,7 +57,7 @@
 
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>{{ 'common.actions' | transloco }}</th>
-          <td mat-cell *matCellDef="let group">
+          <td mat-cell *matCellDef="let group" class="actions-cell">
             <button mat-icon-button color="primary" (click)="onEditGroup(group.id)" [matTooltip]="'common.edit' | transloco">
               <mat-icon>edit</mat-icon>
             </button>
@@ -62,17 +69,8 @@
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-        <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-            {{ 'admin.subjectGroups.noGroupsFound' | transloco }}
-          </td>
-        </tr>
       </table>
     </div>
-
-    <div class="loading-container" *ngIf="isLoading()">
-      <p>{{ 'admin.subjectGroups.loadingGroups' | transloco }}</p>
-    </div>
+    </ng-template>
   </mat-card-content>
 </mat-card>

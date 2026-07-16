@@ -11,6 +11,7 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { TeacherService } from '../../../services/teacher.service';
 import { LoginSectionComponent } from '../../../../../shared/components/login-section/login-section.component';
 import { CreateTeacherDto, UpdateTeacherDto } from '../../../../../shared/models/teacher.model';
+import { PageHeaderComponent } from '../../../../../shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'app-teacher-form',
@@ -24,7 +25,8 @@ import { CreateTeacherDto, UpdateTeacherDto } from '../../../../../shared/models
     MatButtonModule,
     MatSnackBarModule,
     TranslocoModule,
-    LoginSectionComponent
+    LoginSectionComponent,
+    PageHeaderComponent
   ],
   templateUrl: './teacher-form.component.html',
   styleUrl: './teacher-form.component.scss'

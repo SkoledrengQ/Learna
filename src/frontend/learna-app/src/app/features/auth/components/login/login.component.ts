@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '../../../../core/services/auth.service';
+import { SchoolSettingsService } from '../../../../core/services/school-settings.service';
 
 @Component({
   selector: 'app-login',
@@ -37,11 +38,15 @@ export class LoginComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private snackBar = inject(MatSnackBar);
   private transloco = inject(TranslocoService);
+  protected readonly schoolSettings = inject(SchoolSettingsService);
 
   loginForm!: FormGroup;
   isLoading = signal(false);
   hidePassword = signal(true);
   returnUrl: string = '/schedule';
+
+  protected readonly schoolName = this.schoolSettings.schoolName;
+  protected readonly schoolInitial = computed(() => this.schoolName().trim().charAt(0).toUpperCase() || 'L');
 
   ngOnInit(): void {
     // Create login form

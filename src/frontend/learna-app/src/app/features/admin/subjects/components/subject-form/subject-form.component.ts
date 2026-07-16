@@ -10,6 +10,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { SubjectService } from '../../../services/subject.service';
 import { CreateSubjectDto, UpdateSubjectDto } from '../../../../../shared/models/subject.model';
+import { PageHeaderComponent } from '../../../../../shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'app-subject-form',
@@ -22,7 +23,8 @@ import { CreateSubjectDto, UpdateSubjectDto } from '../../../../../shared/models
     MatInputModule,
     MatButtonModule,
     MatSnackBarModule,
-    TranslocoModule
+    TranslocoModule,
+    PageHeaderComponent
   ],
   templateUrl: './subject-form.component.html',
   styleUrl: './subject-form.component.scss'

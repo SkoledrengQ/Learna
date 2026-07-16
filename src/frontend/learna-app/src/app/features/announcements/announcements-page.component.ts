@@ -3,7 +3,6 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -15,27 +14,27 @@ import { LanguageService } from '../../core/services/language.service';
 import { MaterialsService } from '../../core/services/materials.service';
 import { Announcement, AnnouncementAudienceType, AnnouncementTarget, AnnouncementWrite } from '../../shared/models/announcement.model';
 import { LocalizedDatePipe } from '../../shared/pipes/localized-date.pipe';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
+import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
+import { LoadingStateComponent } from '../../shared/components/loading-state/loading-state.component';
+import { StatusChipComponent } from '../../shared/components/status-chip/status-chip.component';
 
 @Component({
   selector: 'app-announcements-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatButtonModule, MatCardModule, MatChipsModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSnackBarModule, TranslocoModule, LocalizedDatePipe],
+  imports: [CommonModule, FormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSnackBarModule, TranslocoModule, LocalizedDatePipe, PageHeaderComponent, EmptyStateComponent, LoadingStateComponent, StatusChipComponent],
   template: `
     <main class="announcements-page">
-      <section class="toolbar">
-        <div>
-          <h1>{{ 'announcements.title' | transloco }}</h1>
-          <p>{{ 'announcements.unreadCount' | transloco:{count: announcements.unreadCount()} }}</p>
-        </div>
-        <button mat-flat-button color="primary" *ngIf="canCompose()" (click)="startCreate()">
+      <app-page-header [title]="'announcements.title' | transloco" [subtitle]="'announcements.unreadCount' | transloco:{count: announcements.unreadCount()}">
+        <button pageActions mat-flat-button color="primary" *ngIf="canCompose()" (click)="startCreate()">
           <mat-icon>add</mat-icon>{{ 'announcements.compose' | transloco }}
         </button>
-      </section>
+      </app-page-header>
 
       <section class="layout">
         <div class="list">
-          <p *ngIf="loading()">{{ 'common.loading' | transloco }}</p>
-          <p class="empty" *ngIf="!loading() && feed().length === 0">{{ 'announcements.empty' | transloco }}</p>
+          <app-loading-state *ngIf="loading()" [message]="'common.loading' | transloco" />
+          <app-empty-state *ngIf="!loading() && feed().length === 0" icon="campaign" [message]="'announcements.empty' | transloco" />
           <button class="announcement-row" type="button" *ngFor="let item of feed()" [class.unread]="!item.isRead" [class.selected]="selected()?.id === item.id" (click)="open(item)">
             <span class="row-title">{{ item.title }}</span>
             <span class="meta">
@@ -43,9 +42,9 @@ import { LocalizedDatePipe } from '../../shared/pipes/localized-date.pipe';
             </span>
             <span class="preview">{{ item.body }}</span>
             <span class="flags">
-              <mat-chip *ngIf="!item.isRead">{{ 'announcements.unread' | transloco }}</mat-chip>
-              <mat-chip *ngIf="item.isFuture">{{ 'announcements.future' | transloco }}</mat-chip>
-              <mat-chip *ngIf="item.isExpired">{{ 'announcements.expired' | transloco }}</mat-chip>
+              <app-status-chip variant="brand" *ngIf="!item.isRead">{{ 'announcements.unread' | transloco }}</app-status-chip>
+              <app-status-chip variant="info" *ngIf="item.isFuture">{{ 'announcements.future' | transloco }}</app-status-chip>
+              <app-status-chip variant="neutral" *ngIf="item.isExpired">{{ 'announcements.expired' | transloco }}</app-status-chip>
             </span>
           </button>
         </div>
@@ -57,8 +56,8 @@ import { LocalizedDatePipe } from '../../shared/pipes/localized-date.pipe';
           </mat-card-header>
           <mat-card-content>
             <div class="detail-flags">
-              <mat-chip *ngIf="item.isFuture">{{ 'announcements.future' | transloco }}</mat-chip>
-              <mat-chip *ngIf="item.isExpired">{{ 'announcements.expired' | transloco }}</mat-chip>
+              <app-status-chip variant="info" *ngIf="item.isFuture">{{ 'announcements.future' | transloco }}</app-status-chip>
+              <app-status-chip variant="neutral" *ngIf="item.isExpired">{{ 'announcements.expired' | transloco }}</app-status-chip>
             </div>
             <div class="body">{{ item.body }}</div>
             <h2>{{ 'announcements.attachments' | transloco }}</h2>
@@ -123,31 +122,29 @@ import { LocalizedDatePipe } from '../../shared/pipes/localized-date.pipe';
     </main>
   `,
   styles: [`
-    .announcements-page { padding: 24px; max-width: 1200px; margin: 0 auto; }
-    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
-    .toolbar h1 { margin: 0; }
-    .toolbar p, .empty { color: #5f6368; margin: 4px 0 0; }
+    .announcements-page { max-width: 1200px; }
+    .empty { color: var(--mat-sys-on-surface-variant); margin: 4px 0 0; }
     .layout { display: grid; grid-template-columns: minmax(280px, 420px) 1fr; gap: 20px; align-items: start; }
     .list { display: grid; gap: 10px; }
-    .announcement-row { text-align: left; border: 1px solid #d7dce2; border-radius: 8px; background: #fff; padding: 14px; display: grid; gap: 6px; cursor: pointer; }
-    .announcement-row.unread { border-color: #1a73e8; box-shadow: inset 4px 0 0 #1a73e8; }
-    .announcement-row.selected { background: #eef4ff; }
-    .row-title { font-weight: 600; color: #202124; }
-    .meta, .preview { color: #5f6368; font-size: 0.9rem; }
+    .announcement-row { text-align: left; border: 1px solid var(--mat-sys-outline-variant); border-radius: var(--mat-sys-corner-medium); background: var(--mat-sys-surface); padding: 14px; display: grid; gap: 6px; cursor: pointer; }
+    .announcement-row.unread { border-color: var(--mat-sys-primary); box-shadow: inset 4px 0 0 var(--mat-sys-primary); }
+    .announcement-row.selected { background: var(--app-brand-container); }
+    .row-title { font-weight: 600; color: var(--mat-sys-on-surface); }
+    .meta, .preview { color: var(--mat-sys-on-surface-variant); font-size: 0.9rem; }
     .preview { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: pre-line; }
     .flags, .detail-flags { display: flex; flex-wrap: wrap; gap: 6px; }
-    .detail, .editor { border-radius: 8px; }
+    .detail, .editor { border-radius: var(--mat-sys-corner-medium); }
     .detail .body { white-space: pre-wrap; margin: 20px 0; line-height: 1.55; }
     .detail h2 { font-size: 1rem; margin: 16px 0 8px; }
-    .file { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #edf0f2; padding: 8px 0; }
+    .file { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--mat-sys-outline-variant); padding: 8px 0; }
     .editor { margin-top: 20px; }
     form { display: grid; gap: 12px; }
     .dates { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .upload { display: grid; gap: 6px; color: #3c4043; }
-    .select-label { display: grid; gap: 6px; color: #3c4043; }
-    .select-label select { min-height: 48px; border: 1px solid #74777f; border-radius: 4px; padding: 0 12px; background: #fff; font: inherit; }
+    .upload { display: grid; gap: 6px; color: var(--mat-sys-on-surface-variant); }
+    .select-label { display: grid; gap: 6px; color: var(--mat-sys-on-surface-variant); }
+    .select-label select { min-height: 48px; border: 1px solid var(--mat-sys-outline); border-radius: 4px; padding: 0 12px; background: var(--mat-sys-surface); font: inherit; color: inherit; }
     .actions { display: flex; justify-content: flex-end; gap: 8px; }
-    @media (max-width: 800px) { .layout, .dates { grid-template-columns: 1fr; } .announcements-page { padding: 16px; } }
+    @media (max-width: 800px) { .layout, .dates { grid-template-columns: 1fr; } }
   `]
 })
 export class AnnouncementsPageComponent implements OnInit {

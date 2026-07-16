@@ -18,7 +18,7 @@ import { UserManagementService } from '../services/user-management.service';
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button mat-dialog-close>{{ 'common.close' | transloco }}</button>
-      <button mat-raised-button color="primary" *ngIf="!temporaryPassword()" (click)="reset()" [disabled]="loading()">{{ 'users.resetPassword' | transloco }}</button>
+      <button mat-flat-button color="primary" *ngIf="!temporaryPassword()" (click)="reset()" [disabled]="loading()">{{ 'users.resetPassword' | transloco }}</button>
     </mat-dialog-actions>`,
   styles: [`.password{padding:16px;background:var(--mat-sys-surface-container);border-radius:8px;text-align:center}.password code{font-size:1.35rem;user-select:all}.error{color:var(--mat-sys-error)}`]
 })

@@ -12,6 +12,9 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { RoomService } from '../../../services/room.service';
 import { Room } from '../../../../../shared/models/room.model';
 import { ConfirmDialogComponent } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { PageHeaderComponent } from '../../../../../shared/components/page-header/page-header.component';
+import { EmptyStateComponent } from '../../../../../shared/components/empty-state/empty-state.component';
+import { LoadingStateComponent } from '../../../../../shared/components/loading-state/loading-state.component';
 
 @Component({
   selector: 'app-room-list',
@@ -25,7 +28,10 @@ import { ConfirmDialogComponent } from '../../../../../shared/components/confirm
     MatDialogModule,
     MatSnackBarModule,
     MatTooltipModule,
-    TranslocoModule
+    TranslocoModule,
+    PageHeaderComponent,
+    EmptyStateComponent,
+    LoadingStateComponent
   ],
   templateUrl: './room-list.component.html',
   styleUrl: './room-list.component.scss'

@@ -1,8 +1,6 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>{{ (isEditMode ? 'admin.teachers.editTitle' : 'admin.teachers.addTitle') | transloco }}</mat-card-title>
-  </mat-card-header>
+<app-page-header [title]="(isEditMode ? 'admin.teachers.editTitle' : 'admin.teachers.addTitle') | transloco" />
 
+<mat-card>
   <mat-card-content>
     <form [formGroup]="teacherForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading()">
       <h3 class="section-title">{{ 'admin.teachers.sectionName' | transloco }}</h3>
@@ -75,7 +73,7 @@
 
       <div class="form-actions">
         <button mat-button type="button" (click)="onCancel()">{{ 'common.cancel' | transloco }}</button>
-        <button mat-raised-button color="primary" type="submit" [disabled]="isLoading()">
+        <button mat-flat-button color="primary" type="submit" [disabled]="isLoading()">
           {{ (isEditMode ? 'admin.teachers.updateTeacher' : 'admin.teachers.createTeacher') | transloco }}
         </button>
       </div>

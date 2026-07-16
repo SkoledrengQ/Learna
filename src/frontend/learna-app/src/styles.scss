@@ -10,13 +10,39 @@ html {
   @include mat.theme(
     (
       color: (
-        primary: mat.$azure-palette,
+        // Overridden at runtime per-school by SchoolSettingsService; this is just the
+        // build-time fallback shown before the first paint applies the real brand color.
+        primary: mat.$cyan-palette,
         tertiary: mat.$blue-palette,
       ),
       typography: "Roboto, 'Noto Sans Thai', sans-serif",
       density: 0,
     )
   );
+
+  // Thai script carries tone marks and vowels above/below the baseline that need more
+  // breathing room than Latin text gets by default — widen every type-scale level's
+  // line-height so EN and TH render comfortably from the same rules.
+  --mat-sys-body-large-line-height: 1.75rem;
+  --mat-sys-body-medium-line-height: 1.5rem;
+  --mat-sys-body-small-line-height: 1.25rem;
+  --mat-sys-title-large-line-height: 2rem;
+  --mat-sys-title-medium-line-height: 1.75rem;
+  --mat-sys-title-small-line-height: 1.5rem;
+  --mat-sys-label-large-line-height: 1.5rem;
+  --mat-sys-label-medium-line-height: 1.25rem;
+  --mat-sys-label-small-line-height: 1.25rem;
+  --mat-sys-headline-small-line-height: 2.25rem;
+
+  // App-level spacing rhythm, used by the shell and the shared page-header/empty-state/
+  // loading-state patterns so density stays consistent across the whole sweep.
+  --app-space-1: 4px;
+  --app-space-2: 8px;
+  --app-space-3: 12px;
+  --app-space-4: 16px;
+  --app-space-5: 24px;
+  --app-space-6: 32px;
+  --app-space-8: 48px;
 }
 
 body {
@@ -36,4 +62,29 @@ body {
   margin: 0;
   height: 100%;
 }
+
+// Consistent density tables (task 7: "tables stay dense and scannable") share this class.
+.app-table {
+  width: 100%;
+
+  th.mat-mdc-header-cell {
+    font: var(--mat-sys-label-large);
+    color: var(--mat-sys-on-surface-variant);
+    background-color: var(--mat-sys-surface-container-low);
+  }
+
+  tr.mat-mdc-row:hover {
+    background-color: var(--mat-sys-surface-container-high);
+  }
+
+  td.mat-mdc-cell, th.mat-mdc-header-cell {
+    padding: var(--app-space-3) var(--app-space-4);
+  }
+
+  .actions-cell {
+    text-align: right;
+    white-space: nowrap;
+  }
+}
+
 /* You can add global styles to this file, and also import other style files */

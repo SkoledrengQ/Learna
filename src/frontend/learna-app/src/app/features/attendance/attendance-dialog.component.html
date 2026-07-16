@@ -16,4 +16,4 @@
     </div>
   </ng-container>
 </mat-dialog-content>
-<mat-dialog-actions align="end"><button mat-button mat-dialog-close>{{ 'common.close' | transloco }}</button><button mat-raised-button color="primary" *ngIf="attendance()?.canEdit" [disabled]="invalid() || saving()" (click)="save()">{{ 'common.save' | transloco }}</button></mat-dialog-actions>
+<mat-dialog-actions align="end"><button mat-button mat-dialog-close>{{ 'common.close' | transloco }}</button><button mat-flat-button color="primary" *ngIf="attendance()?.canEdit" [disabled]="invalid() || saving()" (click)="save()">{{ 'common.save' | transloco }}</button></mat-dialog-actions>

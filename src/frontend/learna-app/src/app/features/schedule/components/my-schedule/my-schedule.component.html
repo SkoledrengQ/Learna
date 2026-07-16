@@ -1,17 +1,15 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>{{ (isGuardian() ? 'guardianPortal.childScheduleTitle' : 'schedule.myScheduleTitle') | transloco }}</mat-card-title>
-  </mat-card-header>
+<app-page-header [title]="(isGuardian() ? 'guardianPortal.childScheduleTitle' : 'schedule.myScheduleTitle') | transloco" />
 
+<app-loading-state *ngIf="portal.loading()" [message]="'guardianPortal.loadingChildren' | transloco" />
+<p class="not-found" *ngIf="portal.loadFailed()">{{ 'guardianPortal.childrenLoadFailed' | transloco }}</p>
+<p class="not-found" *ngIf="noChildren()">{{ 'guardianPortal.noChildren' | transloco }}</p>
+<app-child-selector *ngIf="isGuardian() && portal.selectedChild()"></app-child-selector>
+
+<mat-card *ngIf="!portal.loading()">
   <mat-card-content>
-    <p *ngIf="portal.loading()">{{ 'guardianPortal.loadingChildren' | transloco }}</p>
-    <p class="not-found" *ngIf="portal.loadFailed()">{{ 'guardianPortal.childrenLoadFailed' | transloco }}</p>
-    <p class="not-found" *ngIf="noChildren()">{{ 'guardianPortal.noChildren' | transloco }}</p>
-    <app-child-selector *ngIf="isGuardian() && portal.selectedChild()"></app-child-selector>
-
     <div class="not-found" *ngIf="notFound()">
       <p>{{ 'schedule.noPersonalSchedule' | transloco }}</p>
-      <button mat-raised-button color="primary" routerLink="/admin/schedule" *ngIf="isAdmin()">
+      <button mat-flat-button color="primary" routerLink="/admin/schedule" *ngIf="isAdmin()">
         {{ 'schedule.goToAdminSchedule' | transloco }}
       </button>
     </div>

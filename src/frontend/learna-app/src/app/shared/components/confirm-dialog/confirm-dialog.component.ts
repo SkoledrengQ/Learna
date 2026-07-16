@@ -20,7 +20,7 @@ export interface ConfirmDialogData {
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button (click)="onCancel()">{{ 'common.cancel' | transloco }}</button>
-      <button mat-raised-button color="warn" (click)="onConfirm()">{{ data.confirmLabel || ('common.delete' | transloco) }}</button>
+      <button mat-flat-button color="warn" (click)="onConfirm()">{{ data.confirmLabel || ('common.delete' | transloco) }}</button>
     </mat-dialog-actions>
   `,
   styles: [`

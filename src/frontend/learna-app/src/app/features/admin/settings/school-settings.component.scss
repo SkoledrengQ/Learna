@@ -1,0 +1,66 @@
+.settings-card {
+  max-width: 560px;
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2);
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  &__color-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--app-space-3);
+  }
+
+  &__color-field {
+    flex: 1 1 auto;
+  }
+
+  &__color-picker {
+    width: 48px;
+    height: 48px;
+    margin-top: 4px;
+    padding: 0;
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: var(--mat-sys-corner-medium);
+    background: none;
+    cursor: pointer;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--app-space-3);
+  }
+}
+
+.settings-preview {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-3);
+  padding: var(--app-space-4);
+  margin-bottom: var(--app-space-3);
+  border-radius: var(--mat-sys-corner-medium);
+  background-color: var(--mat-sys-surface-container-low);
+
+  &__label {
+    font: var(--mat-sys-label-large);
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--mat-sys-corner-medium);
+    border: 1px solid var(--mat-sys-outline-variant);
+  }
+
+  &__button {
+    margin-left: auto;
+  }
+}

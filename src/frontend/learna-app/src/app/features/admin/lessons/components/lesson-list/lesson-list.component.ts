@@ -25,6 +25,11 @@ import { getDisplayName } from '../../../../../shared/models/student.model';
 import { ConflictDialogComponent } from '../../../../../shared/components/conflict-dialog/conflict-dialog.component';
 import { LessonFormDialogComponent } from '../lesson-form-dialog/lesson-form-dialog.component';
 import { AttendanceDialogComponent } from '../../../../attendance/attendance-dialog.component';
+import { PageHeaderComponent } from '../../../../../shared/components/page-header/page-header.component';
+import { EmptyStateComponent } from '../../../../../shared/components/empty-state/empty-state.component';
+import { LoadingStateComponent } from '../../../../../shared/components/loading-state/loading-state.component';
+import { StatusChipComponent } from '../../../../../shared/components/status-chip/status-chip.component';
+import { lessonStatusVariant } from '../../../../../shared/utils/status-variant.util';
 
 @Component({
   selector: 'app-lesson-list',
@@ -42,7 +47,11 @@ import { AttendanceDialogComponent } from '../../../../attendance/attendance-dia
     MatDialogModule,
     MatSnackBarModule,
     MatTooltipModule,
-    TranslocoModule
+    TranslocoModule,
+    PageHeaderComponent,
+    EmptyStateComponent,
+    LoadingStateComponent,
+    StatusChipComponent
   ],
   templateUrl: './lesson-list.component.html',
   styleUrl: './lesson-list.component.scss'
@@ -57,6 +66,7 @@ export class LessonListComponent implements OnInit {
   private transloco = inject(TranslocoService);
 
   readonly getDisplayName = getDisplayName;
+  readonly lessonStatusVariant = lessonStatusVariant;
 
   lessons = signal<Lesson[]>([]);
   rooms = signal<Room[]>([]);

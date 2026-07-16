@@ -58,7 +58,7 @@ export interface CreateUserDialogData {
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button [mat-dialog-close]="false">{{ 'common.cancel' | transloco }}</button>
-      <button mat-raised-button color="primary" (click)="submit()" [disabled]="form.invalid || saving()">{{ 'users.createLogin' | transloco }}</button>
+      <button mat-flat-button color="primary" (click)="submit()" [disabled]="form.invalid || saving()">{{ 'users.createLogin' | transloco }}</button>
     </mat-dialog-actions>
   `,
   styles: [`.dialog-form{display:flex;flex-direction:column;min-width:min(480px,75vw);padding-top:8px}.error{color:var(--mat-sys-error)}`]

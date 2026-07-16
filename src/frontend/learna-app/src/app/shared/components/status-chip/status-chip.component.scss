@@ -1,0 +1,41 @@
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: var(--mat-sys-corner-full);
+  font: var(--mat-sys-label-medium);
+  font-weight: 600;
+  white-space: nowrap;
+  line-height: 1.5rem;
+
+  &--neutral {
+    background-color: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &--info {
+    background-color: #d7e3ff;
+    color: #00458f;
+  }
+
+  &--success {
+    background-color: #d4edda;
+    color: #1e6b34;
+  }
+
+  &--warning {
+    background-color: #fff0c2;
+    color: #7a5900;
+  }
+
+  &--danger {
+    background-color: #fbdada;
+    color: #8c1d18;
+  }
+
+  &--brand {
+    background-color: var(--app-brand-container);
+    color: var(--app-on-brand-container);
+  }
+}

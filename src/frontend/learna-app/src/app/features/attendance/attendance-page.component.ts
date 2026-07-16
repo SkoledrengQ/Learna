@@ -21,7 +21,7 @@ import { AttendanceSummaryComponent } from './attendance-summary.component';
       <ng-template #personalAttendance><app-attendance-summary></app-attendance-summary></ng-template>
     </section>
   `,
-  styles: [`.page { margin:20px; } .page app-attendance-summary { display:block; margin:-20px; } .notice { text-align:center; color:#666; padding:32px 16px; }`]
+  styles: [`.notice { text-align:center; color:var(--mat-sys-on-surface-variant); padding:32px 16px; }`]
 })
 export class AttendancePageComponent {
   readonly portal = inject(GuardianPortalService);

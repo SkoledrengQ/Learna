@@ -1,101 +1,144 @@
-<mat-toolbar color="primary">
-  <span>{{ title() }}</span>
-  <span class="spacer"></span>
+<ng-container *ngIf="isAuthenticated(); else unauthLayout">
+  <mat-sidenav-container class="app-shell">
+    <mat-sidenav
+      class="app-shell__sidenav"
+      [mode]="isMobile() ? 'over' : 'side'"
+      [opened]="sidenavOpened()"
+      (closed)="sidenavOpened.set(false)"
+    >
+      <div class="app-shell__brand">
+        <div class="app-shell__logo-mark">{{ schoolInitial() }}</div>
+        <span class="app-shell__brand-name">{{ schoolName() }}</span>
+      </div>
 
-  <ng-container *ngIf="isAuthenticated()">
-    <button mat-button routerLink="/students" *ngIf="canViewStudents()">
-      <mat-icon>school</mat-icon>
-      {{ 'nav.students' | transloco }}
-    </button>
+      <mat-nav-list class="app-shell__nav">
+        <h3 matSubheader>{{ 'nav.personalSection' | transloco }}</h3>
+        <a mat-list-item routerLink="/schedule" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
+          <mat-icon matListItemIcon>calendar_month</mat-icon>
+          <span matListItemTitle>{{ 'nav.schedule' | transloco }}</span>
+        </a>
+        <a mat-list-item routerLink="/students" routerLinkActive="app-shell__nav-item--active" *ngIf="canViewStudents()" (click)="onNavItemClick()">
+          <mat-icon matListItemIcon>school</mat-icon>
+          <span matListItemTitle>{{ 'nav.students' | transloco }}</span>
+        </a>
+        <a mat-list-item routerLink="/attendance" routerLinkActive="app-shell__nav-item--active" *ngIf="canViewAttendance()" (click)="onNavItemClick()">
+          <mat-icon matListItemIcon>fact_check</mat-icon>
+          <span matListItemTitle>{{ 'nav.attendance' | transloco }}</span>
+        </a>
+        <a mat-list-item routerLink="/assignments" routerLinkActive="app-shell__nav-item--active" *ngIf="canViewAssignments()" (click)="onNavItemClick()">
+          <mat-icon matListItemIcon>assignment</mat-icon>
+          <span matListItemTitle>{{ 'nav.assignments' | transloco }}</span>
+        </a>
+        <a mat-list-item routerLink="/grades" routerLinkActive="app-shell__nav-item--active" *ngIf="canViewGrades()" (click)="onNavItemClick()">
+          <mat-icon matListItemIcon>grade</mat-icon>
+          <span matListItemTitle>{{ 'nav.grades' | transloco }}</span>
+        </a>
+        <a mat-list-item routerLink="/materials" routerLinkActive="app-shell__nav-item--active" *ngIf="canViewMaterials()" (click)="onNavItemClick()">
+          <mat-icon matListItemIcon>folder</mat-icon>
+          <span matListItemTitle>{{ 'nav.materials' | transloco }}</span>
+        </a>
+        <a mat-list-item routerLink="/announcements" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
+          <mat-icon matListItemIcon [matBadge]="announcements.unreadCount() > 0 ? announcements.unreadCount() : null" matBadgeSize="small" matBadgeColor="accent">campaign</mat-icon>
+          <span matListItemTitle>{{ 'nav.announcements' | transloco }}</span>
+        </a>
 
-    <button mat-button routerLink="/schedule">
-      <mat-icon>calendar_month</mat-icon>
-      {{ 'nav.schedule' | transloco }}
-    </button>
+        <ng-container *ngIf="canViewGroups()">
+          <h3 matSubheader>{{ 'nav.teacherSection' | transloco }}</h3>
+          <a mat-list-item routerLink="/groups" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
+            <mat-icon matListItemIcon>groups</mat-icon>
+            <span matListItemTitle>{{ 'nav.myGroups' | transloco }}</span>
+          </a>
+        </ng-container>
 
-    <button mat-button routerLink="/attendance" *ngIf="canViewAttendance()">
-      <mat-icon>fact_check</mat-icon>{{ 'nav.attendance' | transloco }}
-    </button>
-    <button mat-button routerLink="/materials" *ngIf="canViewMaterials()">
-      <mat-icon>folder</mat-icon>{{ 'nav.materials' | transloco }}
-    </button>
-    <button mat-button routerLink="/groups" *ngIf="canViewGroups()">
-      <mat-icon>groups</mat-icon>{{ 'nav.myGroups' | transloco }}
-    </button>
-    <button mat-button routerLink="/assignments" *ngIf="canViewAssignments()">
-      <mat-icon>assignment</mat-icon>{{ 'nav.assignments' | transloco }}
-    </button>
-    <button mat-button routerLink="/grades" *ngIf="canViewGrades()">
-      <mat-icon>grade</mat-icon>{{ 'nav.grades' | transloco }}
-    </button>
-    <button mat-button routerLink="/announcements">
-      <span class="badge-wrap">
-        <mat-icon>campaign</mat-icon>
-        <span class="nav-badge" *ngIf="announcements.unreadCount() > 0">{{ announcements.unreadCount() }}</span>
-      </span>
-      {{ 'nav.announcements' | transloco }}
-    </button>
+        <ng-container *ngIf="isAdmin()">
+          <h3 matSubheader>{{ 'nav.adminSection' | transloco }}</h3>
+          <a mat-list-item routerLink="/admin/users" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
+            <mat-icon matListItemIcon>manage_accounts</mat-icon>
+            <span matListItemTitle>{{ 'nav.users' | transloco }}</span>
+          </a>
+          <a mat-list-item routerLink="/admin/teachers" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
+            <mat-icon matListItemIcon>person</mat-icon>
+            <span matListItemTitle>{{ 'nav.teachers' | transloco }}</span>
+          </a>
+          <a mat-list-item routerLink="/admin/subjects" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
+            <mat-icon matListItemIcon>book</mat-icon>
+            <span matListItemTitle>{{ 'nav.subjects' | transloco }}</span>
+          </a>
+          <a mat-list-item routerLink="/admin/school-years" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
+            <mat-icon matListItemIcon>calendar_today</mat-icon>
+            <span matListItemTitle>{{ 'nav.schoolYears' | transloco }}</span>
+          </a>
+          <a mat-list-item routerLink="/admin/classes" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
+            <mat-icon matListItemIcon>meeting_room</mat-icon>
+            <span matListItemTitle>{{ 'nav.classes' | transloco }}</span>
+          </a>
+          <a mat-list-item routerLink="/admin/subject-groups" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
+            <mat-icon matListItemIcon>groups</mat-icon>
+            <span matListItemTitle>{{ 'nav.subjectGroups' | transloco }}</span>
+          </a>
+          <a mat-list-item routerLink="/admin/rooms" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
+            <mat-icon matListItemIcon>door_front</mat-icon>
+            <span matListItemTitle>{{ 'nav.rooms' | transloco }}</span>
+          </a>
+          <a mat-list-item routerLink="/admin/lessons" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
+            <mat-icon matListItemIcon>event</mat-icon>
+            <span matListItemTitle>{{ 'nav.lessons' | transloco }}</span>
+          </a>
+          <a mat-list-item routerLink="/admin/schedule" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
+            <mat-icon matListItemIcon>calendar_month</mat-icon>
+            <span matListItemTitle>{{ 'nav.adminSchedule' | transloco }}</span>
+          </a>
+          <a mat-list-item routerLink="/admin/settings" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
+            <mat-icon matListItemIcon>settings</mat-icon>
+            <span matListItemTitle>{{ 'nav.settings' | transloco }}</span>
+          </a>
+        </ng-container>
+      </mat-nav-list>
+    </mat-sidenav>
 
-    <ng-container *ngIf="isAdmin()">
-      <button mat-button [matMenuTriggerFor]="adminMenu">
-        <mat-icon>admin_panel_settings</mat-icon>
-        {{ 'nav.admin' | transloco }}
-      </button>
-      <mat-menu #adminMenu="matMenu">
-        <button mat-menu-item routerLink="/admin/users">
-          <mat-icon>manage_accounts</mat-icon>
-          {{ 'nav.users' | transloco }}
+    <mat-sidenav-content class="app-shell__content">
+      <mat-toolbar class="app-shell__topbar">
+        <button mat-icon-button (click)="onToggleSidenav()" [attr.aria-label]="'nav.toggleMenu' | transloco">
+          <mat-icon>menu</mat-icon>
         </button>
-        <button mat-menu-item routerLink="/admin/teachers">
-          <mat-icon>person</mat-icon>
-          {{ 'nav.teachers' | transloco }}
-        </button>
-        <button mat-menu-item routerLink="/admin/subjects">
-          <mat-icon>book</mat-icon>
-          {{ 'nav.subjects' | transloco }}
-        </button>
-        <button mat-menu-item routerLink="/admin/school-years">
-          <mat-icon>calendar_today</mat-icon>
-          {{ 'nav.schoolYears' | transloco }}
-        </button>
-        <button mat-menu-item routerLink="/admin/classes">
-          <mat-icon>meeting_room</mat-icon>
-          {{ 'nav.classes' | transloco }}
-        </button>
-        <button mat-menu-item routerLink="/admin/subject-groups">
-          <mat-icon>groups</mat-icon>
-          {{ 'nav.subjectGroups' | transloco }}
-        </button>
-        <button mat-menu-item routerLink="/admin/rooms">
-          <mat-icon>door_front</mat-icon>
-          {{ 'nav.rooms' | transloco }}
-        </button>
-        <button mat-menu-item routerLink="/admin/lessons">
-          <mat-icon>event</mat-icon>
-          {{ 'nav.lessons' | transloco }}
-        </button>
-        <button mat-menu-item routerLink="/admin/schedule">
-          <mat-icon>calendar_month</mat-icon>
-          {{ 'nav.adminSchedule' | transloco }}
-        </button>
-      </mat-menu>
-    </ng-container>
+        <span class="app-shell__topbar-title">{{ schoolName() }}</span>
+        <span class="app-shell__spacer"></span>
 
-    <button mat-button [matMenuTriggerFor]="userMenu"><mat-icon>account_circle</mat-icon>{{ currentUser()?.email }}</button>
-    <mat-menu #userMenu="matMenu">
-      <button mat-menu-item (click)="onChangePassword()"><mat-icon>password</mat-icon>{{ 'auth.changePassword' | transloco }}</button>
-      <button mat-menu-item (click)="onLogout()"><mat-icon>logout</mat-icon>{{ 'nav.logout' | transloco }}</button>
+        <button mat-icon-button [matMenuTriggerFor]="languageMenu" [attr.aria-label]="'common.language' | transloco">
+          <mat-icon>language</mat-icon>
+        </button>
+        <mat-menu #languageMenu="matMenu">
+          <button mat-menu-item (click)="onSelectLanguage('en')">English</button>
+          <button mat-menu-item (click)="onSelectLanguage('th')">ไทย</button>
+        </mat-menu>
+
+        <button mat-icon-button [matMenuTriggerFor]="userMenu" [attr.aria-label]="'nav.userMenu' | transloco">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <div class="app-shell__user-email" mat-menu-item disabled>{{ currentUser()?.email }}</div>
+          <button mat-menu-item (click)="onChangePassword()"><mat-icon>password</mat-icon>{{ 'auth.changePassword' | transloco }}</button>
+          <button mat-menu-item (click)="onLogout()"><mat-icon>logout</mat-icon>{{ 'nav.logout' | transloco }}</button>
+        </mat-menu>
+      </mat-toolbar>
+
+      <main class="app-shell__main">
+        <router-outlet />
+      </main>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</ng-container>
+
+<ng-template #unauthLayout>
+  <div class="app-bare-topbar">
+    <button mat-icon-button [matMenuTriggerFor]="preLoginLanguageMenu" [attr.aria-label]="'common.language' | transloco">
+      <mat-icon>language</mat-icon>
+      <span class="app-bare-topbar__lang-label">{{ languageService.activeLang() === 'th' ? 'ไทย' : 'EN' }}</span>
+    </button>
+    <mat-menu #preLoginLanguageMenu="matMenu">
+      <button mat-menu-item (click)="onSelectLanguage('en')">English</button>
+      <button mat-menu-item (click)="onSelectLanguage('th')">ไทย</button>
     </mat-menu>
-  </ng-container>
-
-  <button mat-button [matMenuTriggerFor]="languageMenu" [attr.aria-label]="'common.language' | transloco">
-    <mat-icon>language</mat-icon>
-    {{ languageService.activeLang() === 'th' ? 'ไทย' : 'EN' }}
-  </button>
-  <mat-menu #languageMenu="matMenu">
-    <button mat-menu-item (click)="onSelectLanguage('en')">English</button>
-    <button mat-menu-item (click)="onSelectLanguage('th')">ไทย</button>
-  </mat-menu>
-</mat-toolbar>
-
-<router-outlet />
+  </div>
+  <router-outlet />
+</ng-template>

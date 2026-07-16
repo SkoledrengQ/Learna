@@ -12,6 +12,7 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { TranslocoHttpLoader } from './core/transloco-loader';
 import { LanguageService } from './core/services/language.service';
 import { DateLocaleSyncService } from './core/services/date-locale-sync.service';
+import { SchoolSettingsService } from './core/services/school-settings.service';
 import { environment } from '../environments/environment';
 
 registerLocaleData(localeTh);
@@ -37,6 +38,7 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => {
       inject(DateLocaleSyncService);
       inject(LanguageService).init();
+      inject(SchoolSettingsService).init();
     })
   ]
 };

@@ -16,6 +16,9 @@ import { SchoolYearService } from '../../../services/school-year.service';
 import { SchoolClass } from '../../../../../shared/models/school-class.model';
 import { SchoolYear } from '../../../../../shared/models/school-year.model';
 import { ConfirmDialogComponent } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { PageHeaderComponent } from '../../../../../shared/components/page-header/page-header.component';
+import { EmptyStateComponent } from '../../../../../shared/components/empty-state/empty-state.component';
+import { LoadingStateComponent } from '../../../../../shared/components/loading-state/loading-state.component';
 
 @Component({
   selector: 'app-class-list',
@@ -31,7 +34,10 @@ import { ConfirmDialogComponent } from '../../../../../shared/components/confirm
     MatDialogModule,
     MatSnackBarModule,
     MatTooltipModule,
-    TranslocoModule
+    TranslocoModule,
+    PageHeaderComponent,
+    EmptyStateComponent,
+    LoadingStateComponent
   ],
   templateUrl: './class-list.component.html',
   styleUrl: './class-list.component.scss'

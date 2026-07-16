@@ -1,18 +1,25 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>{{ 'admin.schoolYears.title' | transloco }}</mat-card-title>
-  </mat-card-header>
+<app-page-header [title]="'admin.schoolYears.title' | transloco">
+  <button pageActions mat-flat-button color="primary" (click)="onAddSchoolYear()">
+    <mat-icon>add</mat-icon>
+    {{ 'admin.schoolYears.addNew' | transloco }}
+  </button>
+</app-page-header>
 
+<app-loading-state *ngIf="isLoading()" [message]="'admin.schoolYears.loadingSchoolYears' | transloco" />
+
+<mat-card *ngIf="!isLoading()">
   <mat-card-content>
-    <div class="table-header">
-      <button mat-raised-button color="primary" (click)="onAddSchoolYear()">
-        <mat-icon>add</mat-icon>
-        {{ 'admin.schoolYears.addNew' | transloco }}
-      </button>
-    </div>
+    <app-empty-state
+      *ngIf="schoolYears().length === 0; else table"
+      icon="calendar_today"
+      [message]="'admin.schoolYears.noSchoolYearsFound' | transloco"
+      [actionLabel]="'admin.schoolYears.addNew' | transloco"
+      (action)="onAddSchoolYear()"
+    />
 
-    <div class="table-container" *ngIf="!isLoading()">
-      <table mat-table [dataSource]="schoolYears()" class="mat-elevation-z2">
+    <ng-template #table>
+    <div class="table-container">
+      <table mat-table [dataSource]="schoolYears()" class="mat-elevation-z2 app-table">
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>{{ 'admin.schoolYears.name' | transloco }}</th>
           <td mat-cell *matCellDef="let schoolYear">{{ schoolYear.name }}</td>
@@ -31,14 +38,15 @@
         <ng-container matColumnDef="isArchived">
           <th mat-header-cell *matHeaderCellDef>{{ 'admin.schoolYears.status' | transloco }}</th>
           <td mat-cell *matCellDef="let schoolYear">
-            <span class="archived-badge" *ngIf="schoolYear.isArchived">{{ 'common.archived' | transloco }}</span>
-            <span *ngIf="!schoolYear.isArchived">{{ 'common.active' | transloco }}</span>
+            <app-status-chip [variant]="schoolYear.isArchived ? 'neutral' : 'success'">
+              {{ (schoolYear.isArchived ? 'common.archived' : 'common.active') | transloco }}
+            </app-status-chip>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>{{ 'common.actions' | transloco }}</th>
-          <td mat-cell *matCellDef="let schoolYear">
+          <td mat-cell *matCellDef="let schoolYear" class="actions-cell">
             <button mat-icon-button color="primary" (click)="onEditSchoolYear(schoolYear.id)" [matTooltip]="'common.edit' | transloco">
               <mat-icon>edit</mat-icon>
             </button>
@@ -50,17 +58,8 @@
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-        <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-            {{ 'admin.schoolYears.noSchoolYearsFound' | transloco }}
-          </td>
-        </tr>
       </table>
     </div>
-
-    <div class="loading-container" *ngIf="isLoading()">
-      <p>{{ 'admin.schoolYears.loadingSchoolYears' | transloco }}</p>
-    </div>
+    </ng-template>
   </mat-card-content>
 </mat-card>

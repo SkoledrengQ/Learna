@@ -12,6 +12,9 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { TeacherService } from '../../../services/teacher.service';
 import { Teacher } from '../../../../../shared/models/teacher.model';
 import { ConfirmDialogComponent } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { PageHeaderComponent } from '../../../../../shared/components/page-header/page-header.component';
+import { EmptyStateComponent } from '../../../../../shared/components/empty-state/empty-state.component';
+import { LoadingStateComponent } from '../../../../../shared/components/loading-state/loading-state.component';
 
 @Component({
   selector: 'app-teacher-list',
@@ -25,7 +28,10 @@ import { ConfirmDialogComponent } from '../../../../../shared/components/confirm
     MatDialogModule,
     MatSnackBarModule,
     MatTooltipModule,
-    TranslocoModule
+    TranslocoModule,
+    PageHeaderComponent,
+    EmptyStateComponent,
+    LoadingStateComponent
   ],
   templateUrl: './teacher-list.component.html',
   styleUrl: './teacher-list.component.scss'

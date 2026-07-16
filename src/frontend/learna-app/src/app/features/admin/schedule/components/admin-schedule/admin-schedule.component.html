@@ -1,8 +1,6 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>{{ 'admin.schedule.title' | transloco }}</mat-card-title>
-  </mat-card-header>
+<app-page-header [title]="'admin.schedule.title' | transloco" />
 
+<mat-card>
   <mat-card-content>
     <div class="picker-row">
       <mat-button-toggle-group [value]="viewType()" (change)="onViewTypeChange($event.value)">

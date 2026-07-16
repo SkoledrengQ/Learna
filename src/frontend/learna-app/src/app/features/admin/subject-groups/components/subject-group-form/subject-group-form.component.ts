@@ -33,6 +33,7 @@ import { LanguageService } from '../../../../../core/services/language.service';
 import { LocalizedDatePipe } from '../../../../../shared/pipes/localized-date.pipe';
 import { Observable } from 'rxjs';
 import { MaterialListComponent } from '../../../../../shared/components/material-list/material-list.component';
+import { PageHeaderComponent } from '../../../../../shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'app-subject-group-form',
@@ -53,7 +54,8 @@ import { MaterialListComponent } from '../../../../../shared/components/material
     MatTooltipModule,
     TranslocoModule,
     LocalizedDatePipe,
-    MaterialListComponent
+    MaterialListComponent,
+    PageHeaderComponent
   ],
   templateUrl: './subject-group-form.component.html',
   styleUrl: './subject-group-form.component.scss'

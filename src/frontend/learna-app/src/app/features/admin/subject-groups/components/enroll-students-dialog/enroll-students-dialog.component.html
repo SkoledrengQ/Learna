@@ -21,7 +21,7 @@
 
 <mat-dialog-actions align="end">
   <button mat-button (click)="onCancel()">{{ 'common.cancel' | transloco }}</button>
-  <button mat-raised-button color="primary" [disabled]="selectedStudentIds().size === 0" (click)="onEnroll()">
+  <button mat-flat-button color="primary" [disabled]="selectedStudentIds().size === 0" (click)="onEnroll()">
     {{ 'admin.subjectGroups.enrollButton' | transloco: { count: (selectedStudentIds().size || ''), plural: selectedStudentIds().size === 1 ? '' : 's' } }}
   </button>
 </mat-dialog-actions>

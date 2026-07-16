@@ -17,6 +17,7 @@ import { Teacher } from '../../../../../shared/models/teacher.model';
 import { Room } from '../../../../../shared/models/room.model';
 import { Lesson } from '../../../../../shared/models/lesson.model';
 import { ScheduleViewComponent } from '../../../../../shared/components/schedule-view/schedule-view.component';
+import { PageHeaderComponent } from '../../../../../shared/components/page-header/page-header.component';
 
 type ViewType = 'student' | 'teacher' | 'room';
 
@@ -38,7 +39,8 @@ interface EntityOption {
     MatAutocompleteModule,
     MatSnackBarModule,
     TranslocoModule,
-    ScheduleViewComponent
+    ScheduleViewComponent,
+    PageHeaderComponent
   ],
   templateUrl: './admin-schedule.component.html',
   styleUrl: './admin-schedule.component.scss'

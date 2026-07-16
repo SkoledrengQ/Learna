@@ -1,0 +1,27 @@
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--app-space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--app-space-5);
+
+  &__title {
+    font: var(--mat-sys-headline-small);
+    color: var(--mat-sys-on-surface);
+    margin: 0;
+  }
+
+  &__subtitle {
+    font: var(--mat-sys-body-medium);
+    color: var(--mat-sys-on-surface-variant);
+    margin: var(--app-space-1) 0 0;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--app-space-2);
+    flex-wrap: wrap;
+  }
+}

@@ -1,4 +1,9 @@
 <div class="login-container">
+  <div class="login-brand">
+    <div class="login-brand__mark">{{ schoolInitial() }}</div>
+    <span class="login-brand__name">{{ schoolName() }}</span>
+  </div>
+
   <mat-card class="login-card">
     <mat-card-header>
       <mat-card-title>{{ 'auth.loginTitle' | transloco }}</mat-card-title>
@@ -46,7 +51,7 @@
         </mat-form-field>
 
         <button
-          mat-raised-button
+          mat-flat-button
           color="primary"
           type="submit"
           class="full-width login-button"

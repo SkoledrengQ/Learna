@@ -1,3 +1,5 @@
+import { SchoolSettings } from './school-settings.model';
+
 export interface LoginRequest {
   email: string;
   password: string;
@@ -8,6 +10,7 @@ export interface LoginResponse {
   refreshToken: string;
   expiresAt: Date;
   user: User;
+  schoolSettings: SchoolSettings;
 }
 
 export interface User {

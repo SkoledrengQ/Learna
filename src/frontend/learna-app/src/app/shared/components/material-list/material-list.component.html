@@ -3,7 +3,7 @@
   <div class="upload" *ngIf="canUpload">
     <input #picker type="file" (change)="choose($event)">
     <mat-form-field appearance="outline"><mat-label>{{ 'materials.description' | transloco }}</mat-label><input matInput [(ngModel)]="description"></mat-form-field>
-    <button mat-raised-button color="primary" [disabled]="!selectedFile || uploading()" (click)="upload()"><mat-icon>upload</mat-icon>{{ 'materials.upload' | transloco }}</button>
+    <button mat-flat-button color="primary" [disabled]="!selectedFile || uploading()" (click)="upload()"><mat-icon>upload</mat-icon>{{ 'materials.upload' | transloco }}</button>
   </div>
   <p class="hint" *ngIf="loading()">{{ 'common.loading' | transloco }}</p>
   <p class="hint" *ngIf="!loading() && files().length === 0">{{ 'materials.empty' | transloco }}</p>

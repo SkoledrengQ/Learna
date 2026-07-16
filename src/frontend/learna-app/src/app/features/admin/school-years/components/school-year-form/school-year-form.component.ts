@@ -19,6 +19,7 @@ import { ConfirmDialogComponent } from '../../../../../shared/components/confirm
 import { TermFormDialogComponent } from '../term-form-dialog/term-form-dialog.component';
 import { LanguageService } from '../../../../../core/services/language.service';
 import { LocalizedDatePipe } from '../../../../../shared/pipes/localized-date.pipe';
+import { PageHeaderComponent } from '../../../../../shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'app-school-year-form',
@@ -37,7 +38,8 @@ import { LocalizedDatePipe } from '../../../../../shared/pipes/localized-date.pi
     MatSnackBarModule,
     MatTooltipModule,
     TranslocoModule,
-    LocalizedDatePipe
+    LocalizedDatePipe,
+    PageHeaderComponent
   ],
   templateUrl: './school-year-form.component.html',
   styleUrl: './school-year-form.component.scss'

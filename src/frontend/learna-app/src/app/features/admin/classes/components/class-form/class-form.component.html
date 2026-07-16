@@ -1,8 +1,6 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>{{ (isEditMode ? 'admin.classes.editTitle' : 'admin.classes.addTitle') | transloco }}</mat-card-title>
-  </mat-card-header>
+<app-page-header [title]="(isEditMode ? 'admin.classes.editTitle' : 'admin.classes.addTitle') | transloco" />
 
+<mat-card>
   <mat-card-content>
     <form [formGroup]="classForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading()">
       <div class="form-row">
@@ -43,7 +41,7 @@
 
       <div class="form-actions">
         <button mat-button type="button" (click)="onCancel()">{{ 'common.cancel' | transloco }}</button>
-        <button mat-raised-button color="primary" type="submit" [disabled]="isLoading()">
+        <button mat-flat-button color="primary" type="submit" [disabled]="isLoading()">
           {{ (isEditMode ? 'admin.classes.updateClass' : 'admin.classes.createClass') | transloco }}
         </button>
       </div>

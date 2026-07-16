@@ -1,0 +1,23 @@
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--app-space-3);
+  padding: var(--app-space-8) var(--app-space-4);
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+
+  &__icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    opacity: 0.5;
+  }
+
+  &__message {
+    font: var(--mat-sys-body-large);
+    margin: 0;
+    max-width: 40ch;
+  }
+}

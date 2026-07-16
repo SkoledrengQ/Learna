@@ -15,6 +15,10 @@ import { SchoolYear } from '../../../../../shared/models/school-year.model';
 import { ConfirmDialogComponent } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { LanguageService } from '../../../../../core/services/language.service';
 import { LocalizedDatePipe } from '../../../../../shared/pipes/localized-date.pipe';
+import { PageHeaderComponent } from '../../../../../shared/components/page-header/page-header.component';
+import { EmptyStateComponent } from '../../../../../shared/components/empty-state/empty-state.component';
+import { LoadingStateComponent } from '../../../../../shared/components/loading-state/loading-state.component';
+import { StatusChipComponent } from '../../../../../shared/components/status-chip/status-chip.component';
 
 @Component({
   selector: 'app-school-year-list',
@@ -30,7 +34,11 @@ import { LocalizedDatePipe } from '../../../../../shared/pipes/localized-date.pi
     MatSnackBarModule,
     MatTooltipModule,
     TranslocoModule,
-    LocalizedDatePipe
+    LocalizedDatePipe,
+    PageHeaderComponent,
+    EmptyStateComponent,
+    LoadingStateComponent,
+    StatusChipComponent
   ],
   templateUrl: './school-year-list.component.html',
   styleUrl: './school-year-list.component.scss'

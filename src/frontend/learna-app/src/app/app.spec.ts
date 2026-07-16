@@ -34,10 +34,10 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', async () => {
+  it('renders the pre-login bare topbar when unauthenticated', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('mat-toolbar')?.textContent).toContain('Learna');
+    expect(compiled.querySelector('.app-bare-topbar')).toBeTruthy();
   });
 });

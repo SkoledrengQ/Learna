@@ -6,6 +6,7 @@ import { Observable, tap, catchError, throwError } from 'rxjs';
 import { LoginRequest, LoginResponse, User, AUTH_USER_STORAGE_KEY } from '../../shared/models/auth.model';
 import { environment } from '../../../environments/environment';
 import { LanguageService } from './language.service';
+import { SchoolSettingsService } from './school-settings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private languageService = inject(LanguageService);
+  private schoolSettingsService = inject(SchoolSettingsService);
 
   private readonly API_URL = 'http://localhost:5157/api/auth';
   private readonly TOKEN_KEY = 'access_token';
@@ -121,6 +123,9 @@ export class AuthService {
 
     // A logged-in user's preferred language wins over whatever was active pre-login
     this.languageService.applyUserPreference(response.user.preferredLanguage);
+
+    // Re-theme immediately from the login/refresh response, no separate fetch needed
+    this.schoolSettingsService.apply(response.schoolSettings);
   }
 
   private clearSession(): void {

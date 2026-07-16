@@ -26,7 +26,7 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
         <p class="error" *ngIf="wrongCurrent()">{{ 'auth.wrongCurrentPassword' | transloco }}</p>
       </form>
     </mat-dialog-content>
-    <mat-dialog-actions align="end"><button mat-button [mat-dialog-close]="false">{{ 'common.cancel' | transloco }}</button><button mat-raised-button color="primary" (click)="submit()" [disabled]="form.invalid || saving()">{{ 'auth.changePassword' | transloco }}</button></mat-dialog-actions>`,
+    <mat-dialog-actions align="end"><button mat-button [mat-dialog-close]="false">{{ 'common.cancel' | transloco }}</button><button mat-flat-button color="primary" (click)="submit()" [disabled]="form.invalid || saving()">{{ 'auth.changePassword' | transloco }}</button></mat-dialog-actions>`,
   styles: [`.dialog-form{display:flex;flex-direction:column;min-width:min(420px,75vw);padding-top:8px}.error{color:var(--mat-sys-error)}`]
 })
 export class ChangePasswordDialogComponent {

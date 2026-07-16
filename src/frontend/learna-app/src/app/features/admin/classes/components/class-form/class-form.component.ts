@@ -25,6 +25,7 @@ import { AddMemberDialogComponent } from '../add-member-dialog/add-member-dialog
 import { MoveMemberDialogComponent } from '../move-member-dialog/move-member-dialog.component';
 import { LanguageService } from '../../../../../core/services/language.service';
 import { LocalizedDatePipe } from '../../../../../shared/pipes/localized-date.pipe';
+import { PageHeaderComponent } from '../../../../../shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'app-class-form',
@@ -43,7 +44,8 @@ import { LocalizedDatePipe } from '../../../../../shared/pipes/localized-date.pi
     MatSnackBarModule,
     MatTooltipModule,
     TranslocoModule,
-    LocalizedDatePipe
+    LocalizedDatePipe,
+    PageHeaderComponent
   ],
   templateUrl: './class-form.component.html',
   styleUrl: './class-form.component.scss'
