@@ -504,6 +504,57 @@ Notification examples:
 
 ---
 
+## Messaging
+
+The platform supports direct user-to-user messaging, in addition to the announcement system
+above. This is a deliberate expansion beyond the "messaging between teachers and parents"
+item listed under Possible Future Features: messaging is available to every role, not just
+teacher↔parent. These are owner-approved requirements as of 2026-07-16.
+
+The messaging model:
+
+* Both 1:1 (direct) and group conversations are supported from the start.
+* A direct conversation between any two users is deduplicated: starting a new one when a
+  conversation already exists between that pair reopens the existing thread rather than
+  creating a duplicate.
+* Groups have a creator, who manages membership (adding and removing other members). Any
+  member, including the creator, may leave a group. A member who leaves loses access to the
+  conversation, including its history, but the group keeps working for everyone who remains.
+* Messages are immutable once sent — there is no edit or delete. This matches the
+  accountability posture needed given admin visibility (below).
+* Delivery is refresh-based for now: opening or navigating to a conversation, or an explicit
+  refresh action, loads the latest state. There are no live updates (no websockets, no
+  polling).
+* Attachments are not supported yet. File sharing stays on the five existing FileResource
+  targets (subject group, lesson, assignment, submission, announcement) until a future work
+  order extends it to messages.
+
+Reach is school-configurable:
+
+* A school-level permission matrix decides which pairs of roles (Admin, Teacher, Student,
+  Parent) are allowed to message each other, including a role messaging its own role (e.g.
+  Student↔Student can be turned off independently of Student↔Teacher). The default is every
+  pair allowed.
+* A multi-role user (for example a user who is both a Teacher and an Admin) is allowed to
+  message another user if *any* combination of their roles is an allowed pair — the same
+  "any role" logic already used for `[Authorize(Roles=...)]` checks elsewhere.
+* The matrix is enforced when a conversation is created and whenever a group's membership
+  changes. For direct conversations it is also re-checked on every send, so turning off a
+  pair (e.g. disabling Student↔Student) stops an already-ongoing direct conversation between
+  two students from that point on, without deleting the conversation itself.
+
+Admin visibility is full and, importantly, transparent:
+
+* School administrators can open and read any conversation on the platform, whether or not
+  they are a participant. This is read-only — an admin cannot send into a conversation
+  they haven't joined.
+* Because this access is broad, it must never be a surprise to users. Every conversation
+  thread shows a persistent, localized notice that school administrators can access
+  conversations. This notice is not dismissible-and-gone; it stays visible for as long as
+  the user is in a thread.
+
+---
+
 ## Lesson Planning
 
 Teachers may need a way to plan individual lessons.

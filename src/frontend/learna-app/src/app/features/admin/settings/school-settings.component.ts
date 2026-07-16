@@ -3,12 +3,14 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { SchoolSettingsService } from '../../../core/services/school-settings.service';
+import { MessagingPolicyRule } from '../../../shared/models/messaging.model';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { pickOnColor } from '../../../shared/utils/theme-color.util';
@@ -25,6 +27,7 @@ const HEX_COLOR_PATTERN = /^#[0-9A-Fa-f]{6}$/;
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatCheckboxModule,
     MatSnackBarModule,
     TranslocoModule,
     PageHeaderComponent,
@@ -41,6 +44,10 @@ export class SchoolSettingsComponent implements OnInit {
 
   isLoading = signal(true);
   isSaving = signal(false);
+
+  policyRules = signal<MessagingPolicyRule[]>([]);
+  isLoadingPolicy = signal(true);
+  isSavingPolicy = signal(false);
 
   form = this.fb.group({
     schoolName: ['', [Validators.required, Validators.maxLength(200)]],
@@ -69,6 +76,33 @@ export class SchoolSettingsComponent implements OnInit {
         this.form.patchValue(this.schoolSettingsService.settings());
         this.snackBar.open(this.transloco.translate('admin.settings.loadFailed'), this.transloco.translate('common.close'), { duration: 3000 });
         this.isLoading.set(false);
+      }
+    });
+
+    this.schoolSettingsService.getMessagingPolicy().subscribe({
+      next: policy => { this.policyRules.set(policy.rules); this.isLoadingPolicy.set(false); },
+      error: () => {
+        this.snackBar.open(this.transloco.translate('admin.settings.messagingPolicy.loadFailed'), this.transloco.translate('common.close'), { duration: 3000 });
+        this.isLoadingPolicy.set(false);
+      }
+    });
+  }
+
+  togglePolicyRule(rule: MessagingPolicyRule): void {
+    this.policyRules.update(rules => rules.map(r => r === rule ? { ...r, allowed: !r.allowed } : r));
+  }
+
+  onSavePolicy(): void {
+    this.isSavingPolicy.set(true);
+    this.schoolSettingsService.updateMessagingPolicy({ rules: this.policyRules() }).subscribe({
+      next: policy => {
+        this.policyRules.set(policy.rules);
+        this.isSavingPolicy.set(false);
+        this.snackBar.open(this.transloco.translate('admin.settings.messagingPolicy.saved'), this.transloco.translate('common.close'), { duration: 3000 });
+      },
+      error: () => {
+        this.isSavingPolicy.set(false);
+        this.snackBar.open(this.transloco.translate('admin.settings.messagingPolicy.saveFailed'), this.transloco.translate('common.close'), { duration: 5000 });
       }
     });
   }

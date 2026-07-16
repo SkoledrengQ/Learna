@@ -1,0 +1,48 @@
+.mode-toggle {
+  margin-bottom: 12px;
+}
+
+.search-field,
+.title-field {
+  width: 100%;
+}
+
+.hint {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.people-list {
+  display: grid;
+  gap: 4px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.person-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 8px;
+  border: none;
+  background: none;
+  text-align: left;
+  border-radius: var(--mat-sys-corner-small);
+  font: inherit;
+  color: inherit;
+  width: 100%;
+  cursor: pointer;
+}
+
+button.person-row:hover {
+  background: var(--mat-sys-surface-variant);
+}
+
+.person-name {
+  font-weight: 500;
+}
+
+.person-roles {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.85rem;
+}

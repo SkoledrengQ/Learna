@@ -61,6 +61,13 @@ dotnet ef database update --startup-project ../Learna.Api --project .
   (`ClassMembership` vs `Enrollment`), both history-preserving (join/left dates).
 - **No Subject seed data without an owner-provided Thai subject list.** Don't invent Thai
   subject names.
+- **Messaging (WO16).** User-to-user 1:1 and group messaging exists (`Conversation`,
+  `ConversationParticipant`, `Message`). Messages are **immutable** — no edit/delete
+  endpoints. Reach is gated by a school-configurable role-pair permission matrix
+  (`MessagingPolicyRule`, sibling endpoints under `api/school-settings/messaging-policy`;
+  default all pairs allowed). **Admins can read (not send in) any conversation** —
+  the frontend must always show the transparency notice about this in thread views. See
+  the "Messaging" section in `dev-scope.md` for the full model.
 
 ## Verification practice
 

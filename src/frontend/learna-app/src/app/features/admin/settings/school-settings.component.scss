@@ -39,6 +39,41 @@
   }
 }
 
+.policy-card {
+  max-width: 560px;
+  margin-top: var(--app-space-3);
+}
+
+.policy-title {
+  margin: 0 0 4px;
+  font: var(--mat-sys-title-medium);
+}
+
+.policy-subtitle {
+  margin: 0 0 var(--app-space-3);
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.9rem;
+}
+
+.policy-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--app-space-3);
+
+  th,
+  td {
+    text-align: left;
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+  }
+
+  th {
+    color: var(--mat-sys-on-surface-variant);
+    font-weight: 500;
+    font-size: 0.85rem;
+  }
+}
+
 .settings-preview {
   display: flex;
   align-items: center;

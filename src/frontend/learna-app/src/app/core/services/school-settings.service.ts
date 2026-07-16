@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { SchoolSettings, UpdateSchoolSettings } from '../../shared/models/school-settings.model';
+import { MessagingPolicy } from '../../shared/models/messaging.model';
 import { derivePrimaryPalette } from '../../shared/utils/theme-color.util';
 
 const STORAGE_KEY = 'learna_school_settings';
@@ -39,6 +40,14 @@ export class SchoolSettingsService {
 
   update(payload: UpdateSchoolSettings): Observable<SchoolSettings> {
     return this.http.put<SchoolSettings>(`${this.api}/school-settings`, payload).pipe(tap(settings => this.apply(settings)));
+  }
+
+  getMessagingPolicy(): Observable<MessagingPolicy> {
+    return this.http.get<MessagingPolicy>(`${this.api}/school-settings/messaging-policy`);
+  }
+
+  updateMessagingPolicy(policy: MessagingPolicy): Observable<MessagingPolicy> {
+    return this.http.put<MessagingPolicy>(`${this.api}/school-settings/messaging-policy`, policy);
   }
 
   /** Applies settings received out-of-band (login/refresh response) and re-themes immediately. */

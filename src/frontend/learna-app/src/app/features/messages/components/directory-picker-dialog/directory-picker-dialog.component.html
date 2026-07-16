@@ -1,0 +1,48 @@
+<h2 mat-dialog-title>{{ (isNewConversation ? 'messages.newConversation' : 'messages.addParticipants') | transloco }}</h2>
+
+<mat-dialog-content>
+  <mat-button-toggle-group *ngIf="isNewConversation" class="mode-toggle" [(ngModel)]="conversationKind" (change)="onModeChange()">
+    <mat-button-toggle value="direct">{{ 'messages.directMessage' | transloco }}</mat-button-toggle>
+    <mat-button-toggle value="group">{{ 'messages.group' | transloco }}</mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>{{ 'messages.searchDirectory' | transloco }}</mat-label>
+    <input matInput [value]="filterText()" (input)="onFilterInput($any($event.target).value)" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="title-field" *ngIf="isNewConversation && conversationKind === 'group'">
+    <mat-label>{{ 'messages.groupTitle' | transloco }}</mat-label>
+    <input matInput [(ngModel)]="groupTitle" maxlength="300" />
+  </mat-form-field>
+
+  <p class="hint" *ngIf="loading()">{{ 'common.loading' | transloco }}</p>
+
+  <div class="people-list" *ngIf="!loading()">
+    <ng-container *ngIf="isNewConversation && conversationKind === 'direct'; else multiSelect">
+      <button type="button" class="person-row" *ngFor="let person of filteredPeople()" (click)="pickDirect(person.userId)">
+        <span class="person-name">{{ person.name }}</span>
+        <span class="person-roles">{{ person.roles.join(', ') }}</span>
+      </button>
+    </ng-container>
+    <ng-template #multiSelect>
+      <div class="person-row" *ngFor="let person of filteredPeople()">
+        <mat-checkbox [checked]="isSelected(person.userId)" (change)="toggle(person.userId)">
+          {{ person.name }} <span class="person-roles">({{ person.roles.join(', ') }})</span>
+        </mat-checkbox>
+      </div>
+    </ng-template>
+
+    <p class="hint" *ngIf="filteredPeople().length === 0">{{ 'messages.noMatchingPeople' | transloco }}</p>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" *ngIf="!isNewConversation || conversationKind === 'group'">
+  <button mat-button (click)="onCancel()">{{ 'common.cancel' | transloco }}</button>
+  <button mat-flat-button color="primary" [disabled]="selectedUserIds().size === 0 || (isNewConversation && !groupTitle.trim())" (click)="onConfirm()">
+    {{ (isNewConversation ? 'messages.createGroup' : 'messages.addSelected') | transloco }}
+  </button>
+</mat-dialog-actions>
+<mat-dialog-actions align="end" *ngIf="isNewConversation && conversationKind === 'direct'">
+  <button mat-button (click)="onCancel()">{{ 'common.cancel' | transloco }}</button>
+</mat-dialog-actions>

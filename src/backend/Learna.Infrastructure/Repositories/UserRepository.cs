@@ -28,9 +28,9 @@ public class UserRepository : IUserRepository
             var term = search.Trim().ToLower();
             query = query.Where(u =>
                 u.Email.ToLower().Contains(term) ||
-                (u.Student != null && (u.Student.Name.FirstName.ToLower().Contains(term) || u.Student.Name.LastName.ToLower().Contains(term))) ||
-                (u.Teacher != null && (u.Teacher.Name.FirstName.ToLower().Contains(term) || u.Teacher.Name.LastName.ToLower().Contains(term))) ||
-                (u.Guardian != null && (u.Guardian.Name.FirstName.ToLower().Contains(term) || u.Guardian.Name.LastName.ToLower().Contains(term))));
+                (u.Student != null && (u.Student.Name.FirstName.ToLower().Contains(term) || u.Student.Name.LastName.ToLower().Contains(term) || (u.Student.Name.Nickname != null && u.Student.Name.Nickname.ToLower().Contains(term)))) ||
+                (u.Teacher != null && (u.Teacher.Name.FirstName.ToLower().Contains(term) || u.Teacher.Name.LastName.ToLower().Contains(term) || (u.Teacher.Name.Nickname != null && u.Teacher.Name.Nickname.ToLower().Contains(term)))) ||
+                (u.Guardian != null && (u.Guardian.Name.FirstName.ToLower().Contains(term) || u.Guardian.Name.LastName.ToLower().Contains(term) || (u.Guardian.Name.Nickname != null && u.Guardian.Name.Nickname.ToLower().Contains(term)))));
         }
 
         return await query.OrderBy(u => u.Email).ToListAsync();

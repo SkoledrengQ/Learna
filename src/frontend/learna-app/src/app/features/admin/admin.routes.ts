@@ -118,5 +118,9 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: 'settings',
     loadComponent: () => import('./settings/school-settings.component').then(m => m.SchoolSettingsComponent)
+  },
+  {
+    path: 'conversations',
+    loadComponent: () => import('./conversations/conversation-admin-list.component').then(m => m.ConversationAdminListComponent)
   }
 ];

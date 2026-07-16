@@ -17,6 +17,7 @@ import { LanguageService, SupportedLanguage } from './core/services/language.ser
 import { SchoolSettingsService } from './core/services/school-settings.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AnnouncementsService } from './core/services/announcements.service';
+import { MessagesService } from './core/services/messages.service';
 
 const MOBILE_BREAKPOINT = '(max-width: 899.98px)';
 
@@ -47,6 +48,7 @@ export class App {
   private readonly dialog = inject(MatDialog);
   private readonly breakpointObserver = inject(BreakpointObserver);
   protected readonly announcements = inject(AnnouncementsService);
+  protected readonly messages = inject(MessagesService);
 
   protected readonly isAuthenticated = this.authService.isAuthenticated;
   protected readonly currentUser = computed(() => this.authService.getCurrentUser());
@@ -71,6 +73,7 @@ export class App {
     effect(() => {
       if (this.isAuthenticated()) {
         this.announcements.loadMine().subscribe({ error: () => undefined });
+        this.messages.loadMine().subscribe({ error: () => undefined });
       }
     });
 

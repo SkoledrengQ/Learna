@@ -1,0 +1,233 @@
+.messages-page {
+  max-width: 1200px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) 1fr;
+  gap: 20px;
+  align-items: start;
+  height: calc(100vh - 180px);
+  min-height: 420px;
+}
+
+@media (max-width: 899.98px) {
+  .layout {
+    grid-template-columns: 1fr;
+    height: calc(100vh - 160px);
+  }
+}
+
+.list {
+  display: grid;
+  gap: 10px;
+  overflow-y: auto;
+  align-content: start;
+  height: 100%;
+  padding-right: 2px;
+}
+
+.conversation-row {
+  position: relative;
+  text-align: left;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--mat-sys-corner-medium);
+  background: var(--mat-sys-surface);
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 8px;
+  cursor: pointer;
+}
+
+.conversation-row.unread {
+  border-color: var(--mat-sys-primary);
+  box-shadow: inset 4px 0 0 var(--mat-sys-primary);
+}
+
+.conversation-row.selected {
+  background: var(--app-brand-container);
+}
+
+.row-title {
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+  grid-column: 1;
+}
+
+.meta {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.8rem;
+  grid-column: 2;
+  text-align: right;
+}
+
+.preview {
+  grid-column: 1 / -1;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.unread-chip {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+
+.thread {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--mat-sys-corner-medium);
+  overflow: hidden;
+  background: var(--mat-sys-surface);
+}
+
+.thread-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--mat-sys-on-surface-variant);
+  padding: 20px;
+  text-align: center;
+}
+
+.thread-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.thread-title {
+  font-size: 1.05rem;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.transparency-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--mat-sys-surface-variant);
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.82rem;
+
+  mat-icon {
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+  }
+}
+
+.group-panel {
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  padding: 8px 12px;
+  display: grid;
+  gap: 4px;
+}
+
+.group-panel__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.participant-name {
+  font-weight: 500;
+}
+
+.participant-roles {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.85rem;
+}
+
+.group-panel__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.thread-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.load-older {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 8px;
+}
+
+.message-bubble {
+  max-width: 75%;
+  align-self: flex-start;
+  background: var(--mat-sys-surface-variant);
+  border-radius: var(--mat-sys-corner-medium);
+  padding: 8px 12px;
+}
+
+.message-bubble.mine {
+  align-self: flex-end;
+  background: var(--app-brand-container);
+  color: var(--app-on-brand-container);
+}
+
+.message-meta {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface-variant);
+  margin-bottom: 2px;
+}
+
+.message-body {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.message-time {
+  font-size: 0.72rem;
+  opacity: 0.7;
+  text-align: right;
+  margin-top: 4px;
+}
+
+.composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+.composer-input {
+  flex: 1;
+  resize: none;
+  min-height: 40px;
+  max-height: 120px;
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: var(--mat-sys-corner-medium);
+  padding: 8px 12px;
+  font: inherit;
+  color: inherit;
+  background: var(--mat-sys-surface);
+}

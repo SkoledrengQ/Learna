@@ -1,0 +1,41 @@
+<main class="admin-conversations-page">
+  <app-page-header [title]="'admin.conversations.title' | transloco" [subtitle]="'admin.conversations.subtitle' | transloco" />
+
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>{{ 'admin.conversations.search' | transloco }}</mat-label>
+    <input matInput [(ngModel)]="searchText" (keydown.enter)="search()" />
+    <button matSuffix mat-icon-button (click)="search()" [attr.aria-label]="'common.search' | transloco">
+      <mat-icon>search</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <section class="layout">
+    <div class="list">
+      <app-loading-state *ngIf="loadingList()" [message]="'common.loading' | transloco" />
+      <app-empty-state *ngIf="!loadingList() && conversations().length === 0" icon="forum" [message]="'admin.conversations.empty' | transloco" />
+      <button class="conversation-row" type="button" *ngFor="let item of conversations()" [class.selected]="selectedId() === item.id" (click)="open(item)">
+        <span class="row-title">{{ item.displayTitle }}</span>
+        <span class="meta">{{ item.messageCount }} · {{ item.createdAt | localizedDate:language.activeLang():'d MMM y' }}</span>
+        <span class="preview">{{ item.participantNames.join(', ') }}</span>
+      </button>
+    </div>
+
+    <mat-card class="detail" *ngIf="selectedId(); else placeholder">
+      <div class="admin-banner">
+        <mat-icon>shield</mat-icon>
+        <span>{{ 'admin.conversations.viewingAsAdmin' | transloco }}</span>
+      </div>
+      <app-loading-state *ngIf="loadingThread()" [message]="'common.loading' | transloco" />
+      <div class="thread-scroll" *ngIf="!loadingThread()">
+        <div class="message-bubble" *ngFor="let msg of messages()">
+          <div class="message-meta">{{ msg.senderName }}</div>
+          <div class="message-body">{{ msg.body }}</div>
+          <div class="message-time">{{ msg.sentAt | localizedDate:language.activeLang():'d MMM' }}</div>
+        </div>
+      </div>
+    </mat-card>
+    <ng-template #placeholder>
+      <mat-card class="detail placeholder"><mat-card-content>{{ 'admin.conversations.selectPrompt' | transloco }}</mat-card-content></mat-card>
+    </ng-template>
+  </section>
+</main>

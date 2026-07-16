@@ -1,0 +1,89 @@
+<main class="messages-page">
+  <app-page-header [title]="'messages.title' | transloco" [subtitle]="'messages.unreadCount' | transloco:{count: messagesService.totalUnread()}">
+    <button pageActions mat-flat-button color="primary" (click)="startNewConversation()">
+      <mat-icon>add</mat-icon>{{ 'messages.newConversation' | transloco }}
+    </button>
+  </app-page-header>
+
+  <section class="layout">
+    <div class="list" *ngIf="!isMobile() || !selectedId()">
+      <app-loading-state *ngIf="loadingList()" [message]="'common.loading' | transloco" />
+      <app-empty-state *ngIf="!loadingList() && conversations().length === 0" icon="forum" [message]="'messages.empty' | transloco" />
+      <button class="conversation-row" type="button" *ngFor="let item of conversations()" [class.unread]="item.unreadCount > 0" [class.selected]="selectedId() === item.id" (click)="open(item)">
+        <span class="row-title">{{ item.displayTitle }}</span>
+        <span class="meta" *ngIf="item.lastMessageAt">{{ item.lastMessageAt | localizedDate:language.activeLang():'d MMM' }}</span>
+        <span class="preview">{{ item.lastMessagePreview || ('messages.noMessagesYet' | transloco) }}</span>
+        <app-status-chip class="unread-chip" variant="brand" *ngIf="item.unreadCount > 0">{{ item.unreadCount }}</app-status-chip>
+      </button>
+    </div>
+
+    <div class="thread" *ngIf="!isMobile() || selectedId()">
+      <ng-container *ngIf="selectedId(); else placeholder">
+        <header class="thread-header">
+          <button mat-icon-button *ngIf="isMobile()" (click)="backToList()" [attr.aria-label]="'common.back' | transloco">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+          <h2 class="thread-title">{{ selectedDetail()?.displayTitle }}</h2>
+          <span class="spacer"></span>
+          <button mat-icon-button *ngIf="canManageGroup()" (click)="toggleGroupPanel()" [attr.aria-label]="'messages.manageGroup' | transloco">
+            <mat-icon>group</mat-icon>
+          </button>
+          <button mat-icon-button (click)="refreshThread()" [attr.aria-label]="'common.refresh' | transloco">
+            <mat-icon>refresh</mat-icon>
+          </button>
+        </header>
+
+        <div class="transparency-notice">
+          <mat-icon>info</mat-icon>
+          <span>{{ 'messages.transparencyNotice' | transloco }}</span>
+        </div>
+
+        <div class="group-panel" *ngIf="showGroupPanel() && selectedDetail() as detail">
+          <div class="group-panel__row" *ngFor="let participant of detail.participants">
+            <span class="participant-name">{{ participant.name }}</span>
+            <app-status-chip variant="neutral" *ngIf="participant.userId === detail.createdByUserId">{{ 'messages.creatorBadge' | transloco }}</app-status-chip>
+            <span class="participant-roles">{{ participant.roles.join(', ') }}</span>
+            <span class="spacer"></span>
+            <button mat-icon-button *ngIf="detail.isCreator && participant.userId !== currentUserId()" (click)="removeParticipant(participant.userId)" [attr.aria-label]="'messages.removeParticipantTitle' | transloco">
+              <mat-icon>person_remove</mat-icon>
+            </button>
+          </div>
+          <div class="group-panel__actions">
+            <button mat-button *ngIf="detail.isCreator" (click)="addParticipants()"><mat-icon>person_add</mat-icon>{{ 'messages.addParticipants' | transloco }}</button>
+            <button mat-button color="warn" (click)="removeParticipant(currentUserId()!)"><mat-icon>logout</mat-icon>{{ 'messages.leaveGroup' | transloco }}</button>
+          </div>
+        </div>
+
+        <app-loading-state *ngIf="loadingThread()" [message]="'common.loading' | transloco" />
+
+        <div class="thread-scroll" #threadScroll *ngIf="!loadingThread()">
+          <div class="load-older" *ngIf="hasMoreOlder()">
+            <button mat-button (click)="loadOlder()" [disabled]="loadingOlder()">{{ 'messages.loadOlder' | transloco }}</button>
+          </div>
+          <div class="message-bubble" [class.mine]="msg.isMine" *ngFor="let msg of messages()">
+            <div class="message-meta" *ngIf="!msg.isMine">{{ msg.senderName }}</div>
+            <div class="message-body">{{ msg.body }}</div>
+            <div class="message-time">{{ msg.sentAt | localizedDate:language.activeLang():'d MMM' }}</div>
+          </div>
+        </div>
+
+        <div class="composer">
+          <textarea
+            class="composer-input"
+            rows="1"
+            [placeholder]="'messages.composerPlaceholder' | transloco"
+            [(ngModel)]="composerText"
+            (keydown)="onComposerKeydown($event)"
+          ></textarea>
+          <button mat-icon-button color="primary" [disabled]="sending() || !composerText.trim()" (click)="send()" [attr.aria-label]="'messages.send' | transloco">
+            <mat-icon>send</mat-icon>
+          </button>
+        </div>
+      </ng-container>
+
+      <ng-template #placeholder>
+        <div class="thread-placeholder">{{ 'messages.selectPrompt' | transloco }}</div>
+      </ng-template>
+    </div>
+  </section>
+</main>

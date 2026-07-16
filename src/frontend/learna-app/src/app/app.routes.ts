@@ -70,6 +70,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/announcements/announcements-page.component').then(m => m.AnnouncementsPageComponent)
   },
   {
+    path: 'messages', canActivate: [authGuard],
+    loadComponent: () => import('./features/messages/messages-page.component').then(m => m.MessagesPageComponent)
+  },
+  {
     path: 'admin',
     canActivate: [authGuard],
     data: { roles: ['Admin'] },

@@ -38,6 +38,10 @@ public class ApplicationDbContext : DbContext
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<SchoolSettings> SchoolSettings { get; set; }
+    public DbSet<Conversation> Conversations { get; set; }
+    public DbSet<ConversationParticipant> ConversationParticipants { get; set; }
+    public DbSet<Message> Messages { get; set; }
+    public DbSet<MessagingPolicyRule> MessagingPolicyRules { get; set; }
 
     private static void ConfigurePersonName<TEntity>(OwnedNavigationBuilder<TEntity, PersonName> name)
         where TEntity : class
@@ -473,6 +477,42 @@ public class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.Property(e => e.SchoolName).IsRequired().HasMaxLength(200);
             entity.Property(e => e.PrimaryColor).IsRequired().HasMaxLength(7);
+        });
+
+        // Conversation configuration (Direct or Group; messages are immutable)
+        modelBuilder.Entity<Conversation>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Type).HasConversion<string>().HasMaxLength(20);
+            entity.Property(e => e.Title).HasMaxLength(300);
+            entity.HasOne(e => e.CreatedByUser).WithMany().HasForeignKey(e => e.CreatedByUserId).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // ConversationParticipant configuration (unique ConversationId+UserId pair)
+        modelBuilder.Entity<ConversationParticipant>(entity =>
+        {
+            entity.HasKey(p => new { p.ConversationId, p.UserId });
+            entity.HasOne(p => p.Conversation).WithMany(c => c.Participants).HasForeignKey(p => p.ConversationId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(p => p.User).WithMany().HasForeignKey(p => p.UserId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Message configuration (immutable; plain text, Thai-capable)
+        modelBuilder.Entity<Message>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Body).IsRequired().HasColumnType("longtext");
+            entity.HasIndex(e => new { e.ConversationId, e.Id });
+            entity.HasOne(e => e.Conversation).WithMany(c => c.Messages).HasForeignKey(e => e.ConversationId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.SenderUser).WithMany().HasForeignKey(e => e.SenderUserId).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // MessagingPolicyRule configuration (school-configurable role-pair permission matrix)
+        modelBuilder.Entity<MessagingPolicyRule>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.RoleA).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.RoleB).IsRequired().HasMaxLength(50);
+            entity.HasIndex(e => new { e.RoleA, e.RoleB }).IsUnique();
         });
     }
 }

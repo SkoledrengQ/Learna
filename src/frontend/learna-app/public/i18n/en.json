@@ -19,7 +19,10 @@
     "loading": "Loading...",
     "chooseFile": "Choose file",
     "noFileChosen": "No file chosen",
-    "filters": "Filters"
+    "filters": "Filters",
+    "back": "Back",
+    "refresh": "Refresh",
+    "search": "Search"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -31,6 +34,7 @@
     "assignments": "Assignments",
     "grades": "Grades",
     "announcements": "Announcements",
+    "messages": "Messages",
     "admin": "Admin",
     "users": "Users",
     "teachers": "Teachers",
@@ -41,6 +45,7 @@
     "rooms": "Rooms",
     "lessons": "Lessons",
     "adminSchedule": "Schedule Viewer",
+    "conversations": "Conversations",
     "settings": "Settings",
     "logout": "Logout",
     "personalSection": "General",
@@ -147,6 +152,41 @@
       "publishAt": "Publish at",
       "expiresAt": "Expires at",
       "attachment": "Attachment"
+    }
+  },
+  "messages": {
+    "title": "Messages",
+    "unreadCount": "{{count}} unread",
+    "empty": "No conversations yet.",
+    "noMessagesYet": "No messages yet.",
+    "selectPrompt": "Select a conversation to read it.",
+    "newConversation": "New conversation",
+    "directMessage": "Direct message",
+    "group": "Group",
+    "groupTitle": "Group name",
+    "searchDirectory": "Search by name",
+    "noMatchingPeople": "No matching people found.",
+    "createGroup": "Create group",
+    "addSelected": "Add selected",
+    "addParticipants": "Add participants",
+    "removeParticipantTitle": "Remove participant",
+    "removeParticipantConfirm": "Remove this person from the conversation?",
+    "removeParticipantFailed": "Failed to remove participant",
+    "leaveGroup": "Leave group",
+    "leaveGroupTitle": "Leave group",
+    "leaveGroupConfirm": "Are you sure you want to leave this group? You will lose access to its message history.",
+    "manageGroup": "Manage group",
+    "creatorBadge": "Creator",
+    "composerPlaceholder": "Type a message...",
+    "send": "Send",
+    "loadOlder": "Load older messages",
+    "transparencyNotice": "School administrators can access conversations.",
+    "loadFailed": "Failed to load messages",
+    "sendFailed": "Failed to send message",
+    "createFailed": "Failed to start the conversation",
+    "addParticipantsFailed": "Failed to add participants",
+    "errors": {
+      "policyBlocked": "This school does not currently allow messaging between these roles."
     }
   },
   "schedule": {
@@ -685,7 +725,27 @@
       "invalidColor": "Enter a valid hex color, e.g. #00695C",
       "loadFailed": "Failed to load school settings",
       "saved": "School settings saved",
-      "saveFailed": "Failed to save school settings"
+      "saveFailed": "Failed to save school settings",
+      "messagingPolicy": {
+        "title": "Messaging policy",
+        "subtitle": "Choose which roles are allowed to message each other. Unlisted pairs default to allowed.",
+        "roleA": "Role",
+        "roleB": "Can message",
+        "allowed": "Allowed",
+        "roles": { "Admin": "Admin", "Teacher": "Teacher", "Student": "Student", "Parent": "Parent" },
+        "loadFailed": "Failed to load the messaging policy",
+        "saved": "Messaging policy saved",
+        "saveFailed": "Failed to save the messaging policy"
+      }
+    },
+    "conversations": {
+      "title": "Conversations",
+      "subtitle": "Oversight of all messaging on the platform.",
+      "search": "Search by name or group title",
+      "empty": "No conversations found.",
+      "selectPrompt": "Select a conversation to view it.",
+      "viewingAsAdmin": "You are viewing this conversation as a school administrator.",
+      "loadFailed": "Failed to load conversations"
     }
   }
 }

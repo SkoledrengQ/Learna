@@ -50,4 +50,37 @@
       </form>
     </mat-card-content>
   </mat-card>
+
+  <mat-card class="settings-card policy-card">
+    <mat-card-content>
+      <h2 class="policy-title">{{ 'admin.settings.messagingPolicy.title' | transloco }}</h2>
+      <p class="policy-subtitle">{{ 'admin.settings.messagingPolicy.subtitle' | transloco }}</p>
+
+      <app-loading-state *ngIf="isLoadingPolicy(); else policyTable" [message]="'common.loading' | transloco" />
+      <ng-template #policyTable>
+        <table class="policy-table">
+          <thead>
+            <tr>
+              <th>{{ 'admin.settings.messagingPolicy.roleA' | transloco }}</th>
+              <th>{{ 'admin.settings.messagingPolicy.roleB' | transloco }}</th>
+              <th>{{ 'admin.settings.messagingPolicy.allowed' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let rule of policyRules()">
+              <td>{{ ('admin.settings.messagingPolicy.roles.' + rule.roleA) | transloco }}</td>
+              <td>{{ ('admin.settings.messagingPolicy.roles.' + rule.roleB) | transloco }}</td>
+              <td><mat-checkbox [checked]="rule.allowed" (change)="togglePolicyRule(rule)"></mat-checkbox></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="settings-form__actions">
+          <button mat-flat-button color="primary" type="button" [disabled]="isSavingPolicy()" (click)="onSavePolicy()">
+            {{ (isSavingPolicy() ? 'common.saving' : 'common.save') | transloco }}
+          </button>
+        </div>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
 </ng-template>

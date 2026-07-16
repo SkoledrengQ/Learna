@@ -45,6 +45,10 @@
           <mat-icon matListItemIcon [matBadge]="announcements.unreadCount() > 0 ? announcements.unreadCount() : null" matBadgeSize="small" matBadgeColor="accent">campaign</mat-icon>
           <span matListItemTitle>{{ 'nav.announcements' | transloco }}</span>
         </a>
+        <a mat-list-item routerLink="/messages" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
+          <mat-icon matListItemIcon [matBadge]="messages.totalUnread() > 0 ? messages.totalUnread() : null" matBadgeSize="small" matBadgeColor="accent">forum</mat-icon>
+          <span matListItemTitle>{{ 'nav.messages' | transloco }}</span>
+        </a>
 
         <ng-container *ngIf="canViewGroups()">
           <h3 matSubheader>{{ 'nav.teacherSection' | transloco }}</h3>
@@ -91,6 +95,10 @@
           <a mat-list-item routerLink="/admin/schedule" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
             <mat-icon matListItemIcon>calendar_month</mat-icon>
             <span matListItemTitle>{{ 'nav.adminSchedule' | transloco }}</span>
+          </a>
+          <a mat-list-item routerLink="/admin/conversations" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
+            <mat-icon matListItemIcon>forum</mat-icon>
+            <span matListItemTitle>{{ 'nav.conversations' | transloco }}</span>
           </a>
           <a mat-list-item routerLink="/admin/settings" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
             <mat-icon matListItemIcon>settings</mat-icon>

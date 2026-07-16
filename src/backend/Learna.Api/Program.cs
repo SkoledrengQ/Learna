@@ -61,6 +61,8 @@ builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<ISchoolSettingsRepository, SchoolSettingsRepository>();
+builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+builder.Services.AddScoped<IMessagingPolicyRepository, MessagingPolicyRepository>();
 
 // Register services
 builder.Services.AddScoped<IAuthService, AuthService>();
