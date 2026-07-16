@@ -4,9 +4,8 @@ import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { forkJoin, of } from 'rxjs';
+import { forkJoin } from 'rxjs';
 
 import { AuthService } from '../../core/services/auth.service';
 import { LanguageService } from '../../core/services/language.service';
@@ -14,7 +13,7 @@ import { GuardianPortalService } from '../../core/services/guardian-portal.servi
 import { AnnouncementsService } from '../../core/services/announcements.service';
 import { AssignmentsService } from '../../core/services/assignments.service';
 import { GradesService } from '../../core/services/grades.service';
-import { AttendanceService } from '../../features/attendance/attendance.service';
+import { AttendanceService } from '../attendance/attendance.service';
 import { ScheduleService } from '../schedule/services/schedule.service';
 import { DashboardService } from './dashboard.service';
 
@@ -47,7 +46,6 @@ type Role = 'student' | 'teacher' | 'parent' | 'admin' | 'none';
     RouterLink,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule,
     TranslocoModule,
     PageHeaderComponent,
     EmptyStateComponent,
