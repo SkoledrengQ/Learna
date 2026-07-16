@@ -183,11 +183,11 @@ export class AnnouncementsPageComponent implements OnInit {
     });
   }
 
-  protected open(item: Announcement): void {
+  protected open(item: Announcement, markRead = true): void {
     this.announcements.get(item.id).subscribe({
       next: detail => {
         this.selected.set(detail);
-        if (!detail.isRead) {
+        if (markRead && !detail.isRead) {
           this.announcements.markRead(detail.id).subscribe({ next: () => this.selected.update(v => v ? { ...v, isRead: true } : v) });
         }
       },
@@ -221,7 +221,7 @@ export class AnnouncementsPageComponent implements OnInit {
   }
 
   private afterSave(saved: Announcement): void {
-    const finish = () => { this.saving.set(false); this.editing.set(false); this.editId.set(null); this.selectedFile = null; this.message('announcements.saved'); this.load(); this.open(saved); };
+    const finish = () => { this.saving.set(false); this.editing.set(false); this.editId.set(null); this.selectedFile = null; this.message('announcements.saved'); this.load(); this.open(saved, false); };
     if (!this.selectedFile) { finish(); return; }
     this.announcements.upload(saved.id, this.selectedFile).subscribe({ next: finish, error: () => { this.saving.set(false); this.message('materials.uploadFailed'); } });
   }
