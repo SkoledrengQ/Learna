@@ -13,12 +13,14 @@ public class AuthController : ControllerBase
     private readonly IAuthService _authService;
     private readonly ISchoolSettingsRepository _schoolSettingsRepository;
     private readonly ILogger<AuthController> _logger;
+    private readonly IWebHostEnvironment _environment;
 
-    public AuthController(IAuthService authService, ISchoolSettingsRepository schoolSettingsRepository, ILogger<AuthController> logger)
+    public AuthController(IAuthService authService, ISchoolSettingsRepository schoolSettingsRepository, ILogger<AuthController> logger, IWebHostEnvironment environment)
     {
         _authService = authService;
         _schoolSettingsRepository = schoolSettingsRepository;
         _logger = logger;
+        _environment = environment;
     }
 
     private async Task<SchoolSettingsDto> GetSchoolSettingsDtoAsync()
@@ -26,6 +28,16 @@ public class AuthController : ControllerBase
         var settings = await _schoolSettingsRepository.GetAsync();
         return new SchoolSettingsDto(settings.SchoolName, settings.PrimaryColor);
     }
+
+    // Secure must be false in local dev (plain http://localhost) or browsers drop the cookie
+    // silently, breaking refresh and server-side logout; production always requires HTTPS.
+    private CookieOptions RefreshTokenCookieOptions() => new()
+    {
+        HttpOnly = true,
+        Secure = !_environment.IsDevelopment(),
+        SameSite = SameSiteMode.Strict,
+        Expires = DateTime.UtcNow.AddDays(7)
+    };
 
     [HttpPost("login")]
     [AllowAnonymous]
@@ -39,14 +51,7 @@ public class AuthController : ControllerBase
         }
 
         // Set refresh token in httpOnly cookie
-        var cookieOptions = new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true, // HTTPS only in production
-            SameSite = SameSiteMode.Strict,
-            Expires = DateTime.UtcNow.AddDays(7)
-        };
-        Response.Cookies.Append("refreshToken", result.RefreshToken!, cookieOptions);
+        Response.Cookies.Append("refreshToken", result.RefreshToken!, RefreshTokenCookieOptions());
 
         var response = new LoginResponseDto(
             result.AccessToken!,
@@ -85,14 +90,7 @@ public class AuthController : ControllerBase
         }
 
         // Update refresh token cookie
-        var cookieOptions = new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
-            Expires = DateTime.UtcNow.AddDays(7)
-        };
-        Response.Cookies.Append("refreshToken", result.RefreshToken!, cookieOptions);
+        Response.Cookies.Append("refreshToken", result.RefreshToken!, RefreshTokenCookieOptions());
 
         var response = new LoginResponseDto(
             result.AccessToken!,
@@ -120,7 +118,7 @@ public class AuthController : ControllerBase
         if (Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
         {
             await _authService.RevokeTokenAsync(refreshToken);
-            Response.Cookies.Delete("refreshToken");
+            Response.Cookies.Delete("refreshToken", RefreshTokenCookieOptions());
         }
 
         return Ok(new { message = "Logged out successfully" });

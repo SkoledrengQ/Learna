@@ -16,7 +16,10 @@
     "actions": "Actions",
     "language": "Language",
     "saving": "Saving...",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "chooseFile": "Choose file",
+    "noFileChosen": "No file chosen",
+    "filters": "Filters"
   },
   "nav": {
     "students": "Students",

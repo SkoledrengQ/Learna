@@ -29,6 +29,7 @@ import { PageHeaderComponent } from '../../../../../shared/components/page-heade
 import { EmptyStateComponent } from '../../../../../shared/components/empty-state/empty-state.component';
 import { LoadingStateComponent } from '../../../../../shared/components/loading-state/loading-state.component';
 import { StatusChipComponent } from '../../../../../shared/components/status-chip/status-chip.component';
+import { FilterPanelComponent } from '../../../../../shared/components/filter-panel/filter-panel.component';
 import { lessonStatusVariant } from '../../../../../shared/utils/status-variant.util';
 
 @Component({
@@ -51,7 +52,8 @@ import { lessonStatusVariant } from '../../../../../shared/utils/status-variant.
     PageHeaderComponent,
     EmptyStateComponent,
     LoadingStateComponent,
-    StatusChipComponent
+    StatusChipComponent,
+    FilterPanelComponent
   ],
   templateUrl: './lesson-list.component.html',
   styleUrl: './lesson-list.component.scss'

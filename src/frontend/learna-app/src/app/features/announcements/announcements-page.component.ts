@@ -18,11 +18,12 @@ import { PageHeaderComponent } from '../../shared/components/page-header/page-he
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { LoadingStateComponent } from '../../shared/components/loading-state/loading-state.component';
 import { StatusChipComponent } from '../../shared/components/status-chip/status-chip.component';
+import { FilePickerComponent } from '../../shared/components/file-picker/file-picker.component';
 
 @Component({
   selector: 'app-announcements-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSnackBarModule, TranslocoModule, LocalizedDatePipe, PageHeaderComponent, EmptyStateComponent, LoadingStateComponent, StatusChipComponent],
+  imports: [CommonModule, FormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSnackBarModule, TranslocoModule, LocalizedDatePipe, PageHeaderComponent, EmptyStateComponent, LoadingStateComponent, StatusChipComponent, FilePickerComponent],
   template: `
     <main class="announcements-page">
       <app-page-header [title]="'announcements.title' | transloco" [subtitle]="'announcements.unreadCount' | transloco:{count: announcements.unreadCount()}">
@@ -110,7 +111,7 @@ import { StatusChipComponent } from '../../shared/components/status-chip/status-
             </div>
             <div class="upload">
               <label>{{ 'announcements.fields.attachment' | transloco }}</label>
-              <input type="file" (change)="choose($event)">
+              <app-file-picker (filesSelected)="choose($event)"></app-file-picker>
             </div>
             <div class="actions">
               <button mat-button type="button" (click)="cancelEdit()">{{ 'common.cancel' | transloco }}</button>
@@ -205,7 +206,7 @@ export class AnnouncementsPageComponent implements OnInit {
   }
 
   protected cancelEdit(): void { this.editing.set(false); this.editId.set(null); this.selectedFile = null; }
-  protected choose(event: Event): void { this.selectedFile = (event.target as HTMLInputElement).files?.[0] ?? null; }
+  protected choose(files: File[]): void { this.selectedFile = files[0] ?? null; }
 
   protected save(): void {
     const target = this.parseTarget();

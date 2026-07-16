@@ -9,41 +9,43 @@
 
 <mat-card *ngIf="!isLoading()">
   <mat-card-content>
-    <div class="filters">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'admin.lessons.from' | transloco }}</mat-label>
-        <input matInput type="date" [(ngModel)]="fromDate" (change)="onFilterChange()">
-      </mat-form-field>
+    <app-filter-panel>
+      <div class="filters">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'admin.lessons.from' | transloco }}</mat-label>
+          <input matInput type="date" [(ngModel)]="fromDate" (change)="onFilterChange()">
+        </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'admin.lessons.to' | transloco }}</mat-label>
-        <input matInput type="date" [(ngModel)]="toDate" (change)="onFilterChange()">
-      </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'admin.lessons.to' | transloco }}</mat-label>
+          <input matInput type="date" [(ngModel)]="toDate" (change)="onFilterChange()">
+        </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'admin.lessons.subjectGroup' | transloco }}</mat-label>
-        <mat-select [(ngModel)]="subjectGroupId" (selectionChange)="onFilterChange()">
-          <mat-option [value]="null">{{ 'admin.lessons.allGroups' | transloco }}</mat-option>
-          <mat-option *ngFor="let group of subjectGroups()" [value]="group.id">{{ group.name }}</mat-option>
-        </mat-select>
-      </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'admin.lessons.subjectGroup' | transloco }}</mat-label>
+          <mat-select [(ngModel)]="subjectGroupId" (selectionChange)="onFilterChange()">
+            <mat-option [value]="null">{{ 'admin.lessons.allGroups' | transloco }}</mat-option>
+            <mat-option *ngFor="let group of subjectGroups()" [value]="group.id">{{ group.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'admin.subjectGroups.rules.room' | transloco }}</mat-label>
-        <mat-select [(ngModel)]="roomId" (selectionChange)="onFilterChange()">
-          <mat-option [value]="null">{{ 'admin.lessons.allRooms' | transloco }}</mat-option>
-          <mat-option *ngFor="let room of rooms()" [value]="room.id">{{ room.name }}</mat-option>
-        </mat-select>
-      </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'admin.subjectGroups.rules.room' | transloco }}</mat-label>
+          <mat-select [(ngModel)]="roomId" (selectionChange)="onFilterChange()">
+            <mat-option [value]="null">{{ 'admin.lessons.allRooms' | transloco }}</mat-option>
+            <mat-option *ngFor="let room of rooms()" [value]="room.id">{{ room.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'admin.subjectGroups.teacher' | transloco }}</mat-label>
-        <mat-select [(ngModel)]="teacherId" (selectionChange)="onFilterChange()">
-          <mat-option [value]="null">{{ 'admin.lessons.allTeachers' | transloco }}</mat-option>
-          <mat-option *ngFor="let teacher of teachers()" [value]="teacher.id">{{ getDisplayName(teacher.name) }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'admin.subjectGroups.teacher' | transloco }}</mat-label>
+          <mat-select [(ngModel)]="teacherId" (selectionChange)="onFilterChange()">
+            <mat-option [value]="null">{{ 'admin.lessons.allTeachers' | transloco }}</mat-option>
+            <mat-option *ngFor="let teacher of teachers()" [value]="teacher.id">{{ getDisplayName(teacher.name) }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </app-filter-panel>
 
     <app-empty-state
       *ngIf="lessons().length === 0; else table"

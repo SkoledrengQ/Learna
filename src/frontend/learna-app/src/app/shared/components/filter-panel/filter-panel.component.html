@@ -1,0 +1,19 @@
+<ng-template #contentTpl>
+  <ng-content></ng-content>
+</ng-template>
+
+<ng-container *ngIf="isMobile(); else flat">
+  <mat-expansion-panel class="filter-panel__mobile">
+    <mat-expansion-panel-header>
+      <mat-panel-title><mat-icon>filter_list</mat-icon>{{ 'common.filters' | transloco }}</mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="filter-panel__content">
+      <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
+    </div>
+  </mat-expansion-panel>
+</ng-container>
+<ng-template #flat>
+  <div class="filter-panel__content filter-panel__content--flat">
+    <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
+  </div>
+</ng-template>

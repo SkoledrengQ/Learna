@@ -1,5 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { TranslocoService } from '@jsverse/transloco';
 import { AUTH_USER_STORAGE_KEY } from '../../shared/models/auth.model';
 import { environment } from '../../../environments/environment';
@@ -44,11 +46,17 @@ export class LanguageService {
     }
   }
 
-  /** Applied right after login/refresh: the logged-in user's stored preference wins. */
-  applyUserPreference(preferredLanguage?: string | null): void {
-    if (isSupportedLanguage(preferredLanguage)) {
+  /**
+   * Applied right after login/refresh: the logged-in user's stored preference wins.
+   * Returns an observable that only completes once the translation file for that
+   * language has actually loaded, so callers (e.g. a post-login snackbar) can wait
+   * for it instead of racing setActiveLang's async load.
+   */
+  applyUserPreference(preferredLanguage?: string | null): Observable<void> {
+    if (!isSupportedLanguage(preferredLanguage)) return of(undefined);
+    return this.transloco.load(preferredLanguage).pipe(map(() => {
       this.activate(preferredLanguage);
-    }
+    }));
   }
 
   private activate(lang: SupportedLanguage): void {

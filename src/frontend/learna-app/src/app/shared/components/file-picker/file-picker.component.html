@@ -1,0 +1,18 @@
+<div class="file-picker">
+  <input
+    #nativeInput
+    type="file"
+    class="file-picker__input"
+    [multiple]="multiple()"
+    [attr.accept]="accept()"
+    [disabled]="disabled()"
+    [attr.aria-label]="buttonLabel() ?? ('common.chooseFile' | transloco)"
+    (change)="onChange($event)"
+  >
+  <button type="button" mat-stroked-button [disabled]="disabled()" (click)="nativeInput.click()">
+    <mat-icon>attach_file</mat-icon>
+    {{ buttonLabel() ?? ('common.chooseFile' | transloco) }}
+  </button>
+  <span class="file-picker__names" *ngIf="selectedNames().length; else noFile">{{ selectedNames().join(', ') }}</span>
+  <ng-template #noFile><span class="file-picker__names file-picker__names--empty">{{ 'common.noFileChosen' | transloco }}</span></ng-template>
+</div>

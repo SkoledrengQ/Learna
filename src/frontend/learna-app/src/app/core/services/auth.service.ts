@@ -2,7 +2,7 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, catchError, throwError } from 'rxjs';
+import { Observable, tap, catchError, throwError, switchMap, map } from 'rxjs';
 import { LoginRequest, LoginResponse, User, AUTH_USER_STORAGE_KEY } from '../../shared/models/auth.model';
 import { environment } from '../../../environments/environment';
 import { LanguageService } from './language.service';
@@ -43,10 +43,10 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.API_URL}/login`, credentials, {
       withCredentials: true // Important for cookies
     }).pipe(
-      tap(response => {
-        this.setSession(response);
-        this.scheduleTokenRefresh();
-      }),
+      switchMap(response => this.setSession(response).pipe(
+        tap(() => this.scheduleTokenRefresh()),
+        map(() => response)
+      )),
       catchError(error => {
         console.error('Login error:', error);
         return throwError(() => error);
@@ -74,10 +74,10 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.API_URL}/refresh`, {}, {
       withCredentials: true
     }).pipe(
-      tap(response => {
-        this.setSession(response);
-        this.scheduleTokenRefresh();
-      }),
+      switchMap(response => this.setSession(response).pipe(
+        tap(() => this.scheduleTokenRefresh()),
+        map(() => response)
+      )),
       catchError(error => {
         console.error('Token refresh error:', error);
         this.clearSession();
@@ -111,7 +111,7 @@ export class AuthService {
     return roles.some(role => user?.roles.includes(role)) ?? false;
   }
 
-  private setSession(response: LoginResponse): void {
+  private setSession(response: LoginResponse): Observable<void> {
     // Store access token in localStorage
     localStorage.setItem(this.TOKEN_KEY, response.accessToken);
 
@@ -121,11 +121,13 @@ export class AuthService {
     // Update current user signal
     this.currentUserSignal.set(response.user);
 
-    // A logged-in user's preferred language wins over whatever was active pre-login
-    this.languageService.applyUserPreference(response.user.preferredLanguage);
-
     // Re-theme immediately from the login/refresh response, no separate fetch needed
     this.schoolSettingsService.apply(response.schoolSettings);
+
+    // A logged-in user's preferred language wins over whatever was active pre-login.
+    // Callers await this so anything shown right after login (e.g. a welcome snackbar)
+    // is translated in the right language, not whatever was active before the switch.
+    return this.languageService.applyUserPreference(response.user.preferredLanguage);
   }
 
   private clearSession(): void {

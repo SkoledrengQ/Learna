@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, inject, signal } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,10 +13,11 @@ import { FileResource } from '../../models/file-resource.model';
 import { LocalizedDatePipe } from '../../pipes/localized-date.pipe';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { LanguageService } from '../../../core/services/language.service';
+import { FilePickerComponent } from '../file-picker/file-picker.component';
 
 @Component({
   selector: 'app-material-list', standalone: true,
-  imports: [CommonModule, FormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, TranslocoModule, LocalizedDatePipe],
+  imports: [CommonModule, FormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, TranslocoModule, LocalizedDatePipe, FilePickerComponent],
   templateUrl: './material-list.component.html', styleUrl: './material-list.component.scss'
 })
 export class MaterialListComponent implements OnInit {
@@ -32,7 +33,7 @@ export class MaterialListComponent implements OnInit {
   readonly loading = signal(false);
   readonly uploading = signal(false);
   selectedFile: File | null = null;
-  private fileInput: HTMLInputElement | null = null;
+  @ViewChild(FilePickerComponent) private picker?: FilePickerComponent;
   description = '';
 
   ngOnInit(): void { this.load(); }
@@ -41,12 +42,12 @@ export class MaterialListComponent implements OnInit {
     const request = this.targetType === 'lesson' ? this.materials.listLesson(this.targetId) : this.targetType === 'assignment' ? this.materials.listAssignment(this.targetId) : this.materials.listSubjectGroup(this.targetId);
     request.subscribe({ next: files => { this.files.set(files); this.loading.set(false); }, error: () => { this.loading.set(false); this.message('materials.loadFailed'); } });
   }
-  choose(event: Event): void { this.fileInput = event.target as HTMLInputElement; this.selectedFile = this.fileInput.files?.[0] ?? null; }
+  choose(files: File[]): void { this.selectedFile = files[0] ?? null; }
   upload(): void {
     if (!this.selectedFile) return;
     this.uploading.set(true);
     const request = this.targetType === 'lesson' ? this.materials.uploadLesson(this.targetId, this.selectedFile, this.description) : this.targetType === 'assignment' ? this.materials.uploadAssignment(this.targetId, this.selectedFile, this.description) : this.materials.uploadSubjectGroup(this.targetId, this.selectedFile, this.description);
-    request.subscribe({ next: () => { this.selectedFile = null; if (this.fileInput) this.fileInput.value = ''; this.description = ''; this.uploading.set(false); this.message('materials.uploaded'); this.load(); }, error: error => { this.uploading.set(false); this.message(error.error?.code === 'FILE_TOO_LARGE' ? 'materials.tooLarge' : error.error?.code === 'FILE_TYPE_NOT_ALLOWED' ? 'materials.wrongType' : 'materials.uploadFailed'); } });
+    request.subscribe({ next: () => { this.selectedFile = null; this.picker?.clear(); this.description = ''; this.uploading.set(false); this.message('materials.uploaded'); this.load(); }, error: error => { this.uploading.set(false); this.message(error.error?.code === 'FILE_TOO_LARGE' ? 'materials.tooLarge' : error.error?.code === 'FILE_TYPE_NOT_ALLOWED' ? 'materials.wrongType' : 'materials.uploadFailed'); } });
   }
   download(file: FileResource): void { this.materials.download(file); }
   remove(file: FileResource): void {

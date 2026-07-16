@@ -1,7 +1,7 @@
 <section class="materials">
   <h3>{{ 'materials.title' | transloco }}</h3>
   <div class="upload" *ngIf="canUpload">
-    <input #picker type="file" (change)="choose($event)">
+    <app-file-picker (filesSelected)="choose($event)"></app-file-picker>
     <mat-form-field appearance="outline"><mat-label>{{ 'materials.description' | transloco }}</mat-label><input matInput [(ngModel)]="description"></mat-form-field>
     <button mat-flat-button color="primary" [disabled]="!selectedFile || uploading()" (click)="upload()"><mat-icon>upload</mat-icon>{{ 'materials.upload' | transloco }}</button>
   </div>

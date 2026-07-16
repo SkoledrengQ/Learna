@@ -1,0 +1,13 @@
+.filter-panel__mobile {
+  margin-bottom: var(--app-space-4, 16px);
+}
+
+.filter-panel__mobile mat-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-panel__content--flat {
+  margin-bottom: var(--app-space-4, 16px);
+}

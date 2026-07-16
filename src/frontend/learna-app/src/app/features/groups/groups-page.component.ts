@@ -30,8 +30,9 @@ import { EmptyStateComponent } from '../../shared/components/empty-state/empty-s
 import { LoadingStateComponent } from '../../shared/components/loading-state/loading-state.component';
 import { StatusChipComponent } from '../../shared/components/status-chip/status-chip.component';
 import { assignmentStatusVariant, submissionStatusVariant, gradeStatusVariant } from '../../shared/utils/status-variant.util';
+import { FilePickerComponent } from '../../shared/components/file-picker/file-picker.component';
 
-@Component({selector:'app-groups-page',standalone:true,imports:[CommonModule,FormsModule,MatButtonModule,MatCardModule,MatFormFieldModule,MatIconModule,MatInputModule,MatSelectModule,MatTabsModule,TranslocoModule,MaterialListComponent,LocalizedDatePipe,PageHeaderComponent,EmptyStateComponent,LoadingStateComponent,StatusChipComponent],template:`
+@Component({selector:'app-groups-page',standalone:true,imports:[CommonModule,FormsModule,MatButtonModule,MatCardModule,MatFormFieldModule,MatIconModule,MatInputModule,MatSelectModule,MatTabsModule,TranslocoModule,MaterialListComponent,LocalizedDatePipe,PageHeaderComponent,EmptyStateComponent,LoadingStateComponent,StatusChipComponent,FilePickerComponent],template:`
 <main class="page">
   <app-page-header [title]="'groups.title'|transloco" />
   <app-loading-state *ngIf="loading()" [message]="'common.loading'|transloco" /><app-empty-state *ngIf="!loading()&&!groups().length" icon="groups" [message]="'groups.empty'|transloco" />
@@ -47,7 +48,7 @@ import { assignmentStatusVariant, submissionStatusVariant, gradeStatusVariant } 
             <mat-form-field><mat-label>{{'assignments.fields.description'|transloco}}</mat-label><textarea matInput [(ngModel)]="form.description" rows="4"></textarea></mat-form-field>
             <div class="form-row"><mat-form-field><mat-label>{{'assignments.fields.startDate'|transloco}}</mat-label><input matInput type="date" [(ngModel)]="form.startDate"></mat-form-field><mat-form-field><mat-label>{{'assignments.fields.deadlineDate'|transloco}}</mat-label><input matInput type="date" [(ngModel)]="form.deadlineDate" required></mat-form-field><mat-form-field><mat-label>{{'assignments.fields.deadlineTime'|transloco}}</mat-label><input matInput type="time" [(ngModel)]="form.deadlineTime" required></mat-form-field></div>
             <mat-form-field><mat-label>{{'assignments.fields.latePolicy'|transloco}}</mat-label><mat-select [(ngModel)]="form.latePolicy"><mat-option value="Block">{{'assignments.policies.Block'|transloco}}</mat-option><mat-option value="AllowMarkLate">{{'assignments.policies.AllowMarkLate'|transloco}}</mat-option></mat-select></mat-form-field>
-            <label class="picker">{{'assignments.fields.attachments'|transloco}} <input type="file" multiple (change)="chooseAttachments($event)"></label><span *ngIf="queuedFiles.length">{{queuedFiles.length}} {{'assignments.filesSelected'|transloco}}</span>
+            <div class="picker"><label>{{'assignments.fields.attachments'|transloco}}</label><app-file-picker [multiple]="true" (filesSelected)="chooseAttachments($event)"></app-file-picker></div>
             <div class="actions"><button mat-button (click)="cancelEdit()">{{'common.cancel'|transloco}}</button><button mat-flat-button color="primary" [disabled]="saving()||!form.title.trim()||!form.deadlineDate||!form.deadlineTime" (click)="save()">{{'common.save'|transloco}}</button></div>
           </mat-card>
           <p class="notice" *ngIf="!assignments().length">{{'assignments.emptyTeacher'|transloco}}</p>
@@ -81,7 +82,7 @@ export class GroupsPageComponent {
   beginCreate():void{this.form=this.blank();this.editId.set(null);this.queuedFiles=[];this.editing.set(true)}
   beginEdit(a:Assignment):void{this.form={title:a.title,description:a.description,startDate:a.startDate,deadlineDate:a.deadlineDate,deadlineTime:a.deadlineTime.slice(0,5),latePolicy:a.latePolicy};this.editId.set(a.id);this.queuedFiles=[];this.editing.set(true)}
   cancelEdit():void{this.editing.set(false);this.editId.set(null);this.queuedFiles=[]}
-  chooseAttachments(e:Event):void{this.queuedFiles=Array.from((e.target as HTMLInputElement).files??[])}
+  chooseAttachments(files:File[]):void{this.queuedFiles=files}
   save():void{const gid=this.selectedGroup()?.id;if(!gid)return;this.saving.set(true);const request=this.editId()?this.service.update(this.editId()!,this.form):this.service.create(gid,this.form);request.subscribe({next:a=>{const uploads=this.queuedFiles.map(f=>this.materials.uploadAssignment(a.id,f,''));(uploads.length?forkJoin(uploads):of([])).subscribe({next:()=>{this.saving.set(false);this.cancelEdit();this.message('assignments.saved');this.load()},error:()=>{this.saving.set(false);this.message('materials.uploadFailed');this.load()}})},error:()=>{this.saving.set(false);this.message('assignments.saveFailed')}})}
   confirmPublish(a:Assignment):void{this.confirm('assignments.publishTitle','assignments.publishConfirm','assignments.publish',()=>this.service.publish(a.id).subscribe(()=>this.load()))}
   confirmClose(a:Assignment):void{this.confirm('assignments.closeTitle','assignments.closeConfirm','assignments.close',()=>this.service.close(a.id).subscribe(()=>this.load()))}

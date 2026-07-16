@@ -1,0 +1,28 @@
+.file-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.file-picker__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.file-picker__names {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.875rem;
+  word-break: break-word;
+}
+
+.file-picker__names--empty {
+  font-style: italic;
+}

@@ -8,11 +8,13 @@ using Learna.Infrastructure.Data;
 using Learna.Infrastructure.Repositories;
 using Learna.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Learna.Tests;
@@ -32,6 +34,16 @@ public class UserAccountManagementTests
         new UsersController(new UserRepository(db), new StudentRepository(db), new TeacherRepository(db), new GuardianRepository(db), new RefreshTokenRepository(db)),
         currentUserId,
         "Admin");
+
+    private sealed class FakeWebHostEnvironment : IWebHostEnvironment
+    {
+        public string EnvironmentName { get; set; } = "Development";
+        public string ApplicationName { get; set; } = "Learna.Tests";
+        public string WebRootPath { get; set; } = "";
+        public IFileProvider WebRootFileProvider { get; set; } = null!;
+        public string ContentRootPath { get; set; } = "";
+        public IFileProvider ContentRootFileProvider { get; set; } = null!;
+    }
 
     private static T WithUser<T>(T controller, int userId, string role) where T : ControllerBase
     {
@@ -141,7 +153,7 @@ public class UserAccountManagementTests
         db.Users.Add(user);
         await db.SaveChangesAsync();
         var auth = new AuthService(new UserRepository(db), new RefreshTokenRepository(db), Tokens());
-        var controller = WithUser(new AuthController(auth, new SchoolSettingsRepository(db), NullLogger<AuthController>.Instance), user.Id, "Student");
+        var controller = WithUser(new AuthController(auth, new SchoolSettingsRepository(db), NullLogger<AuthController>.Instance, new FakeWebHostEnvironment()), user.Id, "Student");
 
         (await controller.ChangePassword(new ChangePasswordRequestDto("wrong", "NewPass1!"))).Should().BeOfType<BadRequestObjectResult>();
         (await controller.ChangePassword(new ChangePasswordRequestDto("OldPass1!", "short"))).Should().BeOfType<BadRequestObjectResult>();
