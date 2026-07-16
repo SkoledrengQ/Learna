@@ -199,7 +199,7 @@
     "togglePasswordVisibility": "Toggle password visibility",
     "login": "Login",
     "demoCredentials": "Demo Credentials:",
-    "welcomeBack": "Welcome back, {{email}}!",
+    "welcomeBack": "Welcome back, {{name}}!",
     "invalidCredentials": "Invalid email or password",
     "emailRequired": "Email is required",
     "emailInvalid": "Please enter a valid email",
@@ -334,6 +334,7 @@
     "subject": "Subject",
     "recent": "Recent attendance",
     "lesson": "Lesson",
+    "noDataYet": "No data yet",
     "statuses": { "Present": "Present", "Absent": "Absent", "Late": "Late", "ExcusedAbsence": "Excused absence", "Sick": "Sick", "ApprovedLeave": "Approved leave" }
   },
   "users": {

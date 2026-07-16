@@ -20,7 +20,8 @@ public record UserDto(
     int? StudentId,
     int? GuardianId,
     int? TeacherId,
-    string? PreferredLanguage
+    string? PreferredLanguage,
+    string? GreetingName
 );
 
 public record RefreshTokenRequestDto(

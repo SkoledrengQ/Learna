@@ -82,9 +82,18 @@ public class AuthService : IAuthService
                 StudentId = user.StudentId,
                 GuardianId = user.GuardianId,
                 TeacherId = user.TeacherId,
-                PreferredLanguage = user.PreferredLanguage
+                PreferredLanguage = user.PreferredLanguage,
+                GreetingName = GreetingNameFor(user)
             }
         };
+    }
+
+    /// Nickname if present, else first name, of the linked Teacher/Student/Guardian; falls back to the user's own email for unlinked accounts.
+    private static string GreetingNameFor(User user)
+    {
+        var name = user.Teacher?.Name ?? user.Student?.Name ?? user.Guardian?.Name;
+        if (name == null) return user.Email;
+        return !string.IsNullOrWhiteSpace(name.Nickname) ? name.Nickname! : name.FirstName;
     }
 
     public async Task<AuthResult> RefreshTokenAsync(string refreshToken)
@@ -142,7 +151,8 @@ public class AuthService : IAuthService
                 StudentId = user.StudentId,
                 GuardianId = user.GuardianId,
                 TeacherId = user.TeacherId,
-                PreferredLanguage = user.PreferredLanguage
+                PreferredLanguage = user.PreferredLanguage,
+                GreetingName = GreetingNameFor(user)
             }
         };
     }
@@ -187,7 +197,8 @@ public class AuthService : IAuthService
             StudentId = user.StudentId,
             GuardianId = user.GuardianId,
             TeacherId = user.TeacherId,
-            PreferredLanguage = user.PreferredLanguage
+            PreferredLanguage = user.PreferredLanguage,
+            GreetingName = GreetingNameFor(user)
         };
     }
 }

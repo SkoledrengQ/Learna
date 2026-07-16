@@ -64,7 +64,8 @@ public class AuthController : ControllerBase
                 result.User.StudentId,
                 result.User.GuardianId,
                 result.User.TeacherId,
-                result.User.PreferredLanguage
+                result.User.PreferredLanguage,
+                result.User.GreetingName
             ),
             await GetSchoolSettingsDtoAsync()
         );
@@ -103,7 +104,8 @@ public class AuthController : ControllerBase
                 result.User.StudentId,
                 result.User.GuardianId,
                 result.User.TeacherId,
-                result.User.PreferredLanguage
+                result.User.PreferredLanguage,
+                result.User.GreetingName
             ),
             await GetSchoolSettingsDtoAsync()
         );
@@ -158,7 +160,7 @@ public class AuthController : ControllerBase
         var teacherIdClaim = User.FindFirstValue("TeacherId");
         var teacherId = teacherIdClaim != null ? int.Parse(teacherIdClaim) : (int?)null;
 
-        return Ok(new UserDto(userId, email, roles, studentId, guardianId, teacherId, null));
+        return Ok(new UserDto(userId, email, roles, studentId, guardianId, teacherId, null, null));
     }
 
     /// Self-service: any authenticated role may update their own language preference.
@@ -179,6 +181,6 @@ public class AuthController : ControllerBase
             return NotFound();
         }
 
-        return Ok(new UserDto(updatedUser.Id, updatedUser.Email, updatedUser.Roles, updatedUser.StudentId, updatedUser.GuardianId, updatedUser.TeacherId, updatedUser.PreferredLanguage));
+        return Ok(new UserDto(updatedUser.Id, updatedUser.Email, updatedUser.Roles, updatedUser.StudentId, updatedUser.GuardianId, updatedUser.TeacherId, updatedUser.PreferredLanguage, updatedUser.GreetingName));
     }
 }

@@ -199,7 +199,7 @@
     "togglePasswordVisibility": "แสดง/ซ่อนรหัสผ่าน",
     "login": "เข้าสู่ระบบ",
     "demoCredentials": "ข้อมูลทดลองใช้งาน:",
-    "welcomeBack": "ยินดีต้อนรับกลับ, {{email}}!",
+    "welcomeBack": "ยินดีต้อนรับกลับ, {{name}}!",
     "invalidCredentials": "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
     "emailRequired": "กรุณากรอกอีเมล",
     "emailInvalid": "กรุณากรอกอีเมลให้ถูกต้อง",
@@ -334,6 +334,7 @@
     "subject": "วิชา",
     "recent": "การเข้าเรียนล่าสุด",
     "lesson": "คาบเรียน",
+    "noDataYet": "ยังไม่มีข้อมูล",
     "statuses": { "Present": "มาเรียน", "Absent": "ขาดเรียน", "Late": "มาสาย", "ExcusedAbsence": "ลาโดยได้รับอนุญาต", "Sick": "ลาป่วย", "ApprovedLeave": "ลาอนุมัติ" }
   },
   "users": {

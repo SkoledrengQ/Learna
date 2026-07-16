@@ -44,7 +44,7 @@
       <app-dashboard-card [title]="'dashboard.attendanceSummary' | transloco" icon="fact_check" [link]="['/attendance']" [linkLabel]="'dashboard.viewAttendance' | transloco">
         <app-loading-state *ngIf="studentLoading()" [message]="'common.loading' | transloco" />
         <div class="attendance-stat" *ngIf="!studentLoading() && attendanceSummary() as summary">
-          <span class="attendance-stat__value">{{ summary.presencePercentage }}%</span>
+          <span class="attendance-stat__value">{{ summary.recordedLessons ? (summary.presencePercentage + '%') : ('attendance.noDataYet' | transloco) }}</span>
           <span class="attendance-stat__label">{{ 'dashboard.presenceRate' | transloco }}</span>
         </div>
       </app-dashboard-card>
@@ -153,7 +153,7 @@
       <app-dashboard-card [title]="'dashboard.attendanceSummary' | transloco" icon="fact_check" [link]="['/attendance']" [linkLabel]="'dashboard.viewAttendance' | transloco">
         <app-loading-state *ngIf="parentLoading()" [message]="'common.loading' | transloco" />
         <div class="attendance-stat" *ngIf="!parentLoading() && childAttendance() as summary">
-          <span class="attendance-stat__value">{{ summary.presencePercentage }}%</span>
+          <span class="attendance-stat__value">{{ summary.recordedLessons ? (summary.presencePercentage + '%') : ('attendance.noDataYet' | transloco) }}</span>
           <span class="attendance-stat__label">{{ 'dashboard.presenceRate' | transloco }}</span>
         </div>
       </app-dashboard-card>

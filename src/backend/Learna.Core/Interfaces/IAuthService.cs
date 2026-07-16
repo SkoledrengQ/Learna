@@ -28,4 +28,7 @@ public class UserInfo
     public int? GuardianId { get; set; }
     public int? TeacherId { get; set; }
     public string? PreferredLanguage { get; set; }
+
+    /// Nickname if set, else first name, of the linked Teacher/Student/Guardian; falls back to email for unlinked (e.g. pure admin) accounts.
+    public string? GreetingName { get; set; }
 }

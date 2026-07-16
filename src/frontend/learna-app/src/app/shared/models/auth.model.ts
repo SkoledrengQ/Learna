@@ -22,6 +22,7 @@ export interface User {
   teacherId?: number;
   isActive: boolean;
   preferredLanguage?: string | null;
+  greetingName?: string | null;
 }
 
 /** localStorage key for the persisted current user; shared by AuthService and LanguageService. */

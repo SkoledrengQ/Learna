@@ -80,7 +80,7 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         this.isLoading.set(false);
         this.snackBar.open(
-          this.transloco.translate('auth.welcomeBack', { email: response.user.email }),
+          this.transloco.translate('auth.welcomeBack', { name: response.user.greetingName || response.user.email }),
           this.transloco.translate('common.close'),
           { duration: 3000 }
         );
