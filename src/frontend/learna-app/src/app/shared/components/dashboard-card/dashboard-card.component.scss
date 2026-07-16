@@ -1,0 +1,38 @@
+.dashboard-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.dashboard-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 16px 0;
+}
+
+.dashboard-card__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.dashboard-card__link {
+  font-size: 0.85rem;
+  color: var(--mat-sys-primary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.dashboard-card__link:hover {
+  text-decoration: underline;
+}
+
+.dashboard-card__body {
+  padding: 12px 16px 16px;
+  flex: 1;
+}

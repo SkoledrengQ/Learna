@@ -12,6 +12,10 @@
       </div>
 
       <mat-nav-list class="app-shell__nav">
+        <a mat-list-item routerLink="/dashboard" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
+          <mat-icon matListItemIcon>dashboard</mat-icon>
+          <span matListItemTitle>{{ 'nav.dashboard' | transloco }}</span>
+        </a>
         <h3 matSubheader>{{ 'nav.personalSection' | transloco }}</h3>
         <a mat-list-item routerLink="/schedule" routerLinkActive="app-shell__nav-item--active" (click)="onNavItemClick()">
           <mat-icon matListItemIcon>calendar_month</mat-icon>

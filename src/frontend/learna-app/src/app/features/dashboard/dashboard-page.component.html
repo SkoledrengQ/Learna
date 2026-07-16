@@ -1,0 +1,218 @@
+<main class="dashboard-page">
+  <app-page-header [title]="'dashboard.title' | transloco" />
+
+  <ng-container [ngSwitch]="role()">
+    <!-- ==================== STUDENT ==================== -->
+    <div class="dashboard-grid" *ngSwitchCase="'student'">
+      <app-dashboard-card class="dashboard-grid__today" [title]="'dashboard.todaySchedule' | transloco" icon="calendar_today" [link]="['/schedule']" [linkLabel]="'dashboard.viewSchedule' | transloco">
+        <app-loading-state *ngIf="studentLoading()" [message]="'common.loading' | transloco" />
+        <app-empty-state *ngIf="!studentLoading() && !todayLessons().length" icon="event_available" [message]="'dashboard.noLessonsToday' | transloco" />
+        <div class="lesson-row" *ngFor="let lesson of todayLessons()">
+          <div class="lesson-row__time">{{ lesson.startTime.slice(0,5) }}&ndash;{{ lesson.endTime.slice(0,5) }}</div>
+          <div class="lesson-row__info">
+            <strong>{{ lesson.subjectGroupName }}</strong>
+            <span *ngIf="lesson.roomName">{{ lesson.roomName }}</span>
+          </div>
+          <app-status-chip [variant]="lessonStatusVariant(lesson.status, lesson.isModified)">
+            {{ (lesson.status === 'Cancelled' ? 'admin.lessons.statusCancelled' : 'admin.lessons.statusScheduled') | transloco }}
+          </app-status-chip>
+        </div>
+      </app-dashboard-card>
+
+      <app-dashboard-card [title]="'dashboard.upcomingDeadlines' | transloco" icon="assignment" [link]="['/assignments']" [linkLabel]="'dashboard.viewAssignments' | transloco">
+        <app-loading-state *ngIf="studentLoading()" [message]="'common.loading' | transloco" />
+        <div class="dashboard-alert" *ngIf="!studentLoading() && missingAssignments().length">
+          <mat-icon>warning</mat-icon>
+          {{ 'dashboard.missingAssignmentsAlert' | transloco:{count: missingAssignments().length} }}
+        </div>
+        <app-empty-state *ngIf="!studentLoading() && !upcomingAssignments().length && !missingAssignments().length" icon="assignment_turned_in" [message]="'dashboard.noUpcomingDeadlines' | transloco" />
+        <a class="list-row" *ngFor="let a of upcomingAssignments()" [routerLink]="['/assignments', a.id]">
+          <div class="list-row__info"><strong>{{ a.title }}</strong><span>{{ a.groupName }}</span></div>
+          <span class="list-row__meta">{{ deadline(a) | localizedDate:language.activeLang():'d MMM' }} {{ a.effectiveDeadlineTime.slice(0,5) }}</span>
+        </a>
+      </app-dashboard-card>
+
+      <app-dashboard-card [title]="'dashboard.recentGrades' | transloco" icon="grade" [link]="['/grades']" [linkLabel]="'dashboard.viewGrades' | transloco">
+        <app-loading-state *ngIf="studentLoading()" [message]="'common.loading' | transloco" />
+        <app-empty-state *ngIf="!studentLoading() && !recentGrades().length" icon="grade" [message]="'dashboard.noRecentGrades' | transloco" />
+        <div class="list-row" *ngFor="let g of recentGrades()">
+          <span class="list-row__info">{{ g.category }}</span>
+          <app-status-chip [variant]="gradeStatusVariant(g.status)">{{ g.score }}/{{ g.maxScore }}</app-status-chip>
+        </div>
+      </app-dashboard-card>
+
+      <app-dashboard-card [title]="'dashboard.attendanceSummary' | transloco" icon="fact_check" [link]="['/attendance']" [linkLabel]="'dashboard.viewAttendance' | transloco">
+        <app-loading-state *ngIf="studentLoading()" [message]="'common.loading' | transloco" />
+        <div class="attendance-stat" *ngIf="!studentLoading() && attendanceSummary() as summary">
+          <span class="attendance-stat__value">{{ summary.presencePercentage }}%</span>
+          <span class="attendance-stat__label">{{ 'dashboard.presenceRate' | transloco }}</span>
+        </div>
+      </app-dashboard-card>
+
+      <app-dashboard-card [title]="'dashboard.latestAnnouncements' | transloco" icon="campaign" [link]="['/announcements']" [linkLabel]="'dashboard.viewAnnouncements' | transloco">
+        <app-empty-state *ngIf="!recentAnnouncements().length" icon="campaign" [message]="'dashboard.noAnnouncements' | transloco" />
+        <a class="list-row" [class.list-row--unread]="!item.isRead" *ngFor="let item of recentAnnouncements()" [routerLink]="['/announcements']">
+          <span class="list-row__info">{{ item.title }}</span>
+          <app-status-chip variant="brand" *ngIf="!item.isRead">{{ 'announcements.unread' | transloco }}</app-status-chip>
+        </a>
+      </app-dashboard-card>
+    </div>
+
+    <!-- ==================== TEACHER ==================== -->
+    <div class="dashboard-grid" *ngSwitchCase="'teacher'">
+      <app-dashboard-card class="dashboard-grid__today" [title]="'dashboard.todayTeachingSchedule' | transloco" icon="calendar_today" [link]="['/schedule']" [linkLabel]="'dashboard.viewSchedule' | transloco">
+        <app-loading-state *ngIf="teacherLoading()" [message]="'common.loading' | transloco" />
+        <app-empty-state *ngIf="!teacherLoading() && !teacherTodayLessons().length" icon="event_available" [message]="'dashboard.noLessonsToday' | transloco" />
+        <div class="lesson-row" *ngFor="let lesson of teacherTodayLessons()">
+          <div class="lesson-row__time">{{ lesson.startTime.slice(0,5) }}&ndash;{{ lesson.endTime.slice(0,5) }}</div>
+          <div class="lesson-row__info">
+            <strong>{{ lesson.subjectGroupName }}</strong>
+            <span *ngIf="lesson.roomName">{{ lesson.roomName }}</span>
+          </div>
+          <app-status-chip [variant]="lessonStatusVariant(lesson.status, lesson.isModified)">
+            {{ (lesson.status === 'Cancelled' ? 'admin.lessons.statusCancelled' : 'admin.lessons.statusScheduled') | transloco }}
+          </app-status-chip>
+        </div>
+      </app-dashboard-card>
+
+      <app-dashboard-card [title]="'dashboard.attendanceNeeded' | transloco" icon="fact_check">
+        <app-loading-state *ngIf="teacherLoading()" [message]="'common.loading' | transloco" />
+        <app-empty-state *ngIf="!teacherLoading() && !teacherMissingAttendanceLessons().length" icon="task_alt" [message]="'dashboard.noAttendanceNeeded' | transloco" />
+        <div class="list-row" *ngFor="let lesson of teacherMissingAttendanceLessons()">
+          <div class="list-row__info">
+            <strong>{{ lesson.subjectGroupName }}</strong>
+            <span>{{ lesson.date | localizedDate:language.activeLang():'d MMM' }} &middot; {{ lesson.startTime.slice(0,5) }}</span>
+          </div>
+          <button mat-button color="primary" (click)="openAttendance(lesson)">{{ 'attendance.viewOrEdit' | transloco }}</button>
+        </div>
+      </app-dashboard-card>
+
+      <app-dashboard-card [title]="'dashboard.awaitingGrading' | transloco" icon="edit_note" [link]="['/groups']" [linkLabel]="'dashboard.viewGroups' | transloco">
+        <app-loading-state *ngIf="teacherLoading()" [message]="'common.loading' | transloco" />
+        <div class="attendance-stat" *ngIf="!teacherLoading()">
+          <span class="attendance-stat__value">{{ teacherAwaitingGradingCount() }}</span>
+          <span class="attendance-stat__label">{{ 'dashboard.awaitingGradingLabel' | transloco }}</span>
+        </div>
+        <app-empty-state *ngIf="!teacherLoading() && !teacherRecentSubmissions().length" icon="assignment_turned_in" [message]="'dashboard.noRecentSubmissions' | transloco" />
+        <div class="list-row" *ngFor="let s of teacherRecentSubmissions()">
+          <div class="list-row__info"><strong>{{ s.studentName }}</strong><span>{{ s.assignmentTitle }} &middot; {{ s.subjectGroupName }}</span></div>
+          <app-status-chip [variant]="submissionStatusVariant(s.isLate ? 'Late' : 'Submitted')">{{ (s.isLate ? 'assignments.filters.Late' : 'assignments.onTime') | transloco }}</app-status-chip>
+        </div>
+      </app-dashboard-card>
+
+      <app-dashboard-card [title]="'dashboard.latestAnnouncements' | transloco" icon="campaign" [link]="['/announcements']" [linkLabel]="'dashboard.viewAnnouncements' | transloco">
+        <app-empty-state *ngIf="!recentAnnouncements().length" icon="campaign" [message]="'dashboard.noAnnouncements' | transloco" />
+        <a class="list-row" [class.list-row--unread]="!item.isRead" *ngFor="let item of recentAnnouncements()" [routerLink]="['/announcements']">
+          <span class="list-row__info">{{ item.title }}</span>
+          <app-status-chip variant="brand" *ngIf="!item.isRead">{{ 'announcements.unread' | transloco }}</app-status-chip>
+        </a>
+      </app-dashboard-card>
+    </div>
+
+    <!-- ==================== PARENT ==================== -->
+    <div class="dashboard-grid" *ngSwitchCase="'parent'">
+      <div class="dashboard-grid__full"><app-child-selector></app-child-selector></div>
+
+      <app-dashboard-card class="dashboard-grid__today" [title]="'dashboard.todaySchedule' | transloco" icon="calendar_today" [link]="['/schedule']" [linkLabel]="'dashboard.viewSchedule' | transloco">
+        <app-loading-state *ngIf="parentLoading()" [message]="'common.loading' | transloco" />
+        <app-empty-state *ngIf="!parentLoading() && !childTodayLessons().length" icon="event_available" [message]="'dashboard.noLessonsToday' | transloco" />
+        <div class="lesson-row" *ngFor="let lesson of childTodayLessons()">
+          <div class="lesson-row__time">{{ lesson.startTime.slice(0,5) }}&ndash;{{ lesson.endTime.slice(0,5) }}</div>
+          <div class="lesson-row__info">
+            <strong>{{ lesson.subjectGroupName }}</strong>
+            <span *ngIf="lesson.roomName">{{ lesson.roomName }}</span>
+          </div>
+          <app-status-chip [variant]="lessonStatusVariant(lesson.status, lesson.isModified)">
+            {{ (lesson.status === 'Cancelled' ? 'admin.lessons.statusCancelled' : 'admin.lessons.statusScheduled') | transloco }}
+          </app-status-chip>
+        </div>
+      </app-dashboard-card>
+
+      <app-dashboard-card [title]="'dashboard.upcomingDeadlines' | transloco" icon="assignment" [link]="['/assignments']" [linkLabel]="'dashboard.viewAssignments' | transloco">
+        <app-loading-state *ngIf="parentLoading()" [message]="'common.loading' | transloco" />
+        <div class="dashboard-alert" *ngIf="!parentLoading() && childMissingAssignments().length">
+          <mat-icon>warning</mat-icon>
+          {{ 'dashboard.missingAssignmentsAlert' | transloco:{count: childMissingAssignments().length} }}
+        </div>
+        <app-empty-state *ngIf="!parentLoading() && !childUpcomingAssignments().length && !childMissingAssignments().length" icon="assignment_turned_in" [message]="'dashboard.noUpcomingDeadlines' | transloco" />
+        <div class="list-row" *ngFor="let a of childUpcomingAssignments()">
+          <div class="list-row__info"><strong>{{ a.title }}</strong><span>{{ a.groupName }}</span></div>
+          <span class="list-row__meta">{{ deadline(a) | localizedDate:language.activeLang():'d MMM' }} {{ a.effectiveDeadlineTime.slice(0,5) }}</span>
+        </div>
+      </app-dashboard-card>
+
+      <app-dashboard-card [title]="'dashboard.recentGrades' | transloco" icon="grade" [link]="['/grades']" [linkLabel]="'dashboard.viewGrades' | transloco">
+        <app-loading-state *ngIf="parentLoading()" [message]="'common.loading' | transloco" />
+        <app-empty-state *ngIf="!parentLoading() && !childRecentGrades().length" icon="grade" [message]="'dashboard.noRecentGrades' | transloco" />
+        <div class="list-row" *ngFor="let g of childRecentGrades()">
+          <span class="list-row__info">{{ g.category }}</span>
+          <app-status-chip [variant]="gradeStatusVariant(g.status)">{{ g.score }}/{{ g.maxScore }}</app-status-chip>
+        </div>
+      </app-dashboard-card>
+
+      <app-dashboard-card [title]="'dashboard.attendanceSummary' | transloco" icon="fact_check" [link]="['/attendance']" [linkLabel]="'dashboard.viewAttendance' | transloco">
+        <app-loading-state *ngIf="parentLoading()" [message]="'common.loading' | transloco" />
+        <div class="attendance-stat" *ngIf="!parentLoading() && childAttendance() as summary">
+          <span class="attendance-stat__value">{{ summary.presencePercentage }}%</span>
+          <span class="attendance-stat__label">{{ 'dashboard.presenceRate' | transloco }}</span>
+        </div>
+      </app-dashboard-card>
+
+      <app-dashboard-card [title]="'dashboard.latestAnnouncements' | transloco" icon="campaign" [link]="['/announcements']" [linkLabel]="'dashboard.viewAnnouncements' | transloco">
+        <app-empty-state *ngIf="!recentAnnouncements().length" icon="campaign" [message]="'dashboard.noAnnouncements' | transloco" />
+        <a class="list-row" [class.list-row--unread]="!item.isRead" *ngFor="let item of recentAnnouncements()" [routerLink]="['/announcements']">
+          <span class="list-row__info">{{ item.title }}</span>
+          <app-status-chip variant="brand" *ngIf="!item.isRead">{{ 'announcements.unread' | transloco }}</app-status-chip>
+        </a>
+      </app-dashboard-card>
+    </div>
+
+    <!-- ==================== ADMIN ==================== -->
+    <div class="dashboard-grid" *ngSwitchCase="'admin'">
+      <app-dashboard-card class="dashboard-grid__today" [title]="'dashboard.schoolOverview' | transloco" icon="school">
+        <app-loading-state *ngIf="adminLoading()" [message]="'common.loading' | transloco" />
+        <div class="stat-grid" *ngIf="!adminLoading() && adminDashboard() as d">
+          <div class="stat-tile"><span class="stat-tile__value">{{ d.studentCount }}</span><span class="stat-tile__label">{{ 'nav.students' | transloco }}</span></div>
+          <div class="stat-tile"><span class="stat-tile__value">{{ d.teacherCount }}</span><span class="stat-tile__label">{{ 'nav.teachers' | transloco }}</span></div>
+          <div class="stat-tile"><span class="stat-tile__value">{{ d.classCount }}</span><span class="stat-tile__label">{{ 'nav.classes' | transloco }}</span></div>
+          <div class="stat-tile"><span class="stat-tile__value">{{ d.subjectGroupCount }}</span><span class="stat-tile__label">{{ 'nav.subjectGroups' | transloco }}</span></div>
+        </div>
+      </app-dashboard-card>
+
+      <app-dashboard-card [title]="'dashboard.todayLessonsCount' | transloco" icon="event" [link]="['/admin/lessons']" [linkLabel]="'dashboard.viewLessons' | transloco">
+        <app-loading-state *ngIf="adminLoading()" [message]="'common.loading' | transloco" />
+        <div class="attendance-stat" *ngIf="!adminLoading() && adminDashboard() as d">
+          <span class="attendance-stat__value">{{ d.todayLessonCount }}</span>
+          <span class="attendance-stat__label">{{ 'dashboard.todayLessonsLabel' | transloco }}</span>
+        </div>
+      </app-dashboard-card>
+
+      <app-dashboard-card [title]="'dashboard.missingAttendanceSchoolWide' | transloco" icon="fact_check" [link]="['/admin/lessons']" [linkLabel]="'dashboard.viewLessons' | transloco">
+        <app-loading-state *ngIf="adminLoading()" [message]="'common.loading' | transloco" />
+        <div class="attendance-stat" *ngIf="!adminLoading() && adminDashboard() as d">
+          <span class="attendance-stat__value">{{ d.missingAttendanceCount }}</span>
+          <span class="attendance-stat__label">{{ 'dashboard.missingAttendanceLabel' | transloco }}</span>
+        </div>
+      </app-dashboard-card>
+
+      <app-dashboard-card [title]="'dashboard.latestAnnouncements' | transloco" icon="campaign" [link]="['/announcements']" [linkLabel]="'dashboard.viewAnnouncements' | transloco">
+        <app-empty-state *ngIf="!recentAnnouncements().length" icon="campaign" [message]="'dashboard.noAnnouncements' | transloco" />
+        <a class="list-row" [class.list-row--unread]="!item.isRead" *ngFor="let item of recentAnnouncements()" [routerLink]="['/announcements']">
+          <span class="list-row__info">{{ item.title }}</span>
+          <app-status-chip variant="brand" *ngIf="!item.isRead">{{ 'announcements.unread' | transloco }}</app-status-chip>
+        </a>
+      </app-dashboard-card>
+
+      <app-dashboard-card [title]="'dashboard.quickLinks' | transloco" icon="link">
+        <div class="quick-links">
+          <a mat-stroked-button [routerLink]="['/admin/users']"><mat-icon>manage_accounts</mat-icon>{{ 'nav.users' | transloco }}</a>
+          <a mat-stroked-button [routerLink]="['/admin/settings']"><mat-icon>settings</mat-icon>{{ 'nav.settings' | transloco }}</a>
+          <a mat-stroked-button [routerLink]="['/admin/schedule']"><mat-icon>calendar_month</mat-icon>{{ 'nav.adminSchedule' | transloco }}</a>
+        </div>
+      </app-dashboard-card>
+    </div>
+
+    <!-- ==================== NO LINK (defensive fallback) ==================== -->
+    <app-empty-state *ngSwitchCase="'none'" icon="dashboard" [message]="'dashboard.noDashboard' | transloco" />
+  </ng-container>
+</main>

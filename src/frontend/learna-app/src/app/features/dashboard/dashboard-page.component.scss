@@ -1,0 +1,146 @@
+.dashboard-page {
+  max-width: 1400px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--app-space-4, 16px);
+  align-items: start;
+}
+
+.dashboard-grid__full {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 899.98px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Today's schedule is the most time-critical card - keep it first in the stack. */
+  .dashboard-grid__today {
+    order: -1;
+  }
+}
+
+.lesson-row,
+.list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  text-decoration: none;
+  color: inherit;
+}
+
+.lesson-row:last-child,
+.list-row:last-child {
+  border-bottom: none;
+}
+
+.lesson-row__time {
+  font-variant-numeric: tabular-nums;
+  color: var(--mat-sys-on-surface-variant);
+  white-space: nowrap;
+}
+
+.lesson-row__info,
+.list-row__info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.lesson-row__info span,
+.list-row__info span {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.85rem;
+}
+
+.list-row__meta {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.list-row--unread {
+  font-weight: 600;
+}
+
+a.list-row {
+  cursor: pointer;
+}
+
+.dashboard-alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-radius: var(--mat-sys-corner-medium);
+  background: color-mix(in srgb, var(--mat-sys-error) 12%, transparent);
+  color: var(--mat-sys-error);
+  font-size: 0.9rem;
+}
+
+.attendance-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+}
+
+.attendance-stat__value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.attendance-stat__label {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.stat-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 8px;
+  border-radius: var(--mat-sys-corner-medium);
+  background: var(--mat-sys-surface-container);
+}
+
+.stat-tile__value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-tile__label {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.8rem;
+  margin-top: 4px;
+  text-align: center;
+}
+
+.quick-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quick-links a {
+  justify-content: flex-start;
+  gap: 8px;
+}

@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   isLoading = signal(false);
   hidePassword = signal(true);
-  returnUrl: string = '/schedule';
+  returnUrl: string = '/dashboard';
 
   protected readonly schoolName = this.schoolSettings.schoolName;
   protected readonly schoolInitial = computed(() => this.schoolName().trim().charAt(0).toUpperCase() || 'L');
@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit {
     });
 
     // Get return URL from query params or default to students
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/schedule';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
 
     // If already logged in, redirect to return URL
     if (this.authService.getCurrentUser()) {

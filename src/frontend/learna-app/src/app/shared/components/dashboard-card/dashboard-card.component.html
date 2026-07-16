@@ -1,0 +1,12 @@
+<mat-card class="dashboard-card">
+  <div class="dashboard-card__header">
+    <h2 class="dashboard-card__title">
+      <mat-icon *ngIf="icon()">{{ icon() }}</mat-icon>
+      {{ title() }}
+    </h2>
+    <a *ngIf="link()" class="dashboard-card__link" [routerLink]="link()">{{ linkLabel() }}</a>
+  </div>
+  <div class="dashboard-card__body">
+    <ng-content></ng-content>
+  </div>
+</mat-card>
