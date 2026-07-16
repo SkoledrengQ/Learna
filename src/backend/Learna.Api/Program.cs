@@ -60,6 +60,7 @@ builder.Services.AddScoped<IGradeRepository, GradeRepository>();
 builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<ISchoolSettingsRepository, SchoolSettingsRepository>();
 
 // Register services
 builder.Services.AddScoped<IAuthService, AuthService>();

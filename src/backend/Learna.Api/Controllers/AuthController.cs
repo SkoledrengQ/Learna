@@ -11,12 +11,20 @@ namespace Learna.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly ISchoolSettingsRepository _schoolSettingsRepository;
     private readonly ILogger<AuthController> _logger;
 
-    public AuthController(IAuthService authService, ILogger<AuthController> logger)
+    public AuthController(IAuthService authService, ISchoolSettingsRepository schoolSettingsRepository, ILogger<AuthController> logger)
     {
         _authService = authService;
+        _schoolSettingsRepository = schoolSettingsRepository;
         _logger = logger;
+    }
+
+    private async Task<SchoolSettingsDto> GetSchoolSettingsDtoAsync()
+    {
+        var settings = await _schoolSettingsRepository.GetAsync();
+        return new SchoolSettingsDto(settings.SchoolName, settings.PrimaryColor);
     }
 
     [HttpPost("login")]
@@ -52,7 +60,8 @@ public class AuthController : ControllerBase
                 result.User.GuardianId,
                 result.User.TeacherId,
                 result.User.PreferredLanguage
-            )
+            ),
+            await GetSchoolSettingsDtoAsync()
         );
 
         return Ok(response);
@@ -97,7 +106,8 @@ public class AuthController : ControllerBase
                 result.User.GuardianId,
                 result.User.TeacherId,
                 result.User.PreferredLanguage
-            )
+            ),
+            await GetSchoolSettingsDtoAsync()
         );
 
         return Ok(response);

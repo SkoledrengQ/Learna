@@ -141,7 +141,7 @@ public class UserAccountManagementTests
         db.Users.Add(user);
         await db.SaveChangesAsync();
         var auth = new AuthService(new UserRepository(db), new RefreshTokenRepository(db), Tokens());
-        var controller = WithUser(new AuthController(auth, NullLogger<AuthController>.Instance), user.Id, "Student");
+        var controller = WithUser(new AuthController(auth, new SchoolSettingsRepository(db), NullLogger<AuthController>.Instance), user.Id, "Student");
 
         (await controller.ChangePassword(new ChangePasswordRequestDto("wrong", "NewPass1!"))).Should().BeOfType<BadRequestObjectResult>();
         (await controller.ChangePassword(new ChangePasswordRequestDto("OldPass1!", "short"))).Should().BeOfType<BadRequestObjectResult>();

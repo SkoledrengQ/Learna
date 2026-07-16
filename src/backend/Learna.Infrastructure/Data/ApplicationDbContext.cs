@@ -37,6 +37,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Role> Roles { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<SchoolSettings> SchoolSettings { get; set; }
 
     private static void ConfigurePersonName<TEntity>(OwnedNavigationBuilder<TEntity, PersonName> name)
         where TEntity : class
@@ -464,6 +465,14 @@ public class ApplicationDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // SchoolSettings configuration (single row; enforced by repository, not schema)
+        modelBuilder.Entity<SchoolSettings>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.SchoolName).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.PrimaryColor).IsRequired().HasMaxLength(7);
         });
     }
 }

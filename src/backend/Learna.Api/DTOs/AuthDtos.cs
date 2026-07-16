@@ -9,7 +9,8 @@ public record LoginResponseDto(
     string AccessToken,
     string RefreshToken,
     DateTime ExpiresAt,
-    UserDto User
+    UserDto User,
+    SchoolSettingsDto SchoolSettings
 );
 
 public record UserDto(
